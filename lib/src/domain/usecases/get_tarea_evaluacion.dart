@@ -43,7 +43,7 @@ class GetTareaEvaluacion extends UseCase<GetTareaEvaluacionCaseResponse, GetTare
       int sinCalificar = 0;
       for(TareaEvaluacionCursoUi tareaItem in tareaEvalList){
         CursoUi? cursoUi = tareaItem.cursoUi;
-        CursoUi search = lista.firstWhere((element)=> element is CursoUi? element.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
+        CursoUi? search = lista.firstWhere((element)=> element is CursoUi? element.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
         if(search == null){
           lista.add(cursoUi);
         }

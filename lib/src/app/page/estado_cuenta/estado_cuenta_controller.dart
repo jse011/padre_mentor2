@@ -4,12 +4,12 @@ import 'package:padre_mentor/src/domain/entities/hijos_ui.dart';
 
 class EstadoCuentaController extends Controller{
   EstadoCuentaPresenter presenter;
-  final String _fotoAlumno;
-  String get fotoAlumno => _fotoAlumno;
-  HijosUi _hijosUi = null;
-  HijosUi get hijosUi => _hijosUi;
-  String _urlServidor = null;
-  String get urlServidor => _urlServidor;
+  final String? _fotoAlumno;
+  String? get fotoAlumno => _fotoAlumno;
+  HijosUi? _hijosUi = null;
+  HijosUi? get hijosUi => _hijosUi;
+  String? _urlServidor = null;
+  String? get urlServidor => _urlServidor;
   EstadoCuentaController(alumnoId, fotoAlumno, usuarioConfRepo) : presenter = EstadoCuentaPresenter(alumnoId, usuarioConfRepo), _fotoAlumno = fotoAlumno, super();
 
   @override

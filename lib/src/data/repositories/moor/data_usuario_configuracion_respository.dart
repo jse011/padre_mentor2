@@ -7,20 +7,23 @@ import 'package:padre_mentor/src/data/repositories/moor/model/silabo_evento.dart
 import 'package:padre_mentor/src/data/repositories/moor/model/usuario_rol_georeferencia.dart';
 import 'package:padre_mentor/src/data/repositories/moor/tools/serializable_convert.dart';
 import 'package:padre_mentor/src/domain/entities/contacto_ui.dart';
+import 'package:padre_mentor/src/domain/entities/evento_adjunto_ui.dart';
 import 'package:padre_mentor/src/domain/entities/evento_ui.dart';
 import 'package:padre_mentor/src/domain/entities/familia_ui.dart';
 import 'package:padre_mentor/src/domain/entities/hijos_ui.dart';
 import 'package:padre_mentor/src/domain/entities/login_ui.dart';
 import 'package:padre_mentor/src/domain/entities/programa_educativo_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_evento_ui.dart';
+import 'package:padre_mentor/src/domain/entities/tipo_recursos_ui.dart';
 import 'package:padre_mentor/src/domain/entities/usuario_ui.dart';
 import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_repository.dart';
 import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:padre_mentor/src/domain/tools/domain_youtube_tools.dart';
 
 class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
-
+  static const int TIPO_VIDEO = 379, TIPO_VINCULO = 380, TIPO_DOCUMENTO = 397, TIPO_IMAGEN = 398, TIPO_AUDIO = 399, TIPO_HOJA_CALCULO = 400, TIPO_DIAPOSITIVA = 401, TIPO_PDF = 402,  TIPO_YOUTUBE = 581,TIPO_ENCUESTA = 630;
   static const TAG = 'DataUsuarioAndRepository';
   // sigleton
   static final DataUsuarioAndRepository _instance = DataUsuarioAndRepository._internal();
@@ -33,111 +36,109 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<UsuarioUi> getSessionUsuario() async{
     print("getSessionUsuario" );
     AppDataBase SQL = AppDataBase();
-    try{
+    int usuarioId = await getSessionUsuarioId();
 
-      int usuarioId = await getSessionUsuarioId();
+    var query =  await SQL.selectSingle(SQL.persona).join([
+      innerJoin(SQL.usuario, SQL.usuario.personaId.equalsExp(SQL.persona.personaId))
+    ]);
+    query.where(SQL.usuario.usuarioId.equals(usuarioId));
+    var resultRow = await query.getSingleOrNull();
+    PersonaData? personaData = resultRow?.readTable(SQL.persona);
 
-      var query =  await SQL.selectSingle(SQL.persona).join([
-        innerJoin(SQL.usuario, SQL.usuario.personaId.equalsExp(SQL.persona.personaId))
-      ]);
-      query.where(SQL.usuario.usuarioId.equals(usuarioId));
-      var resultRow = await query.getSingle();
-      PersonaData personaData = resultRow.readTable(SQL.persona);
-
-      var queryRelaciones =  await SQL.select(SQL.persona).join([
-        innerJoin(SQL.relaciones, SQL.relaciones.personaPrincipalId.equalsExp(SQL.persona.personaId))
-      ]);
-      queryRelaciones.where(SQL.relaciones.personaVinculadaId.equals(personaData.personaId));
-      var rowRelaciones = await queryRelaciones.get();
-      List<HijosUi> hijos = [];
-      List<int> hijosIdList = [];
-     for(var hijo in rowRelaciones){
-        PersonaData personaData = hijo.readTable(SQL.persona);
-        hijosIdList.add(personaData.personaId);
-        String fechaNacimientoHijo = "";
-        if((personaData.fechaNac??"").isNotEmpty){
-          DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
-          fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
-        }
-
-        UsuarioData usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(personaData.personaId))).getSingle();
-        hijos.add(HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, fechaNacimiento2:  personaData.fechaNac));
-      }
-      String fechaNacimientoPadre = "";
+    var queryRelaciones =  await SQL.select(SQL.persona).join([
+      innerJoin(SQL.relaciones, SQL.relaciones.personaPrincipalId.equalsExp(SQL.persona.personaId))
+    ]);
+    queryRelaciones.where(SQL.relaciones.personaVinculadaId.equals(personaData?.personaId));
+    var rowRelaciones = await queryRelaciones.get();
+    List<HijosUi> hijos = [];
+    List<int> hijosIdList = [];
+    for(var hijo in rowRelaciones){
+      PersonaData personaData = hijo.readTable(SQL.persona);
+      hijosIdList.add(personaData.personaId);
+      String fechaNacimientoHijo = "";
       if((personaData.fechaNac??"").isNotEmpty){
         DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
-        fechaNacimientoPadre = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
-
+        fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
       }
 
-      List<FamiliaUi> familiaUiList = [];
+      UsuarioData? usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(personaData.personaId))).getSingleOrNull();
+      hijos.add(HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, fechaNacimiento2:  personaData.fechaNac));
+    }
+    String fechaNacimientoPadre = "";
+    if((personaData?.fechaNac??"").isNotEmpty){
+      DateTime fecPad = AppTools.convertDateTimePtBR(personaData?.fechaNac, null);
+      fechaNacimientoPadre = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
 
-      var queryFamiliare =  await SQL.select(SQL.persona).join([
-        innerJoin(SQL.relaciones, SQL.relaciones.personaVinculadaId.equalsExp(SQL.persona.personaId)),
-        //innerJoin(SQL.tipos, SQL.tipos.tipoId.equalsExp(SQL.relaciones.tipoId))
-      ]);
+    }
+    print("getSessionUsuario 1" );
+    List<FamiliaUi> familiaUiList = [];
 
-      queryFamiliare.where(SQL.relaciones.personaPrincipalId.isIn(hijosIdList));
-      queryFamiliare.where(SQL.persona.personaId.isNotIn([personaData.personaId]));
-      queryFamiliare.groupBy([SQL.persona.personaId]);
-      var rowFamiliares = await queryFamiliare.get();
-      for(var familia in rowFamiliares){
-        PersonaData personaData = familia.readTable(SQL.persona);
-        //Tipo relacion = familia.readTable(SQL.relaciones);
+    var queryFamiliare =  await SQL.select(SQL.persona).join([
+      innerJoin(SQL.relaciones, SQL.relaciones.personaVinculadaId.equalsExp(SQL.persona.personaId)),
+      //innerJoin(SQL.tipos, SQL.tipos.tipoId.equalsExp(SQL.relaciones.tipoId))
+    ]);
 
-        hijosIdList.add(personaData.personaId);
-        String fechaNacimientoHijo = "";
-        if((personaData.fechaNac??"").isNotEmpty){
-          DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
-          fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
-        }
+    queryFamiliare.where(SQL.relaciones.personaPrincipalId.isIn(hijosIdList));
+    queryFamiliare.where(SQL.persona.personaId.isNotIn([personaData?.personaId]));
+    queryFamiliare.groupBy([SQL.persona.personaId]);
+    var rowFamiliares = await queryFamiliare.get();
+    for(var familia in rowFamiliares){
+      PersonaData personaData = familia.readTable(SQL.persona);
+      //Tipo relacion = familia.readTable(SQL.relaciones);
 
-        familiaUiList.add(FamiliaUi(personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, relacion: "Familiar", fechaNacimiento2: personaData.fechaNac));
+      hijosIdList.add(personaData.personaId);
+      String fechaNacimientoHijo = "";
+      if((personaData.fechaNac??"").isNotEmpty){
+        DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
+        fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
       }
 
-      UsuarioUi usuarioUi = UsuarioUi(personaId: personaData == null ? 0 : personaData.personaId ,
-          nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}',
-          foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',
-          hijos: hijos, correo: personaData.correo, celular: personaData.celular??personaData.telefono??"", fechaNacimiento: fechaNacimientoPadre, familiaUiList: familiaUiList, nombreSimple: AppTools.capitalize(personaData.nombres??""), fechaNacimiento2: personaData.fechaNac);
+      familiaUiList.add(FamiliaUi(personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, relacion: "Familiar", fechaNacimiento2: personaData.fechaNac));
+    }
+    print("getSessionUsuario 2" );
+    UsuarioUi usuarioUi = UsuarioUi(personaId: personaData == null ? 0 : personaData.personaId ,
+        nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}',
+        foto: personaData?.foto==null?'':'${AppTools.capitalize(personaData?.foto??"")}',
+        hijos: hijos, correo: personaData?.correo, celular: personaData?.celular??personaData?.telefono??"", fechaNacimiento: fechaNacimientoPadre, familiaUiList: familiaUiList, nombreSimple: AppTools.capitalize(personaData?.nombres??""), fechaNacimiento2: personaData?.fechaNac);
 
 
 
-      /*
+    /*
       * Obtner el Programa de los Alumnos
       *PRE_MATRICULA = 189, MATRICULA = 190;
       *ANIO_ACADEMICO_MATRICULA = 192, ANIO_ACADEMICO_ACTIVO = 193, ANIO_ACADEMICO_CERRADO = 194, ANIO_ACADEMICO_CREADO = 195, ANIO_ACADEMICO_ELIMINADO = 196;
       * */
 
-      var queryPrograma=  await SQL.select(SQL.programasEducativo).join([
-        innerJoin(SQL.planEstudio, SQL.planEstudio.programaEduId.equalsExp(SQL.programasEducativo.programaEduId)),
-        innerJoin(SQL.planCursos, SQL.planCursos.planEstudiosId.equalsExp(SQL.planEstudio.planEstudiosId)),
-        innerJoin(SQL.cargaCurso, SQL.cargaCurso.planCursoId.equalsExp(SQL.planCursos.planCursoId)),
-        innerJoin(SQL.detalleContratoAcad, SQL.detalleContratoAcad.cargaCursoId.equalsExp(SQL.cargaCurso.cargaCursoId)),
-        innerJoin(SQL.anioAcademicoAlumno, SQL.anioAcademicoAlumno.idAnioAcademico.equalsExp(SQL.detalleContratoAcad.anioAcademicoId)),
-        innerJoin(SQL.contrato, SQL.contrato.idContrato.equalsExp(SQL.detalleContratoAcad.idContrato)),
-        innerJoin(SQL.persona, SQL.contrato.personaId.equalsExp(SQL.persona.personaId)),
-      ]);
-      queryPrograma.where(SQL.contrato.personaId.equalsExp(SQL.anioAcademicoAlumno.personaId));
-      queryPrograma.where(SQL.contrato.estadoId.equals(190));
-      //queryPrograma.where(SQL.anioAcademicoAlumno.estadoId.equals(193));
+    var queryPrograma=  await SQL.select(SQL.programasEducativo).join([
+      innerJoin(SQL.planEstudio, SQL.planEstudio.programaEduId.equalsExp(SQL.programasEducativo.programaEduId)),
+      innerJoin(SQL.planCursos, SQL.planCursos.planEstudiosId.equalsExp(SQL.planEstudio.planEstudiosId)),
+      innerJoin(SQL.cargaCurso, SQL.cargaCurso.planCursoId.equalsExp(SQL.planCursos.planCursoId)),
+      innerJoin(SQL.detalleContratoAcad, SQL.detalleContratoAcad.cargaCursoId.equalsExp(SQL.cargaCurso.cargaCursoId)),
+      innerJoin(SQL.anioAcademicoAlumno, SQL.anioAcademicoAlumno.idAnioAcademico.equalsExp(SQL.detalleContratoAcad.anioAcademicoId)),
+      innerJoin(SQL.contrato, SQL.contrato.idContrato.equalsExp(SQL.detalleContratoAcad.idContrato)),
+      innerJoin(SQL.persona, SQL.contrato.personaId.equalsExp(SQL.persona.personaId)),
+    ]);
+    queryPrograma.where(SQL.contrato.personaId.equalsExp(SQL.anioAcademicoAlumno.personaId));
+    queryPrograma.where(SQL.contrato.estadoId.equals(190));
+    //queryPrograma.where(SQL.anioAcademicoAlumno.estadoId.equals(193));
 
 
-      queryPrograma.groupBy([SQL.programasEducativo.programaEduId, SQL.anioAcademicoAlumno.idAnioAcademico, SQL.anioAcademicoAlumno.personaId]);
+    queryPrograma.groupBy([SQL.programasEducativo.programaEduId, SQL.anioAcademicoAlumno.idAnioAcademico, SQL.anioAcademicoAlumno.personaId]);
 
-      var rowPrograma = await queryPrograma.get();
+    var rowPrograma = await queryPrograma.get();
 
+    print("getSessionUsuario 3" );
+    rowPrograma.sort((a, b) => AppTools.convertDateTimePtBR(b.readTable(SQL.anioAcademicoAlumno).fechaInicio, null).compareTo(AppTools.convertDateTimePtBR(a.readTable(SQL.anioAcademicoAlumno).fechaInicio, null)));
+    List<ProgramaEducativoUi> programaEducativoUiList = [];
+    for(var programa in rowPrograma){
+      ProgramasEducativoData programasEducativoData = programa.readTable(SQL.programasEducativo);
+      PlanEstudioData planEstudioData = programa.readTable(SQL.planEstudio);
+      AnioAcademicoAlumnoData academicoAlumnoData = programa.readTable(SQL.anioAcademicoAlumno);
+      PersonaData personaData = programa.readTable(SQL.persona);
 
-      rowPrograma.sort((a, b) => AppTools.convertDateTimePtBR(b.readTable(SQL.anioAcademicoAlumno).fechaInicio, null).compareTo(AppTools.convertDateTimePtBR(a.readTable(SQL.anioAcademicoAlumno).fechaInicio, null)));
-      List<ProgramaEducativoUi> programaEducativoUiList = [];
-     for(var programa in rowPrograma){
-        ProgramasEducativoData programasEducativoData = programa.readTable(SQL.programasEducativo);
-        PlanEstudioData planEstudioData = programa.readTable(SQL.planEstudio);
-        AnioAcademicoAlumnoData academicoAlumnoData = programa.readTable(SQL.anioAcademicoAlumno);
-        PersonaData personaData = programa.readTable(SQL.persona);
+      UsuarioData? usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(academicoAlumnoData.personaId))).getSingleOrNull();
 
-        UsuarioData usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(academicoAlumnoData.personaId))).getSingle();
-
-        programaEducativoUiList.add(ProgramaEducativoUi(
+      programaEducativoUiList.add(ProgramaEducativoUi(
           programaId: programasEducativoData.programaEduId,
           nombrePrograma: programasEducativoData.nombre,
           hijoId: personaData.personaId,
@@ -147,50 +148,47 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
           nombreAnioAcademico: academicoAlumnoData.nombre,
           alumnoId: usuarioData==null ? 0 : usuarioData.usuarioId,
           cerrado: academicoAlumnoData.estadoId == 194 ||academicoAlumnoData.estadoId == 196
-        ));
+      ));
 
-      }
-      usuarioUi.programaEducativoUiList = programaEducativoUiList;
-
-      SessionUserData? sessionUserData = await (SQL.selectSingle(SQL.sessionUser)).getSingleOrNull();
-      int hijoIdSelected = sessionUserData?.hijoIdSelect??0;
-
-      if(hijoIdSelected==null || hijoIdSelected == 0 && sessionUserData != null){
-        if((usuarioUi.hijos??[]).isNotEmpty){
-          hijoIdSelected = usuarioUi.hijos![0].personaId??0;
-          await SQL.update(SQL.sessionUser).replace(sessionUserData!.copyWith(hijoIdSelect: hijoIdSelected));
-        }
-      }
-
-      if(hijoIdSelected!=null && hijoIdSelected > 0){
-        if((usuarioUi.hijos??[]).isNotEmpty){
-
-          usuarioUi.hijoSelected = usuarioUi.hijos?.firstWhereOrNull((element) => element.personaId == hijoIdSelected);
-          if(usuarioUi.hijoSelected==null){
-            usuarioUi.hijoSelected = usuarioUi.hijos![0];
-          }
-          var rowSessionUsuarioPrograma = SQL.selectSingle(SQL.sessionUserHijoPrograma)..where((tbl) => tbl.hijoId.equals(hijoIdSelected));
-          rowSessionUsuarioPrograma.where((tbl) => tbl.selected.equals(true));
-          SessionUserHijoProgramaData sessionUserHijoData = await rowSessionUsuarioPrograma.getSingle();
-          int programaIdSelected = sessionUserHijoData != null?sessionUserHijoData.prograAcademicoId : 0;
-          int anioAcademicoIdSelected = sessionUserHijoData != null?sessionUserHijoData.anioAcademicoId : 0;
-          print(TAG+ " programaEduSelectedId:" + programaIdSelected.toString() + ", hijoSelectedId:" + hijoIdSelected.toString() +", anioAcademicoId: "+anioAcademicoIdSelected.toString());
-          usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) =>
-          element.programaId == programaIdSelected && element.anioAcademicoId == anioAcademicoIdSelected && element.hijoId == hijoIdSelected);
-          if(usuarioUi.programaEducativoUiSelected==null){
-            usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) => element.hijoId==hijoIdSelected);
-          }
-          print(TAG+ "programaEducativoUiSelected " +(usuarioUi.programaEducativoUiSelected!=null?"true":"false"));
-
-          }
-      }
-
-
-      return usuarioUi;
-    }catch(e){
-      print(TAG +" error " + e.toString() );
-      throw Exception(e);
     }
+    print("getSessionUsuario 4" );
+    usuarioUi.programaEducativoUiList = programaEducativoUiList;
+
+    SessionUserData? sessionUserData = await (SQL.selectSingle(SQL.sessionUser)).getSingleOrNull();
+    int hijoIdSelected = sessionUserData?.hijoIdSelect??0;
+
+    if(hijoIdSelected==null || hijoIdSelected == 0 && sessionUserData != null){
+      if((usuarioUi.hijos??[]).isNotEmpty){
+        hijoIdSelected = usuarioUi.hijos![0].personaId??0;
+        await SQL.update(SQL.sessionUser).replace(sessionUserData!.copyWith(hijoIdSelect: hijoIdSelected));
+      }
+    }
+    print("getSessionUsuario 5" );
+    if(hijoIdSelected!=null && hijoIdSelected > 0){
+      if((usuarioUi.hijos??[]).isNotEmpty){
+
+        usuarioUi.hijoSelected = usuarioUi.hijos?.firstWhereOrNull((element) => element.personaId == hijoIdSelected);
+        if(usuarioUi.hijoSelected==null){
+          usuarioUi.hijoSelected = usuarioUi.hijos![0];
+        }
+        var rowSessionUsuarioPrograma = SQL.selectSingle(SQL.sessionUserHijoPrograma)..where((tbl) => tbl.hijoId.equals(hijoIdSelected));
+        rowSessionUsuarioPrograma.where((tbl) => tbl.selected.equals(true));
+        SessionUserHijoProgramaData? sessionUserHijoData = await rowSessionUsuarioPrograma.getSingleOrNull();
+        int programaIdSelected = sessionUserHijoData != null?sessionUserHijoData.prograAcademicoId : 0;
+        int anioAcademicoIdSelected = sessionUserHijoData != null?sessionUserHijoData.anioAcademicoId : 0;
+        print(TAG+ " programaEduSelectedId:" + programaIdSelected.toString() + ", hijoSelectedId:" + hijoIdSelected.toString() +", anioAcademicoId: "+anioAcademicoIdSelected.toString());
+        usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) =>
+        element.programaId == programaIdSelected && element.anioAcademicoId == anioAcademicoIdSelected && element.hijoId == hijoIdSelected);
+        if(usuarioUi.programaEducativoUiSelected==null){
+          usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) => element.hijoId==hijoIdSelected);
+        }
+        print(TAG+ "programaEducativoUiSelected " +(usuarioUi.programaEducativoUiSelected!=null?"true":"false"));
+
+      }
+    }
+    print("getSessionUsuario 6" );
+
+    return usuarioUi;
     //var resultRow = rows.single;
   }
 
@@ -326,9 +324,9 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      PersonaData personaData = await (SQL.selectSingle(SQL.persona)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingle();
-      UsuarioData usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingle();
-      return HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: "", fechaNacimiento2: personaData.fechaNac);
+      PersonaData? personaData = await (SQL.selectSingle(SQL.persona)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingleOrNull();
+      UsuarioData? usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingleOrNull();
+      return HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData?.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData?.foto==null?'':'${AppTools.capitalize(personaData?.foto??"")}',documento: personaData?.numDoc, celular: personaData?.celular??personaData?.telefono??'', correo: personaData?.correo, fechaNacimiento: "", fechaNacimiento2: personaData?.fechaNac);
 
     }catch(e){
       throw Exception(e);
@@ -365,6 +363,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
             if(id!=-1)continue;
           }
           await (SQL.delete(SQL.evento).delete(eventoData));
+          await (SQL.delete(SQL.eventoAdjunto)..where((tbl) => tbl.eventoId.equals(eventoData.eventoId))).go();
           if(calendarioDataList.firstWhereOrNull((element) => element.calendarioId == calendarioData.calendarioId) == null){
             calendarioDataList.add(calendarioData);
           }
@@ -397,6 +396,10 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
           //personaSerelizable.addAll(datosInicioPadre["usuariosrelacionados"]);
           //database.personaDao.insertAllTodo(SerializableConvert.converListSerializePersona(datosInicioPadre["personas"]));
           batch.insertAll(SQL.calendario, SerializableConvert.converListSerializeCalendario(eventoAgenda["calendarios"]), mode: InsertMode.insertOrReplace);
+        }
+
+        if(eventoAgenda.containsKey("eventoAdjuntos")){
+          batch.insertAll(SQL.eventoAdjunto, SerializableConvert.converListSerializeEventoAjunto(eventoAgenda["eventoAdjuntos"]), mode: InsertMode.insertOrReplace );
         }
 
         if(eventoAgenda.containsKey("eventos")){
@@ -536,6 +539,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
             eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.DEFAULT;
             break;
         }
+        await getEventoAdjunto(eventoUi);
         eventoUiList.add(eventoUi);
       }
 
@@ -544,6 +548,188 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     }catch(e){
       throw Exception(e);
     }
+  }
+
+  Future<void> getEventoAdjunto(EventoUi? eventoUi) async{
+    AppDataBase SQL = AppDataBase();
+    List<EventoAdjuntoData> eventoAdjuntoDataList = await (SQL.select(SQL.eventoAdjunto)..where((tbl) => tbl.eventoId.equals(eventoUi?.id))).get();
+    List<EventoAdjuntoUi> eventoAdjuntoUiEncuestaList = [];
+    List<EventoAdjuntoUi> eventoAdjuntoUiDownloadList = [];
+    List<EventoAdjuntoUi> eventoAdjuntoUiPreviewList = [];
+    List<EventoAdjuntoUi> eventoAdjuntoUiList = [];
+
+/*
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+      eventoAdjuntoId: "121",
+      titulo: "Mi documento pptx",
+      driveId: "19folRaCmWHXfTTY_O46R4xSBSTkx8pKM",
+      tipoId: TIPO_DIAPOSITIVA,
+      eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "19folRaCmWHXfTTY_O46R4xSBSTkx8pKM",
+        tipoId: TIPO_DIAPOSITIVA,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "19folRaCmWHXfTTY_O46R4xSBSTkx8pKM",
+        tipoId: TIPO_DIAPOSITIVA,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "19folRaCmWHXfTTY_O46R4xSBSTkx8pKM",
+        tipoId: TIPO_DIAPOSITIVA,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "19folRaCmWHXfTTY_O46R4xSBSTkx8pKM",
+        tipoId: TIPO_DIAPOSITIVA,
+        eventoId: eventoUi?.id
+    ));
+
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "1eBerHlMdqBxSkK-QGWVnjTzLUffZAvx4",
+        tipoId: TIPO_IMAGEN,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento pptx",
+        driveId: "1LIICPqNx3UDquTB-ew0sZ4eRmrWCizJ1",
+        tipoId: TIPO_IMAGEN,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento.mp4",
+        driveId: "16AgweRtjkBvqEu2e8zhnMVSbycyNDW2Y",
+        tipoId: TIPO_VIDEO,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "https://www.youtube.com/watch?v=tIDqVU15EBU&ab_channel=POCOY%C3%93enESPA%C3%91OL-CanalOficial",
+        driveId: "1LIICPqNx3UDquTB-ew0sZ4eRmrWCizJ1",
+        tipoId: TIPO_YOUTUBE,
+        eventoId: eventoUi?.id
+    ));
+    eventoAdjuntoDataList.add(EventoAdjuntoData(
+        eventoAdjuntoId: "121",
+        titulo: "Mi documento.mp4",
+        driveId: "16AgweRtjkBvqEu2e8zhnMVSbycyNDW2Y",
+        tipoId: TIPO_VIDEO,
+        eventoId: eventoUi?.id
+    ));*/
+
+    for(EventoAdjuntoData eventoAdjuntoData in eventoAdjuntoDataList){
+      EventoAdjuntoUi eventoAdjuntoUi = EventoAdjuntoUi();
+      eventoAdjuntoUi.eventoAdjuntoId = eventoAdjuntoData.eventoAdjuntoId;
+      eventoAdjuntoUi.eventoId = eventoAdjuntoData.eventoId;
+      eventoAdjuntoUi.driveId = eventoAdjuntoData.driveId;
+      eventoAdjuntoUi.tipoId = eventoAdjuntoData.tipoId;
+      eventoAdjuntoUi.titulo = eventoAdjuntoData.titulo;
+      switch (eventoAdjuntoUi.tipoId){
+        case TIPO_VIDEO:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VIDEO;
+          break;
+        case TIPO_VINCULO:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO;
+          break;
+        case TIPO_DOCUMENTO:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_DOCUMENTO;
+          break;
+        case TIPO_IMAGEN:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_IMAGEN;
+          break;
+        case TIPO_AUDIO:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_AUDIO;
+          break;
+        case TIPO_HOJA_CALCULO:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_HOJA_CALCULO;
+          break;
+        case TIPO_DIAPOSITIVA:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_DIAPOSITIVA;
+          break;
+        case TIPO_PDF:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_PDF;
+          break;
+        case TIPO_YOUTUBE:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+          break;
+        case TIPO_ENCUESTA:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_ENCUESTA;
+          break;
+        default:
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO;//
+          break;
+      }
+
+      if(eventoAdjuntoUi.tipoRecursosUi==TipoRecursosUi.TIPO_VIDEO){
+        String? idYoutube = YouTubeUrlParser.getYoutubeVideoId(eventoAdjuntoUi.titulo);
+        if((idYoutube??"").isEmpty){
+          eventoAdjuntoUi.imagePreview = "https://drive.google.com/thumbnail?id=${eventoAdjuntoUi.driveId}";
+        }else {
+          eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+          eventoAdjuntoUi.imagePreview = YouTubeThumbnail.getUrlFromVideoId(idYoutube,Quality.MEDIUM);
+          eventoAdjuntoUi.yotubeId = idYoutube;
+        }
+      }else if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_VINCULO_YOUTUBE){
+        String? idYoutube = YouTubeUrlParser.getYoutubeVideoId(eventoAdjuntoUi.titulo);
+        print("idYoutube: ${idYoutube}");
+        eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+        eventoAdjuntoUi.imagePreview = YouTubeThumbnail.getUrlFromVideoId(idYoutube,Quality.MEDIUM);
+        print("idYoutube: ${eventoAdjuntoUi.imagePreview}");
+        eventoAdjuntoUi.yotubeId = idYoutube;
+      }else if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_IMAGEN){
+        eventoAdjuntoUi.imagePreview = "https://drive.google.com/uc?id=${eventoAdjuntoUi.driveId}";
+      }
+
+      if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_IMAGEN ||
+          eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_VIDEO ||
+          eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_VINCULO_YOUTUBE){
+        eventoAdjuntoUiPreviewList.add(eventoAdjuntoUi);
+      }else if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_ENCUESTA){
+        eventoAdjuntoUiEncuestaList.add(eventoAdjuntoUi);
+      }else{
+        eventoAdjuntoUiDownloadList.add(eventoAdjuntoUi);
+      }
+      eventoAdjuntoUiList.add(eventoAdjuntoUi);
+    }
+    eventoUi?.eventoAdjuntoUiList = eventoAdjuntoUiList;
+    eventoUi?.eventoAdjuntoUiEncuestaList = eventoAdjuntoUiEncuestaList;
+    eventoUi?.eventoAdjuntoUiDownloadList = eventoAdjuntoUiDownloadList;
+    eventoUi?.eventoAdjuntoUiPreviewList = eventoAdjuntoUiPreviewList;
+
+    if(eventoUi?.tipoEventoUi == EventoIconoEnumUI.NOTICIA||
+        eventoUi?.tipoEventoUi == EventoIconoEnumUI.EVENTO||
+        (eventoUi?.tipoEventoUi == EventoIconoEnumUI.AGENDA &&
+            (eventoUi?.foto??"").isNotEmpty)){
+
+      if((eventoUi?.foto??"").isNotEmpty){
+        EventoAdjuntoUi eventoAdjuntoUi = EventoAdjuntoUi();
+        eventoAdjuntoUi.imagePreview = eventoUi?.foto;
+        eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_IMAGEN;
+        eventoAdjuntoUi.titulo = eventoUi?.titulo;
+        eventoUi?.eventoAdjuntoUiPreviewList?.add(eventoAdjuntoUi);
+      }
+
+      if((eventoUi?.foto??"").isNotEmpty && (eventoUi?.eventoAdjuntoUiPreviewList?.isNotEmpty??false)){
+        eventoUi?.foto = eventoUi.eventoAdjuntoUiPreviewList?[0].imagePreview;
+      }
+    }
+
+
+
   }
 
   @override
@@ -656,6 +842,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
             eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.DEFAULT;
             break;
         }
+        await getEventoAdjunto(eventoUi);
         eventoUiList.add(eventoUi);
       }
 
@@ -756,7 +943,8 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<int> getSessionUsuarioId() async {
     AppDataBase SQL = AppDataBase();
     try{
-    SessionUserData sessionUserData =  await SQL.selectSingle(SQL.sessionUser).getSingle();
+    SessionUserData? sessionUserData =  await SQL.selectSingle(SQL.sessionUser).getSingleOrNull();
+    print("getSessionUsuarioId: ${sessionUserData?.userId}");
     return sessionUserData?.userId??0;
     }catch(e){
       throw Exception(e);
@@ -769,7 +957,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     try{
       var query = SQL.selectSingle(SQL.usuarioRolGeoreferencia)..where((tbl) => tbl.usuarioId.equals(usuarioId));
       query.where((tbl) => tbl.rolId.equals(5));
-      UsuarioRolGeoreferenciaData usuarioRolGeoreferenciaData = await query.getSingle();
+      UsuarioRolGeoreferenciaData? usuarioRolGeoreferenciaData = await query.getSingleOrNull();
       return usuarioRolGeoreferenciaData!=null;
     }catch(e){
       throw Exception(e);
@@ -801,7 +989,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<String> getSessionUsuarioUrlServidor() async{
     AppDataBase SQL = AppDataBase();
     try{
-      SessionUserData sessionUserData =  await SQL.selectSingle(SQL.sessionUser).getSingle();
+      SessionUserData? sessionUserData =  await SQL.selectSingle(SQL.sessionUser).getSingleOrNull();
       return sessionUserData?.urlServerLocal??"";
     }catch(e){
       throw Exception(e);
@@ -812,7 +1000,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<void> updateUsuarioSuccessData(int usuarioId) async{
     AppDataBase SQL = AppDataBase();
     try{
-      SessionUserData sessionUserData = await(SQL.selectSingle(SQL.sessionUser).getSingle());
+      SessionUserData? sessionUserData = await(SQL.selectSingle(SQL.sessionUser).getSingleOrNull());
       if(sessionUserData!=null){
         await SQL.update(SQL.sessionUser).replace(sessionUserData.copyWith(complete: true));
       }
@@ -857,7 +1045,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
           List<PersonaData> personaDataList = SerializableConvert.converListSerializePersona(listaPersonas);
           for (PersonaData item in personaDataList) {
-            PersonaData personaData = await (SQL.selectSingle(SQL.persona)..where((tbl) => tbl.personaId.equals(item.personaId))).getSingle();
+            PersonaData? personaData = await (SQL.selectSingle(SQL.persona)..where((tbl) => tbl.personaId.equals(item.personaId))).getSingleOrNull();
             if(personaData!=null)await SQL.update(SQL.persona).replace(personaData.copyWith(celular: item.celular, correo: item.correo, foto: item.foto??personaData.foto));
           }
         });
@@ -874,7 +1062,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
     try{
       AppDataBase SQL = AppDataBase();
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_Nombre_Pre_Matricula"))).getSingle();
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_Nombre_Pre_Matricula"))).getSingleOrNull();
       if(webConfig!=null&&
           webConfig.content!=null && (webConfig.content??"").isNotEmpty&&
           webConfig.content?.toUpperCase() != "NULL"){

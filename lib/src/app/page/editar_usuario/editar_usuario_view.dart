@@ -13,10 +13,8 @@ import 'package:padre_mentor/src/app/page/home/home_router.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/widgets/animation_view.dart';
 import 'package:padre_mentor/src/app/widgets/ars_progress.dart';
-import 'package:padre_mentor/src/app/widgets/ars_progress_dialog.dart';
 import 'package:padre_mentor/src/app/widgets/image_picker/image_picker_handler.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
-import 'package:padre_mentor/src/device/repositories/check_conexion/device_conex_provider.dart';
 import 'package:padre_mentor/src/device/repositories/compress_image/device_compress_image_repository.dart';
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
 import 'package:padre_mentor/src/domain/entities/familia_ui.dart';
@@ -28,19 +26,19 @@ class EditarUsuarioView extends View{
   EditarUsuarioView({this.cabecera = false});
 
   @override
-  EditarUsuarioViewState createState() => EditarUsuarioViewState(EditarUsuarioController(DeviceHttpDatosRepositorio(), DataUsuarioAndRepository(), DeviceCheckConexRepository(), DeviceCompressImageRepository()));
+  EditarUsuarioViewState createState() => EditarUsuarioViewState(EditarUsuarioController(DeviceHttpDatosRepositorio(), DataUsuarioAndRepository(), DeviceCompressImageRepository()));
 
 }
 
 class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioController> with  TickerProviderStateMixin,ImagePickerListener {
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
-  AnimationController _imagePickerAnimationcontroller;
-  ImagePickerHandler imagePicker;
-  EditarUsuarioController controller;
+  late AnimationController _imagePickerAnimationcontroller;
+  late ImagePickerHandler imagePicker;
+  late EditarUsuarioController controller;
 
   EditarUsuarioViewState(controller): super(controller){
     this.controller = controller;
@@ -156,14 +154,14 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
     return ControlledWidgetBuilder<EditarUsuarioController>(
         builder: (context, controller) {
 
-          if(controller.dissmis??false) {
+          if(controller.dissmis) {
             if (widget.cabecera) {
               Future.delayed(const Duration(milliseconds: 500), () {
                       Navigator.pop(context, true);
                });
 
             } else {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
+              SchedulerBinding.instance?.addPostFrameCallback((_) {
                 // fetch data
                 HomeRouter.createRouteHomeRemoveAll(context);
               });
@@ -210,11 +208,11 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                               controller.onChangeImageUsuario();
                                               imagePicker.showDialog(context);
                                             },
-                                            child:  controller.usuarioUi.fotoFile!=null?Container(
+                                            child:  controller.usuarioUi?.fotoFile!=null?Container(
                                                 decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.all(Radius.circular(100)),
                                                     image: DecorationImage(
-                                                      image: FileImage(controller.usuarioUi.fotoFile),
+                                                      image: FileImage(controller.usuarioUi!.fotoFile!),
                                                       fit: BoxFit.cover,
                                                     ),
                                                     boxShadow: <BoxShadow>[
@@ -224,7 +222,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                             ):
                                             CachedNetworkImage(
                                               placeholder: (context, url) => CircularProgressIndicator(),
-                                              imageUrl: controller.usuarioUi.foto??'',
+                                              imageUrl: controller.usuarioUi?.foto??'',
                                               errorWidget: (context, url, error) =>  Icon(Icons.error_outline_rounded, size: 80,),
                                               imageBuilder: (context, imageProvider) => Container(
                                                   decoration: BoxDecoration(
@@ -285,17 +283,17 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                               Padding(
                                 padding: const EdgeInsets.only(left: 24, right: 24, top: 32),
                                 child:  TextFormField(
-                                  key: Key("Nombre_"+controller.usuarioUi.personaId?.toString()),
+                                  key: Key("Nombre_${controller.usuarioUi?.personaId}"),
                                   enabled: false,
                                   maxLength: 50,
                                   autofocus: false,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                  style: Theme.of(context).textTheme.caption?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                     color: Colors.black,
                                   ),
-                                  initialValue: controller.usuarioUi.nombre??'',
+                                  initialValue: controller.usuarioUi?.nombre??'',
                                   //controller: accountController,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
@@ -314,7 +312,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       Icons.account_box,
                                       color: AppTheme.colorPrimary,
                                     ),
-                                    errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -343,7 +341,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       ),
                                     ),
                                     hintText: "Ingrese su nombre",
-                                    hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
                                       color: Colors.grey,
@@ -367,17 +365,17 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                               Padding(
                                 padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                 child:  TextFormField(
-                                  key: Key("Fecha_Nac_"+controller.usuarioUi.personaId?.toString()),
+                                  key: Key("Fecha_Nac_${controller.usuarioUi?.personaId}"),
                                   enabled: false,
                                   maxLength: 50,
                                   autofocus: false,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                  style: Theme.of(context).textTheme.caption?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                     color: Colors.black,
                                   ),
-                                  initialValue: controller.usuarioUi.fechaNacimiento2??'',
+                                  initialValue: controller.usuarioUi?.fechaNacimiento2??'',
                                   //controller: accountController,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
@@ -396,7 +394,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       Icons.today_outlined,
                                       color: AppTheme.colorPrimary,
                                     ),
-                                    errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -425,7 +423,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       ),
                                     ),
                                     hintText: "Ingrese su fecha de nacimiento",
-                                    hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
                                       color: Colors.grey,
@@ -449,17 +447,17 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                               Padding(
                                 padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                 child:  TextFormField(
-                                  key: Key("Telefono_"+controller.usuarioUi.personaId?.toString()),
+                                  key: Key("Telefono_${controller.usuarioUi?.personaId}"),
                                   enabled: true,
                                   maxLength: 50,
                                   autofocus: false,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                  style: Theme.of(context).textTheme.caption?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                     color: Colors.black,
                                   ),
-                                  initialValue: controller.usuarioUi.celular??'',
+                                  initialValue: controller.usuarioUi?.celular??'',
                                   //controller: accountController,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
@@ -478,7 +476,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       Icons.call_end_outlined,
                                       color: AppTheme.colorPrimary,
                                     ),
-                                    errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -507,7 +505,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       ),
                                     ),
                                     hintText: "Ingrese su número de telefono",
-                                    hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
                                       color: Colors.grey,
@@ -532,17 +530,17 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                               Padding(
                                 padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
                                 child:  TextFormField(
-                                  key: Key("Correo_"+controller.usuarioUi.personaId?.toString()),
+                                  key: Key("Correo_${controller.usuarioUi?.personaId}"),
                                   enabled: true,
                                   maxLength: 50,
                                   autofocus: false,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                  style: Theme.of(context).textTheme.caption?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                     color: Colors.black,
                                   ),
-                                  initialValue: controller.usuarioUi.correo??'',
+                                  initialValue: controller.usuarioUi?.correo??'',
                                   //controller: accountController,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
@@ -561,7 +559,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       Icons.email_outlined,
                                       color: AppTheme.colorPrimary,
                                     ),
-                                    errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -590,7 +588,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       ),
                                     ),
                                     hintText: "Ingrese su correo",
-                                    hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                    hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
                                       color: Colors.grey,
@@ -658,7 +656,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                                     decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.all(Radius.circular(100)),
                                                         image: DecorationImage(
-                                                          image: FileImage(hijosUi.fotoFile),
+                                                          image: FileImage(hijosUi.fotoFile!),
                                                           fit: BoxFit.cover,
                                                         ),
                                                         boxShadow: <BoxShadow>[
@@ -728,13 +726,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 32),
                                     child:  TextFormField(
-                                      key: Key("Nombre_"+hijosUi.personaId?.toString()),
+                                      key: Key("Nombre_${hijosUi.personaId}"),
                                       enabled: false,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      autovalidate: true,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -758,7 +755,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.account_box,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -787,7 +784,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su nombre",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -811,12 +808,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                     child:  TextFormField(
-                                      key: Key("Fecha_Nac_"+hijosUi.personaId?.toString()),
+                                      key: Key("Fecha_Nac_${hijosUi.personaId}"),
                                       enabled: false,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -840,7 +837,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.today_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -869,7 +866,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su fecha de nacimiento",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -893,12 +890,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                     child:  TextFormField(
-                                      key: Key("Telefono_"+hijosUi.personaId?.toString()),
+                                      key: Key("Telefono_${hijosUi.personaId}"),
                                       enabled: true,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -922,7 +919,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.call_end_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -951,7 +948,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su telefono",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -965,8 +962,8 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                         focusColor: AppTheme.colorAccent,
                                       ),
                                       onChanged: (str) {
-                                        hijosUi?.celular = str;
-                                        hijosUi?.change = true;
+                                        hijosUi.celular = str;
+                                        hijosUi.change = true;
                                       },
                                       onSaved: (str) {
                                         //  To do
@@ -976,12 +973,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
                                     child:  TextFormField(
-                                      key: Key("Correo_"+hijosUi.personaId?.toString()),
+                                      key: Key("Correo_${hijosUi.personaId}"),
                                       enabled: true,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -989,7 +986,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       initialValue: hijosUi.correo??'',
                                       //controller: accountController,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      validator: (val) => EmailValidator.validate(val) ? null : "Correo inválido",
+                                      validator: (val) => EmailValidator.validate(val??"") ? null : "Correo inválido",
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
@@ -1007,7 +1004,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.email_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -1036,7 +1033,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su correo",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -1050,8 +1047,8 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                         focusColor: AppTheme.colorAccent,
                                       ),
                                       onChanged: (str) {
-                                        hijosUi?.correo = str;
-                                        hijosUi?.change = true;
+                                        hijosUi.correo = str;
+                                        hijosUi.change = true;
                                       },
                                       onSaved: (str) {
                                         //  To do
@@ -1106,7 +1103,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                                     decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.all(Radius.circular(100)),
                                                         image: DecorationImage(
-                                                          image: FileImage(familiaUi.fotoFile),
+                                                          image: FileImage(familiaUi.fotoFile!),
                                                           fit: BoxFit.cover,
                                                         ),
                                                         boxShadow: <BoxShadow>[
@@ -1176,13 +1173,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 32),
                                     child:  TextFormField(
-                                      key: Key("Nombre_"+familiaUi.personaId?.toString()),
+                                      key: Key("Nombre_${familiaUi.personaId}"),
                                       enabled: false,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      autovalidate: true,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -1206,7 +1202,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.account_box,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -1235,7 +1231,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su nombre",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -1259,12 +1255,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                     child:  TextFormField(
-                                      key: Key("Fecha_Nac_"+familiaUi.personaId?.toString()),
+                                      key: Key("Fecha_Nac_${familiaUi.personaId}"),
                                       enabled: false,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -1288,7 +1284,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.today_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -1317,7 +1313,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su fecha de nacimiento",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -1341,12 +1337,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                                     child:  TextFormField(
-                                      key: Key("Telefono_"+familiaUi.personaId?.toString()),
+                                      key: Key("Telefono_${familiaUi.personaId}"),
                                       enabled: true,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -1370,7 +1366,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.call_end_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -1399,7 +1395,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su telefono",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -1413,8 +1409,8 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                         focusColor: AppTheme.colorAccent,
                                       ),
                                       onChanged: (str) {
-                                        familiaUi?.celular = str;
-                                        familiaUi?.change = true;
+                                        familiaUi.celular = str;
+                                        familiaUi.change = true;
                                       },
                                       onSaved: (str) {
                                         //  To do
@@ -1424,12 +1420,12 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                   Padding(
                                     padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
                                     child:  TextFormField(
-                                      key: Key("Correo_"+familiaUi.personaId?.toString()),
+                                      key: Key("Correo_${familiaUi.personaId}"),
                                       enabled: true,
                                       maxLength: 50,
                                       autofocus: false,
                                       textAlign: TextAlign.start,
-                                      style: Theme.of(context).textTheme.caption.copyWith(
+                                      style: Theme.of(context).textTheme.caption?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
                                         color: Colors.black,
@@ -1437,7 +1433,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                       initialValue: familiaUi.correo??'',
                                       //controller: accountController,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      validator: (val) => EmailValidator.validate(val) ? null : "Correo inválido",
+                                      validator: (val) => EmailValidator.validate(val??"") ? null : "Correo inválido",
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
@@ -1455,7 +1451,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           Icons.email_outlined,
                                           color: AppTheme.colorPrimary,
                                         ),
-                                        errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -1484,7 +1480,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                           ),
                                         ),
                                         hintText: "Ingrese su correo",
-                                        hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
                                           color: Colors.grey,
@@ -1498,8 +1494,8 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                                         focusColor: AppTheme.colorAccent,
                                       ),
                                       onChanged: (str) {
-                                        familiaUi?.correo = str;
-                                        familiaUi?.change = true;
+                                        familiaUi.correo = str;
+                                        familiaUi.change = true;
                                       },
                                       onSaved: (str) {
                                         //  To do
@@ -1530,7 +1526,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -1600,9 +1596,9 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
                             ControlledWidgetBuilder<EditarUsuarioController>(
                               builder: (context, controller) {
 
-                                if(controller.mensaje!=null&&controller.mensaje.isNotEmpty){
+                                if(controller.mensaje!=null&&(controller.mensaje??"").isNotEmpty){
                                   Fluttertoast.showToast(
-                                    msg: controller.mensaje,
+                                    msg: controller.mensaje!,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -1652,7 +1648,7 @@ class EditarUsuarioViewState extends ViewState<EditarUsuarioView, EditarUsuarioC
   }
 
   @override
-  userImage(File _image) {
+  userImage(File? _image) {
     controller.changeImage(_image);
   }
 

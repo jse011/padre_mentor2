@@ -21,7 +21,7 @@ class PortalAlumnoPresenter extends Presenter{
   final IsHabilitado _isHabilitado;
   late Function isHabilitadoOnError, isHabilitadoOnComplete;
 
-  PortalAlumnoPresenter(checkConexRepo, httpRepository, usuarioConfiRepo ):getSessionUsuarioCase = GetSessionUsuarioCase(usuarioConfiRepo), updateSession = UpdateSession(usuarioConfiRepo), _getEventoActuales = GetEventoActuales(checkConexRepo, usuarioConfiRepo, httpRepository), getPrematicula = GetPrematicula(usuarioConfiRepo), _isHabilitado = IsHabilitado(usuarioConfiRepo, httpRepository);
+  PortalAlumnoPresenter(httpRepository, usuarioConfiRepo ):getSessionUsuarioCase = GetSessionUsuarioCase(usuarioConfiRepo), updateSession = UpdateSession(usuarioConfiRepo), _getEventoActuales = GetEventoActuales(usuarioConfiRepo, httpRepository), getPrematicula = GetPrematicula(usuarioConfiRepo), _isHabilitado = IsHabilitado(usuarioConfiRepo, httpRepository);
 
   @override
   void dispose() {

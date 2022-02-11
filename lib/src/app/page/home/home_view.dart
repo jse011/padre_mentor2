@@ -6,18 +6,18 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:padre_mentor/src/app/page/contactos/contactos_view.dart';
 import 'package:padre_mentor/src/app/page/editar_usuario/editar_usuario_view.dart';
 import 'package:padre_mentor/src/app/page/estado_cuenta/estado_cuenta_router.dart';
+import 'package:padre_mentor/src/app/page/eventos_agenda/portal/evento_agenda_view.dart';
+import 'package:padre_mentor/src/app/page/familia/famila_view.dart';
 import 'package:padre_mentor/src/app/page/login/login_router.dart';
-import 'package:padre_mentor/src/app/page/menu/feedback_screen.dart';
-import 'package:padre_mentor/src/app/page/menu/help_screen.dart';
-import 'package:padre_mentor/src/app/page/menu/home_screen.dart';
-import 'package:padre_mentor/src/app/page/menu/invite_friend_screen.dart';
+import 'package:padre_mentor/src/app/page/portal_alumno/portal_alumno_view.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/utils/hex_color.dart';
 import 'package:padre_mentor/src/app/widgets/ars_progress.dart';
-import 'package:padre_mentor/src/app/widgets/navigation_drawer/drawer_user_controller.dart';
-import 'package:padre_mentor/src/app/widgets/navigation_drawer/home_drawer.dart';
+import 'package:padre_mentor/src/app/widgets/barra_navegacion.dart';
+import 'package:padre_mentor/src/app/widgets/bottom_navigation.dart';
 import 'package:padre_mentor/src/app/widgets/splash.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
@@ -34,8 +34,14 @@ class HomePage extends View{
 
 }
 class _HomePageState extends ViewState<HomePage, HomeController> {
-  DrawerIndex? _drawerIndex;
-  Widget? _screenView;
+
+  late Widget _screenView;
+  Widget _menuScreenView = Container();
+  late Function CloseMenuView;
+  Function? _closeMenu;
+  Function(bool connected)? _onChangeConnected;
+  bool? _connected;
+
   _HomePageState() : super(HomeController(DataUsuarioAndRepository(), DeviceHttpDatosRepositorio()));
 
   @override
@@ -47,7 +53,7 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
   void didChangeDependencies() {
 
     super.didChangeDependencies();
-    Future.delayed(const Duration(milliseconds: 500), () {
+    /*Future.delayed(const Duration(milliseconds: 500), () {
       NewVersion(
         context: context,
         dismissText: "Quizás más tarde",
@@ -59,7 +65,7 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
         dialogTextBuilder: (localVersion, storeVersion) => 'Ahora puede actualizar esta aplicación del ${localVersion} al ${storeVersion}',
       ).showAlertIfNecessary();
     }
-    );
+    );*/
   }
 
 
@@ -97,39 +103,28 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
 
                   return Container();
                 }else{
-                  changeIndex(controller.vistaActual, controller.logo??"");
+                  changeIndex(controller.vistaActual, controller);
                   return Stack(
                     children: [
                       DrawerUserController(
-                        photoUser: controller.usuario == null ? '' : '${controller.usuario?.foto}',
-                        nameUser: controller.usuario == null ? '' : '${controller.usuario?.nombreSimple}',
-                        correo: controller.usuario == null ? '' : '${controller.usuario?.correo}',
-                        screenIndex: _drawerIndex,
+                        photoUser: controller.usuario == null ? '' : '${controller.usuario?.foto??""}',
+                        nameUser: controller.usuario == null ? '' : '${controller.usuario?.nombre??""}',
+                        correo: '',
                         screenView: _screenView,
+                        menuListaView: _menuScreenView,
                         drawerWidth: MediaQuery
                             .of(context)
                             .size
                             .width * 0.70,
-                        onDrawerCall: (DrawerIndex drawerIndexdata) {
-
-                          switch(drawerIndexdata){
-                            case DrawerIndex.HOME:
-                              controller.onSelectedVistaPrincial();
-                              break;
-                            case DrawerIndex.EDITUSER:
-                              controller.onSelectedVistaEditUsuario();
-                              break;
-                            case DrawerIndex.SUGERENCIAS:
-                              controller.onSelectedVistaFeedBack();
-                              break;
-                            case DrawerIndex.ABAOUT:
-                              controller.onSelectedVistaAbout();
-                              break;
-                          }
-
-                        },
-                        onClickCerrarCession: (){
+                        onClickCerrarCession: () async{
                           controller.onClickCerrarCession();
+                        },
+                        drawerIsOpen: (bool ) { },
+                        onTapImagePerfil: () {
+                          //AppRouter.showEditarUsuarioView(context, controller.usuario);
+                        },
+                        closeMenuCallback: (closeSesion) {
+                          _closeMenu = closeSesion;
                         },
                       ),
                       if(controller.showDeuda)ArsProgressWidget(
@@ -275,23 +270,46 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
       );
 
 
-  void changeIndex(VistaIndex vistaIndex, String logo) {
+  void changeIndex(VistaIndex vistaIndex, HomeController controller) {
     switch (vistaIndex) {
       case VistaIndex.Principal:
-        _screenView = MyHomePage(logo: logo,);
-        _drawerIndex = DrawerIndex.HOME;
+        _screenView = BottomNavigationView(
+          icono: controller.logo??"",
+          builder: (context, position, animationController) {
+            switch(position){
+              case 2:
+                return ContactosView(animationController: animationController!,);
+              case 1:
+                return PortalAlumnoView(animationController: animationController!);
+              case 0:
+                return EventoAgendaView(animationController: animationController!,closeMenu: _closeMenu, menuBuilder: (menuView) {
+                  setState(() {
+                    _menuScreenView = menuView;
+                  });
+                },connectedCallback: (dynamic Function(bool) onChangeConnected) {
+                    _onChangeConnected = onChangeConnected;
+                  },);
+              default:
+                return FamiliaView(animationController: animationController!);
+            }
+          },
+        );
         break;
       case VistaIndex.EditarUsuario:
-        _screenView = EditarUsuarioView();
-        _drawerIndex = DrawerIndex.EDITUSER;
+        _menuScreenView = EditarUsuarioView();
+        _menuScreenView = Container();
         break;
       case VistaIndex.Sugerencia:
-        _screenView = HelpScreen();
-        _drawerIndex = DrawerIndex.SUGERENCIAS;
+        _menuScreenView = Container(
+          color: Colors.red,
+        );
+        _menuScreenView = Container();
         break;
       case VistaIndex.SobreNosotros:
-        _screenView = InviteFriend();
-        _drawerIndex = DrawerIndex.ABAOUT;
+        _menuScreenView = Container(
+          color: Colors.red,
+        );
+        _menuScreenView = Container();
         break;
     }
   }

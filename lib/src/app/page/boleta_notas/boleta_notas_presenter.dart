@@ -6,13 +6,13 @@ import 'package:padre_mentor/src/domain/usecases/get_calendario_periodo.dart';
 
 class BoletaNotasPresenter extends Presenter{
 
-  final int programaAcademicoId;
-  final int alumnoId;
-  final int anioAcademicoId;
+  final int? programaAcademicoId;
+  final int? alumnoId;
+  final int? anioAcademicoId;
   GetCalendarioPerido _getCalendarioPerido;
-  Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
+  late Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
   GetBoletaNota _getBoletaNota;
-  Function getBoletaNotaOnNext, getBoletaNotaOnComplete, getBoletaNotaOnError;
+  late Function getBoletaNotaOnNext, getBoletaNotaOnComplete, getBoletaNotaOnError;
 
 
   BoletaNotasPresenter(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, usuarioConfigRepo, cursoRepo, httpRepo):_getCalendarioPerido = GetCalendarioPerido(cursoRepo), _getBoletaNota = GetBoletaNota(httpRepo, cursoRepo, usuarioConfigRepo);
@@ -27,7 +27,7 @@ class BoletaNotasPresenter extends Presenter{
     _getCalendarioPerido.execute(_GetCalendarioPeridoCase(this),GetCalendarioPeridoParams(alumnoId: alumnoId, anioAcademico: anioAcademicoId, programaAcademicoId: programaAcademicoId));
   }
 
-  void getBoletaNota(CalendarioPeriodoUI calendarioPeriodoUI){
+  void getBoletaNota(CalendarioPeriodoUI? calendarioPeriodoUI){
     _getBoletaNota.execute(_GetBoletaNotaCase(this),GetBoletaNotaParams(alumnoId: alumnoId, anioAcademicoId: anioAcademicoId, programaId: programaAcademicoId, calendarioPeridoId: calendarioPeriodoUI==null?0:calendarioPeriodoUI.id, georeferenciaId: 0));
   }
 
@@ -51,9 +51,9 @@ class _GetCalendarioPeridoCase extends Observer<GetCalendarioPeridoResponse>{
   }
 
   @override
-  void onNext(GetCalendarioPeridoResponse response) {
+  void onNext(GetCalendarioPeridoResponse? response) {
     assert(presenter.getCalendarioPeridoOnNext != null);
-    presenter.getCalendarioPeridoOnNext(response.calendarioPeriodoList, response.calendarioPeriodoUI);
+    presenter.getCalendarioPeridoOnNext(response?.calendarioPeriodoList, response?.calendarioPeriodoUI);
   }
 
 }
@@ -76,20 +76,20 @@ class _GetBoletaNotaCase extends Observer<GetBoletaNotaResponse>{
   }
 
   @override
-  void onNext(GetBoletaNotaResponse response) {
+  void onNext(GetBoletaNotaResponse? response) {
     assert(presenter.getBoletaNotaOnNext != null);
     List<CursoBoletaUi> cursoBoletaUiList = [];
-    for(var parent in response.cursoBoletaUiList){
+    for(var parent in response?.cursoBoletaUiList??[]){
       parent.padre = true;
       cursoBoletaUiList.add(parent);
       if(parent.cursoBoletaUiList!=null){
-        for(var hijo in parent.cursoBoletaUiList){
+        for(var hijo in parent?.cursoBoletaUiList??[]){
           hijo.padre = false;
           cursoBoletaUiList.add(hijo);
         }
       }
     }
-    presenter.getBoletaNotaOnNext(cursoBoletaUiList, response.errorServidor, response.offlineServidor);
+    presenter.getBoletaNotaOnNext(cursoBoletaUiList, response?.errorServidor, response?.offlineServidor);
   }
 
 }

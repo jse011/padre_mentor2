@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
 
 import '../utils/app_theme.dart';
 
@@ -25,9 +26,9 @@ class TitleView extends StatelessWidget {
             titleTxt,
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontFamily: AppTheme.fontName,
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
+              fontFamily: AppTheme.fontTTNorms,
+              fontWeight: FontWeight.w700,
+              fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
               letterSpacing: 0.5,
               color: AppTheme.colorPrimary,
             ),
@@ -52,20 +53,20 @@ class TitleView extends StatelessWidget {
                 softWrap: true,
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontFamily: AppTheme.fontName,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 14,
+                  fontFamily: AppTheme.fontTTNorms,
+                  fontWeight: FontWeight.w700,
+                  fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
                   letterSpacing: 0.5,
                   color: AppTheme.colorPrimary,
                 ),
               ),
               SizedBox(
-                height: 38,
-                width: 26,
+                height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 38),
+                width: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 26),
                 child: Icon(
                   Icons.arrow_forward,
                   color: AppTheme.colorPrimary,
-                  size: 14,
+                  size: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 18),
                 ),
               )
             ],
@@ -76,7 +77,10 @@ class TitleView extends StatelessWidget {
 
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24),
+        padding: EdgeInsets.only(
+            left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 32),
+            right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 32),
+        ),
         child: Row(
           children: widgetList,
         ),

@@ -126,7 +126,25 @@ class SerializableConvert{
         fotoDocente: serial.fotoDocente
     );
   }
+  static EventoAdjuntoData converSerializeEventoAdjunto(Map<String,dynamic> model){
+    EventoAdjuntoSerial serial = EventoAdjuntoSerial.fromJson(model);
+    return EventoAdjuntoData(
+        eventoAdjuntoId: serial.eventoAdjuntoId??"",
+        driveId: serial.driveId,
+        titulo: serial.titulo,
+        eventoId: serial.eventoId,
+        tipoId: serial.tipoId
+    );
+  }
 
+  static List<EventoAdjuntoData> converListSerializeEventoAjunto(dynamic model){
+    List<EventoAdjuntoData> items = [];
+    Iterable l = model;
+    for(var item in l){
+      items.add(converSerializeEventoAdjunto(item));
+    }
+    return items;
+  }
   static List<CargaCursoData> converListSerializeCargaCurso(dynamic model){
     List<CargaCursoData> items = [];
     Iterable l = model;

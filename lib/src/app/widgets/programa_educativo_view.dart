@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
 
 import '../utils/app_theme.dart';
 
@@ -17,14 +19,18 @@ class ProgramaEducativoView extends StatelessWidget {
     return Container(
         //height: MediaQuery.of(context).size.height*0.30,
         width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
+        margin: EdgeInsets.only(
+            left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 10),
+            right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 10),
+            top: 0,
+            bottom: 0),
         child:
         Stack(
             alignment: Alignment.center,
             overflow: Overflow.visible,
             children: [
               Positioned(
-                top: 8.0,
+                top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 8),
                 left: 0.0,
                 right: 0.0,
                 child:  Stack(
@@ -32,7 +38,7 @@ class ProgramaEducativoView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0),
                         child: Container(
-                          height: 75,
+                          height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 100),
                           decoration: BoxDecoration(
                             color: AppTheme.white,
                             borderRadius: BorderRadius.only(
@@ -42,9 +48,9 @@ class ProgramaEducativoView extends StatelessWidget {
                                 topRight: Radius.circular(8.0)),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
-                                  color: AppTheme.textGrey.withOpacity(0.4),
-                                  offset: const Offset(1.1, 1.1),
-                                  blurRadius: 8.0),
+                                  color: AppTheme.textGrey.withOpacity(0.2),
+                                  offset: Offset(1.1, 1.1),
+                                  blurRadius: 4.0),
                             ],
                           ),
                           child: Stack(
@@ -52,15 +58,15 @@ class ProgramaEducativoView extends StatelessWidget {
                             children: <Widget>[
                               if(cerrado??false)
                                 Positioned(
-                                right: 10,
+                                right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 10),
                                 top: 0,
                                 bottom: 0,
                                 child: Center(
                                     child: RotationTransition(
                                       turns: AlwaysStoppedAnimation(-20/360),
                                       child: Container(
-                                        height: 25,
-                                        width: 65,
+                                        height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 25),
+                                        width: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 65),
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 2.0,
@@ -71,7 +77,13 @@ class ProgramaEducativoView extends StatelessWidget {
                                           ),
                                         ),
                                         child: Center(
-                                          child: Text("CERRADO", style: TextStyle(fontSize: 10, color: Colors.red, fontWeight: FontWeight.w700),),
+                                          child: Text("CERRADO", style: TextStyle(
+                                              fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 10),
+                                              color: Colors.red,
+                                              fontFamily: AppTheme.fontTTNorms,
+                                              fontWeight: FontWeight.w700
+                                          )
+                                          ),
                                         ),
                                       ),
                                     )
@@ -95,10 +107,13 @@ class ProgramaEducativoView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                      padding: const EdgeInsets.only(left: 24, right: 0),
+                                      padding: EdgeInsets.only(
+                                          left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 24),
+                                          right: 0
+                                      ),
                                     child: CachedNetworkImage(
-                                        height: 60,
-                                        width: 60,
+                                        height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 60),
+                                        width: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 60),
                                         placeholder: (context, url) => CircularProgressIndicator(),
                                         imageUrl: foto??"",
                                         imageBuilder: (context, imageProvider) =>
@@ -121,17 +136,20 @@ class ProgramaEducativoView extends StatelessWidget {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 16,
-                                                right: 16,
+                                              padding: EdgeInsets.only(
+                                                left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                                                right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
                                               ),
                                               child: Text(
-                                                titulo??"",
+                                                "${titulo}",
                                                 textAlign: TextAlign.left,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontFamily:
-                                                  AppTheme.fontName,
-                                                  fontSize: 14,
+                                                  AppTheme.fontTTNorms,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
                                                   letterSpacing: 0.0,
                                                   color:
                                                   AppTheme.colorPrimary,
@@ -139,10 +157,10 @@ class ProgramaEducativoView extends StatelessWidget {
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 16,
-                                                top: 4,
-                                                right: 16,
+                                              padding: EdgeInsets.only(
+                                                left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                                                top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 4),
+                                                right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
                                               ),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,9 +169,9 @@ class ProgramaEducativoView extends StatelessWidget {
                                                     subTitulo??"",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
-                                                      fontFamily: AppTheme.fontName,
-                                                      fontWeight: FontWeight.w400,
-                                                      fontSize: 10,
+                                                      fontFamily: AppTheme.fontTTNorms,
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 12),
                                                       letterSpacing: 0.0,
                                                       color: AppTheme.textGrey
                                                           .withOpacity(0.8),
@@ -163,9 +181,9 @@ class ProgramaEducativoView extends StatelessWidget {
                                                     subTitulo2??"",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
-                                                      fontFamily: AppTheme.fontName,
-                                                      fontWeight: FontWeight.w400,
-                                                      fontSize: 10,
+                                                      fontFamily: AppTheme.fontTTNorms,
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 12),
                                                       letterSpacing: 0.0,
                                                       color: AppTheme.textGrey
                                                           .withOpacity(0.8),

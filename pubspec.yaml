@@ -41,7 +41,7 @@ dependencies:
   url_launcher: ^6.0.3
   intl: ^0.17.0
   flutter_image_compress: ^1.1.0
-  data_connection_checker: ^0.3.4
+ # data_connection_checker: ^0.3.4
   json_serializable: ^6.0.1
   json_annotation: ^4.4.0
   moor_flutter: ^4.0.0
@@ -57,13 +57,42 @@ dependencies:
   carousel_slider: ^4.0.0
   email_validator: ^2.0.1
   lottie: ^1.0.1
+  scroll_to_index: ^2.1.1
+  flutter_staggered_grid_view: ^0.6.1
+  flutter_launcher_icons: ^0.9.2
+  flutter_app_name: ^0.1.1
+  change_app_package_name: ^1.0.0
+  photo_view: ^0.13.0
+  flutter_linkify: ^5.0.2
+  ionicons: ^0.1.2
+  flutter_offline: ^2.1.0
+  chewie: ^1.2.2
+  video_player: ^2.2.5
+  youtube_plyr_iframe: ^2.0.7
+flutter_app_name:
+  name: "Educar Parents"
+  #  name: "Padre Mentor 3.0"
+
+  #flutter pub run flutter_app_name
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/educar/launcher_educar.png"
+    #  image_path: "assets/educar/launcher_padre_mentor.png"
+  remove_alpha_ios: true
+  #flutter pub run flutter_launcher_icons:main
+
+#Educar Parents
+#flutter pub run change_app_package_name:main com.consultoraestrategia.padreMentor
+#Padre Mentor 3.0
+#flutter pub run change_app_package_name:main com.consultoraestrategia.padreMentor2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.0.1
   moor_generator: ^4.6.0
-  photo_view: ^0.13.0
+
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -86,6 +115,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/tipo_agenda/
+    - assets/images/archivos/
     - assets/fitness_app/
     - assets/educar/
     - assets/lottie/
@@ -123,3 +154,27 @@ flutter:
     - family: Gotham
       fonts:
         - asset: assets/fonts/gotham.ttf
+          #    - family: Roboto
+          #fonts:
+          #- asset: assets/fonts/Roboto-Regular.ttf
+          #- asset: assets/fonts/Roboto-Medium.ttf
+          #weight: 400
+          #- asset:  assets/fonts/Roboto-Bold.ttf
+          #weight: 700
+    - family: TT-Norms-Medium
+      fonts:
+        - asset: assets/fonts/Quicksand-Medium.ttf
+    - family: TT-Norms-Ligth
+      fonts:
+        - asset: assets/fonts/Quicksand-Light.ttf
+    - family: TT-Norms
+      fonts:
+        - asset: assets/fonts/Quicksand-Regular.ttf
+        - asset: assets/fonts/Quicksand-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Quicksand-Bold.ttf
+          weight: 700
+    - family: Trueno
+      fonts:
+        - asset: assets/fonts/TruenoExBd.otf
+

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:padre_mentor/src/app/page/asistencia/asistencia_view.dart';
 
 class AsistenciaRouter {
-  static Route createRouteAsistencia({required programaAcademicoId, required  alumnoId, required anioAcademico, String? fotoAlumno}) {
+  static Route createRouteAsistencia({int? programaAcademicoId, int?   alumnoId, int?  anioAcademico, String? fotoAlumno}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => AsistenciaView(alumnoId: alumnoId, programaAcademicoId: programaAcademicoId, anioAcademicoId: anioAcademico, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
 
 import '../utils/app_theme.dart';
 
@@ -35,7 +36,7 @@ class MenuItemView extends StatelessWidget {
                   BoxShadow(
                       color: AppTheme.grey.withOpacity(0.4),
                       offset: const Offset(1.1, 1.1),
-                      blurRadius: 10.0),
+                      blurRadius: 4.0),
                 ],
               ),
               child: Material(
@@ -53,17 +54,34 @@ class MenuItemView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Expanded(child: Padding(
-                        padding:
-                        const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-                        child: SvgPicture.asset(
-                          imagepath??"",
-                          semanticsLabel:"Eventos",
-                        ),
-                      )),
+                      Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                                left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                                right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                                bottom: 0
+                            ),
+                            child: SvgPicture.asset(imagepath??"",
+                              semanticsLabel:"Eventos",
+                            ),
+                          )
+                      ),
                       Container(
-                        margin: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 16),
-                        child: Text(titulo??"", textAlign: TextAlign.center, style: TextStyle(fontSize: 12),),
+                        margin: EdgeInsets.only(top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 8),
+                            left: 0,
+                            right: 0,
+                            bottom: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                        ),
+                        child: Text(titulo??"",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: AppTheme.fontTTNorms,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.colorPrimary,
+                              fontSize: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                          )
+                        ),
                       ),
                     ],
                   ),

@@ -26,7 +26,7 @@ class GetBoletaNota extends UseCase<GetBoletaNotaResponse, GetBoletaNotaParams>{
       Map<String, dynamic>? datosBoleta = await httprepository.getBoletasNotas(urlServidorLocal, params?.anioAcademicoId??0, params?.programaId??0, contratoUi.periodoId??0, contratoUi.seccionId??0, params?.calendarioPeridoId??0, params?.alumnoId??0, params?.georeferenciaId??0);
       errorServidor = datosBoleta==null;
       if(!errorServidor){
-        await repository.saveBoletaNotas(datosBoleta,params?.anioAcademicoId??0, params?.programaId??0, contratoUi?.periodoId??0, contratoUi.seccionId??0, params?.calendarioPeridoId??0, params?.alumnoId??0, params?.georeferenciaId??0);
+        await repository.saveBoletaNotas(datosBoleta,params?.anioAcademicoId??0, params?.programaId??0, contratoUi.periodoId??0, contratoUi.seccionId??0, params?.calendarioPeridoId??0, params?.alumnoId??0, params?.georeferenciaId??0);
       }
     }catch(e){
       offlineServidor = true;

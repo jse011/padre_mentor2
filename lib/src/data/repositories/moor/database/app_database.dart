@@ -15,6 +15,7 @@ import 'package:padre_mentor/src/data/repositories/moor/model/cursos.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/detalle_contrato_acad.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/entidad.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/evento.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/evento_adjunto.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/georeferencia.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/nivel_academico.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/notas_calendario_boleta.dart';
@@ -42,11 +43,11 @@ part 'app_database.g.dart';
 @UseMoor(tables: [Persona, Usuario, SessionUser, Relaciones, AnioAcademicoAlumno, ProgramasEducativo, PlanEstudio, PlanCursos, CargaCurso, DetalleContratoAcad, Contrato, CalendarioAcademico, CalendarioPeriodo, Tipos,
                   AreasBoleta, NotasCalendarioBoleta, ParametrosDisenio, SilaboEvento, RubroEvalDesempenio, WebConfigs, TareaCurso, Evento, Calendario, SessionUserHijoPrograma, Contacto, Entidad, Georeferencia, Rol, UsuarioRolGeoreferencia,
                   Cursos, Aula, Periodos, Seccion, CargaAcademica, NivelAcademico, AsistenciaAlumnos, AsistenciaJustificacion, AsistecniaArchivo, AsistenciaTipoNota, AsistenciaValorTipoNota, AsistenciaRelProgramaTipoNota,
-                  AsistenciaGeneral])
+                  AsistenciaGeneral, EventoAdjunto])
 class AppDataBase extends _$AppDataBase{
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 4;
 
   static final AppDataBase _singleton = AppDataBase._internal();
 
@@ -62,6 +63,26 @@ class AppDataBase extends _$AppDataBase{
     query.limit(1);
     return query;
   }
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+      onCreate: (Migrator m) {
+        return m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          // we added the dueDate property in the change from version 1 to version 2
+          //await m.addColumn(todos, todos.dueDate);
+        }
+        if (from < 3) {
+          // we added the priority property in the change from version 1 or 2 to version 3
+          //await m.addColumn(todos, todos.priority);
+        }
+        if (from < 4) {
+         await m.createTable(eventoAdjunto);
+        }
+      }
+  );
 }
 /*
 * Moor integrates with Dart’s build system, so you can generate all the code needed with |.

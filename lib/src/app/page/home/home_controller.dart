@@ -88,7 +88,7 @@ class HomeController extends Controller{
 
     homePresenter.getIconoPadreOnComplete = (String logo){
       _logo = logo;
-      //print("mi logo " + _logo);
+      print("mi logo ${_logo}");
       refreshUI();
     };
 

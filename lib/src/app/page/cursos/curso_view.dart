@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:padre_mentor/libs/fancy_shimer_image/fancy_shimmer_image.dart';
 import 'package:padre_mentor/src/app/page/cursos/curso_controller.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/utils/hex_color.dart';
@@ -11,10 +11,10 @@ import 'package:padre_mentor/src/data/repositories/moor/data_curso_repository.da
 import 'package:padre_mentor/src/domain/entities/curso_ui.dart';
 
 class CursoView extends View{
-  final int programaAcademicoId;
-  final int alumnoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? programaAcademicoId;
+  final int? alumnoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
 
   CursoView({this.programaAcademicoId, this.alumnoId, this.anioAcademicoId, this.fotoAlumno});
@@ -25,10 +25,10 @@ class CursoView extends View{
 }
 
 class _CursoViewState extends ViewState<CursoView, CursoController> with TickerProviderStateMixin{
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   _CursoViewState(alumnoId,programaAcademicoId, anioAcademicoId, fotoAlumno) : super(CursoController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, DataCursoRepository()));
 
@@ -93,7 +93,7 @@ class _CursoViewState extends ViewState<CursoView, CursoController> with TickerP
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -223,14 +223,14 @@ class _CursoViewState extends ViewState<CursoView, CursoController> with TickerP
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                                 (BuildContext context, int index){
-                                  CursoUi cursoUi = controller?.cursoUiList[index];
+                                  CursoUi cursoUi = controller.cursoUiList[index];
                                   return  Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16, right: 16, top: 16, bottom: 18),
                                     child: Container(
                                       height: 180,
                                       decoration: BoxDecoration(
-                                        color:  cursoUi.colorCurso!=null&&cursoUi.colorCurso.isNotEmpty?
+                                        color:  cursoUi.colorCurso!=null&&(cursoUi.colorCurso??"").isNotEmpty?
                                                 HexColor(cursoUi.colorCurso):AppTheme.nearlyDarkBlue,
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(8.0),
@@ -327,7 +327,7 @@ class _CursoViewState extends ViewState<CursoView, CursoController> with TickerP
                                     ),
                                   );
                             },
-                            childCount: controller.cursoUiList?.length,
+                            childCount: controller.cursoUiList.length,
                           ),
 
                         ),

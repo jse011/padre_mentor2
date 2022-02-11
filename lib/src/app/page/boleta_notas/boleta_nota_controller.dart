@@ -7,22 +7,22 @@ class BoletaNotaController extends Controller{
 
   List<CalendarioPeriodoUI> _calendarioPeriodoList = [];
   List<CalendarioPeriodoUI> get calendarioPeriodoList => _calendarioPeriodoList;
-  CalendarioPeriodoUI _calendarioPeriodoUI = null;
-  CalendarioPeriodoUI get calendarioPeriodoUI => _calendarioPeriodoUI;
+  CalendarioPeriodoUI? _calendarioPeriodoUI = null;
+  CalendarioPeriodoUI? get calendarioPeriodoUI => _calendarioPeriodoUI;
   List<CursoBoletaUi> _cursoBoletaUiList = [];
   List<CursoBoletaUi> get cursoBoletaUiList => _cursoBoletaUiList;
-  final String fotoAlumno;
+  final String? fotoAlumno;
   BoletaNotasPresenter presenter;
   BoletaNotaController(alumnoId, programaAcademicoId, anioAcademicoId, this.fotoAlumno, usuarioConfigRepo, cursoRepo, httpRepo):presenter = BoletaNotasPresenter(alumnoId, programaAcademicoId, anioAcademicoId, usuarioConfigRepo, cursoRepo, httpRepo), super();
   bool _isLoading = false;
   get isLoading => _isLoading;
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
 
   @override
   void initListeners() {
-      presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI> items, CalendarioPeriodoUI calendarioPeriodoUI){
-          _calendarioPeriodoList = items;
+      presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI>? items, CalendarioPeriodoUI? calendarioPeriodoUI){
+          _calendarioPeriodoList = items??[];
           _calendarioPeriodoUI = calendarioPeriodoUI;
           refreshUI();
       };
@@ -65,7 +65,7 @@ class BoletaNotaController extends Controller{
       for(var item in  _calendarioPeriodoList){
         item.selected = false;
       }
-      calendarioPeriodoUI.selected = true;
+      calendarioPeriodoUI?.selected = true;
       showProgress();
       presenter.getBoletaNota(calendarioPeriodoUi);
       refreshUI();

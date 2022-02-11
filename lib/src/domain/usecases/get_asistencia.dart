@@ -51,7 +51,7 @@ class GetAsistencia extends UseCase<GetAsistenciaResponse, GetAsistenciaParamete
       for(AsistenciaUi rubroEvalItem in asistenciaAlumnoList){
         CursoUi? cursoUi = rubroEvalItem.cursoUi;
 
-        CursoUi search = lista.firstWhere((element)=> element is CursoUi? element.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
+        CursoUi? search = lista.firstWhere((element)=> element is CursoUi? element.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
         if(search == null){
           lista.add(cursoUi);
         }
@@ -82,10 +82,10 @@ class GetAsistenciaResponse{
 }
 
 class GetAsistenciaParameters{
-  final int anioAcademicoId;
-  final int programaId;
-  final int calendarioPeridoId;
-  final int alumnoId;
+  final int? anioAcademicoId;
+  final int? programaId;
+  final int? calendarioPeridoId;
+  final int? alumnoId;
 
   GetAsistenciaParameters(this.anioAcademicoId, this.programaId,
       this.calendarioPeridoId, this.alumnoId);

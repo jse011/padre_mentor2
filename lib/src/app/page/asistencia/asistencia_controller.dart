@@ -6,24 +6,24 @@ import 'package:padre_mentor/src/domain/entities/calendario_periodio_ui.dart';
 
 class AsistenciaController extends Controller{
   AsistenciaPresenter presenter;
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
   final String fotoAlumno;
   List<CalendarioPeriodoUI> _calendarioPeriodoList = [];
   List<CalendarioPeriodoUI> get calendarioPeriodoList => _calendarioPeriodoList;
   List<AsistenciaTipoUi> _asistenciaTipoList = [];
   List<AsistenciaTipoUi> get asistenciaTipoList => _asistenciaTipoList;
-  CalendarioPeriodoUI _calendarioPeriodoUI = null;
-  CalendarioPeriodoUI get calendarioPeriodoUI => _calendarioPeriodoUI;
+  CalendarioPeriodoUI? _calendarioPeriodoUI = null;
+  CalendarioPeriodoUI? get calendarioPeriodoUI => _calendarioPeriodoUI;
   List<dynamic> _asistenciaAlumnoList = [];
   List<dynamic> get aistenicaAlumnoList => _asistenciaAlumnoList;
   bool _isLoadingCurso = false;
   get isLoadingCurso => _isLoadingCurso;
   bool _isLoadingGeneral = false;
   get isLoadingGeneral => _isLoadingGeneral;
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
   int _porcentaje = 0;
   int get porcentaje => _porcentaje;
   int _cantidad = 0;
@@ -119,7 +119,7 @@ class AsistenciaController extends Controller{
     for(var item in  _calendarioPeriodoList){
       item.selected = false;
     }
-    calendarioPeriodoUI.selected = true;
+    calendarioPeriodoUI?.selected = true;
     showProgressGeneral();
     showProgressCurso();
     presenter.getEvaluacion(calendarioPeriodoUi);

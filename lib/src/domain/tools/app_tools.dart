@@ -144,7 +144,7 @@ class AppTools {
     return fecha != null ?DateFormat("d MMM yyyy").format(fecha): "";
   }
 
-   static int calcularEdad(DateTime fecha) {
+   static int calcularEdad(DateTime? fecha) {
      DateTime hoy = DateTime.now();
      DateTime cumpleanos = fecha??DateTime(1900);
     var edad = hoy.year - cumpleanos.year;
@@ -157,7 +157,7 @@ class AppTools {
     return edad;
   }
 
-  static String f_fecha_anio_mes_letras(DateTime timesTamp) {
+  static String f_fecha_anio_mes_letras(DateTime? timesTamp) {
     String mstr_fecha = "";
     timesTamp = timesTamp??DateTime(1900);
     var vobj_Meses = ["enero", "febrero", "marzo", "abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];

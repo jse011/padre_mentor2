@@ -516,6 +516,26 @@ class SilaboEventoSerial {
 }
 
 @JsonSerializable()
+class EventoAdjuntoSerial {
+  String? eventoAdjuntoId;
+  String? eventoId;
+  String? titulo;
+  int? tipoId;
+  String? driveId;
+
+  EventoAdjuntoSerial(
+      {this.eventoAdjuntoId,
+        this.eventoId,
+        this.titulo,
+        this.tipoId,
+        this.driveId});
+  factory EventoAdjuntoSerial.fromJson(Map<String, dynamic> json) => _$EventoAdjuntoSerialFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventoAdjuntoSerialToJson(this);
+
+}
+
+@JsonSerializable()
 class RubroEvalDesempeniosSerial{
   String? nombreCurso;
   int? fechaEvaluacion;//long

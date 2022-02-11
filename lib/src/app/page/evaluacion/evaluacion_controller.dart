@@ -10,27 +10,28 @@ import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_reposi
 
 class EvaluacionController extends Controller{
   EvaluacionPresenter presenter;
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
   List<CalendarioPeriodoUI> _calendarioPeriodoList = [];
   List<CalendarioPeriodoUI> get calendarioPeriodoList => _calendarioPeriodoList;
-  CalendarioPeriodoUI _calendarioPeriodoUI = null;
-  CalendarioPeriodoUI get calendarioPeriodoUI => _calendarioPeriodoUI;
+  CalendarioPeriodoUI? _calendarioPeriodoUI = null;
+  CalendarioPeriodoUI? get calendarioPeriodoUI => _calendarioPeriodoUI;
   List<CursoEvaluacionUi> _cursoList = [];
   List<dynamic> _rubroEvaluacionList = [];
   List<dynamic> get rubroEvaluacionList => _rubroEvaluacionList;
   bool _isLoading = false;
   get isLoading => _isLoading;
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
-  EvaluacionController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, UsuarioAndConfiguracionRepository usuarioConfigRepo, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo): presenter = EvaluacionPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo), super();
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
+  EvaluacionController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, UsuarioAndConfiguracionRepository usuarioConfigRepo, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo): presenter =
+  EvaluacionPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo), super();
 
   @override
   void initListeners() {
-    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI> items, CalendarioPeriodoUI calendarioPeriodoUI){
-      _calendarioPeriodoList = items;
+    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI>? items, CalendarioPeriodoUI? calendarioPeriodoUI){
+      _calendarioPeriodoList = items??[];
       _calendarioPeriodoUI = calendarioPeriodoUI;
       refreshUI();
     };
@@ -48,11 +49,11 @@ class EvaluacionController extends Controller{
       refreshUI();
     };
 
-    presenter.getEvaluacionOnNext = (List<dynamic> items, bool errorServidor, bool offlineServidor){
-      _cursoList.addAll(List<CursoEvaluacionUi>.from(items.where((element) => element is CursoEvaluacionUi)));
-      _rubroEvaluacionList = items;
-      _msgConexion = errorServidor? "!Oops! Al parecer ocurrió un error involuntario.":null;
-      _msgConexion = offlineServidor? "No hay Conexión a Internet...":null;
+    presenter.getEvaluacionOnNext = (List<dynamic>? items, bool? errorServidor, bool? offlineServidor){
+      _cursoList.addAll(List<CursoEvaluacionUi>.from((items??[]).where((element) => element is CursoEvaluacionUi)));
+      _rubroEvaluacionList = items??[];
+      _msgConexion = (errorServidor??false)? "!Oops! Al parecer ocurrió un error involuntario.":null;
+      _msgConexion = (offlineServidor??false)? "No hay Conexión a Internet...":null;
       hideProgress();
       refreshUI();
     };
@@ -74,7 +75,7 @@ class EvaluacionController extends Controller{
     for(var item in  _calendarioPeriodoList){
       item.selected = false;
     }
-    calendarioPeriodoUI.selected = true;
+    calendarioPeriodoUI?.selected = true;
     showProgress();
     presenter.getEvaluacion(calendarioPeriodoUi);
     refreshUI();

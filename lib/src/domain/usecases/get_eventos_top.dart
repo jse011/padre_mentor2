@@ -11,8 +11,7 @@ import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 class GetEventoActuales extends UseCase<GetEventoActualesResponse, GetEventoActualesParams>{
   UsuarioAndConfiguracionRepository repository;
   HttpDatosRepository httpRepository;
-  CheckConexRepository checkConexRepository;
-  GetEventoActuales(this.checkConexRepository, this.repository, this.httpRepository);
+  GetEventoActuales(this.repository, this.httpRepository);
 
   @override
   Future<Stream<GetEventoActualesResponse>> buildUseCaseStream(GetEventoActualesParams? params) async{

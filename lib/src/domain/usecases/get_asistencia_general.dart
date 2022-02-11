@@ -70,8 +70,8 @@ class GetAsistenciaGeneralResponse{
 }
 
 class GetAsistenciaGeneralParameters{
-  final int calendarioPeridoId;
-  final int alumnoId;
+  final int? calendarioPeridoId;
+  final int? alumnoId;
 
   GetAsistenciaGeneralParameters(this.calendarioPeridoId, this.alumnoId);
 }

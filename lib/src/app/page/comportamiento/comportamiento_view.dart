@@ -16,10 +16,10 @@ import 'package:padre_mentor/src/domain/entities/rubro_evaluacion_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_nota_enum_ui.dart';
 
 class ComportamientoView extends View{
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
   ComportamientoView({this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno});
 
@@ -30,10 +30,10 @@ class ComportamientoView extends View{
 
 class _ComportamientoViewState extends ViewState<ComportamientoView, ComportamientoController> with TickerProviderStateMixin{
   _ComportamientoViewState(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno) : super(ComportamientoController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, DataUsuarioAndRepository(),DataCursoRepository(), DeviceHttpDatosRepositorio()));
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   @override
   void initState() {
@@ -103,7 +103,7 @@ class _ComportamientoViewState extends ViewState<ComportamientoView, Comportamie
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -175,7 +175,7 @@ class _ComportamientoViewState extends ViewState<ComportamientoView, Comportamie
                                 }else{
                                   return CachedNetworkImage(
                                       placeholder: (context, url) => CircularProgressIndicator(),
-                                      imageUrl: controller.fotoAlumno,
+                                      imageUrl: controller.fotoAlumno??"",
                                       imageBuilder: (context, imageProvider) => Container(
                                           height: 45 + 6 - 6 * topBarOpacity,
                                           width: 45 + 6 - 6 * topBarOpacity,
@@ -227,9 +227,9 @@ class _ComportamientoViewState extends ViewState<ComportamientoView, Comportamie
                   animationController: animationController,
                   child:  ControlledWidgetBuilder<ComportamientoController>(
                       builder: (context, controller) {
-                        if(controller.msgConexion!=null&&controller.msgConexion.isNotEmpty){
+                        if(controller.msgConexion!=null&&(controller.msgConexion??"").isNotEmpty){
                           Fluttertoast.showToast(
-                            msg: controller.msgConexion,
+                            msg: controller.msgConexion!,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -293,7 +293,7 @@ class _ComportamientoViewState extends ViewState<ComportamientoView, Comportamie
                                   height: 110,
                                   margin: const EdgeInsets.only(top: 1, left: 1, right: 1, bottom: 1),
                                   decoration: BoxDecoration(
-                                    color:controller.calendarioPeriodoList[index].selected ? AppTheme.white: AppTheme.colorAccent,
+                                    color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.white: AppTheme.colorAccent,
                                     borderRadius: new BorderRadius.only(
                                       topLeft: const Radius.circular(10.0),
                                       bottomLeft:const Radius.circular(10.0),
@@ -312,7 +312,7 @@ class _ComportamientoViewState extends ViewState<ComportamientoView, Comportamie
                                       },
                                       child: Center(
                                         child: RotatedBox(quarterTurns: 1,
-                                            child: Text(controller.calendarioPeriodoList[index].nombre?.toUpperCase(), style: TextStyle(color: controller.calendarioPeriodoList[index].selected ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
+                                            child: Text((controller.calendarioPeriodoList[index].nombre??"").toUpperCase(), style: TextStyle(color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
                                         ),
                                       ),
                                     ),

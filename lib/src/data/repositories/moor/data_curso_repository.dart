@@ -177,7 +177,7 @@ class DataCursoRepository extends CursoRepository{
       List<CursoBoletaUi> cursoBoletaUiList = [];
       List<CursoBoletaUi> asignados = [];
 
-      ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
+      ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
       await SQL.transaction(() async {
         await Future.forEach(areasBoletaList, (AreasBoletaData  boleta) async{
 
@@ -198,7 +198,7 @@ class DataCursoRepository extends CursoRepository{
           cursoBoletaUiList.add(cursoBoletaUi);
           var queryNotasCalendarioBoletas = SQL.selectSingle(SQL.notasCalendarioBoleta)..where((tbl) => tbl.alumnoId.equals(alumnoId));
           queryNotasCalendarioBoletas.where((tbl) => tbl.rubroEvalResultadoId.equals(boleta.rubroEvalResultadoId));
-          NotasCalendarioBoletaData notasCalendarioBoleta = await queryNotasCalendarioBoletas.getSingle();
+          NotasCalendarioBoletaData? notasCalendarioBoleta = await queryNotasCalendarioBoletas.getSingleOrNull();
           if(notasCalendarioBoleta!=null){
             cursoBoletaUi.nota = notasCalendarioBoleta.nota;
             cursoBoletaUi.tipoNotaEnum = getTipoNotaEnumUi(boleta.tipoNotaId);
@@ -222,8 +222,8 @@ class DataCursoRepository extends CursoRepository{
             }
           }
 
-          SilaboEventoData silaboEventoData = await (SQL.selectSingle(SQL.silaboEvento)..where((tbl) => tbl.silaboEventoId.equals(cursoBoletaUi.silaboEventoId))).getSingle();
-          ParametrosDisenioData parametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.parametroDisenioId.equals(silaboEventoData==null?0:silaboEventoData.parametroDisenioId))).getSingle();
+          SilaboEventoData? silaboEventoData = await (SQL.selectSingle(SQL.silaboEvento)..where((tbl) => tbl.silaboEventoId.equals(cursoBoletaUi.silaboEventoId))).getSingleOrNull();
+          ParametrosDisenioData? parametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.parametroDisenioId.equals(silaboEventoData==null?0:silaboEventoData.parametroDisenioId))).getSingleOrNull();
           if(parametrosDisenioData!=null){
             cursoBoletaUi.colorCurso = parametrosDisenioData.color1;
             cursoBoletaUi.colorCurso2 = parametrosDisenioData.color2;
@@ -368,64 +368,59 @@ class DataCursoRepository extends CursoRepository{
   Future<List<RubroEvaluacionUi>> getEvaluacionesPorCurso(int anioAcademicoId, int programaId, int calendarioPeridoId, int alumnoId) async{
     print("getEvaluacionesPorCurso alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaId.toString());
     AppDataBase SQL = AppDataBase();
-    try{
-
-      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
-      String urlExpresiones =  webConfig?.content??"";
-      /*
+    WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+    String urlExpresiones =  webConfig?.content??"";
+    /*
       * Obtner evaluaciones por cursos
       * */
-      List<RubroEvaluacionUi> rubroEvaluacionList = [];
+    List<RubroEvaluacionUi> rubroEvaluacionList = [];
 
-      var query = SQL.select(SQL.rubroEvalDesempenio)
-          .join([
-        leftOuterJoin(SQL.parametrosDisenio, SQL.rubroEvalDesempenio.parametroDesenioId.equalsExp(SQL.parametrosDisenio.parametroDisenioId))]);
-      query.where(SQL.rubroEvalDesempenio.anioAcademicoId.equals(anioAcademicoId));
-      query.where(SQL.rubroEvalDesempenio.programaAcadId.equals(programaId));
-      query.where(SQL.rubroEvalDesempenio.calendarioPeriodoId.equals(calendarioPeridoId));
-      query.where(SQL.rubroEvalDesempenio.alumnoId.equals(alumnoId));
-      query.orderBy([OrderingTerm(expression: SQL.rubroEvalDesempenio.silaboEventoId)]);
-      //query.where(SQL.evaluacionDesempenio.secRubroEvalProcesoId.equals(""));
-      var rows = await query.get();
+    var query = SQL.select(SQL.rubroEvalDesempenio)
+        .join([
+      leftOuterJoin(SQL.parametrosDisenio, SQL.rubroEvalDesempenio.parametroDesenioId.equalsExp(SQL.parametrosDisenio.parametroDisenioId))]);
+    query.where(SQL.rubroEvalDesempenio.anioAcademicoId.equals(anioAcademicoId));
+    query.where(SQL.rubroEvalDesempenio.programaAcadId.equals(programaId));
+    query.where(SQL.rubroEvalDesempenio.calendarioPeriodoId.equals(calendarioPeridoId));
+    query.where(SQL.rubroEvalDesempenio.alumnoId.equals(alumnoId));
+    query.orderBy([OrderingTerm(expression: SQL.rubroEvalDesempenio.silaboEventoId)]);
+    //query.where(SQL.evaluacionDesempenio.secRubroEvalProcesoId.equals(""));
+    var rows = await query.get();
 
-      ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
+    ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
 
-
-      for(var item in rows){
-        RubroEvalDesempenioData rubroEvalDesempenioData = item.readTable(SQL.rubroEvalDesempenio);
-        ParametrosDisenioData parametrosDisenioData = item.readTable(SQL.parametrosDisenio);
-        RubroEvaluacionUi rubroEvaluacionUi = RubroEvaluacionUi();
-        rubroEvaluacionUi.rubroEvalId = rubroEvalDesempenioData.rubroEvalProcesoId;
-        rubroEvaluacionUi.titulo = rubroEvalDesempenioData.tituloEvaluacion;
-        rubroEvaluacionUi.tipo = rubroEvalDesempenioData.formaEvaluacion;
-        rubroEvaluacionUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
-        rubroEvaluacionUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalDesempenioData.tipoIdNivelLogro);
-        rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion != null ? rubroEvalDesempenioData.notaEvalaucion?.toStringAsFixed(1): "";
-        rubroEvaluacionUi.iconoNota = rubroEvalDesempenioData.iconoNivelLogro != null && (rubroEvalDesempenioData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (rubroEvalDesempenioData.iconoNivelLogro??""): null;
-        rubroEvaluacionUi.descNota = rubroEvalDesempenioData.descripcionNivelLogro;
-        rubroEvaluacionUi.tituloNota = rubroEvalDesempenioData.tituloNivelLogro;
-        rubroEvaluacionUi.cursoUi = CursoUi();
-        rubroEvaluacionUi.cursoUi?.silaboEventoId = rubroEvalDesempenioData.silaboEventoId;
-        rubroEvaluacionUi.cursoUi?.cargaCursoId = rubroEvalDesempenioData.cargaCursoId;
-        rubroEvaluacionUi.cursoUi?.nombre = rubroEvalDesempenioData.nombreCurso;
-        if(parametrosDisenioData!=null){
-          rubroEvaluacionUi.cursoUi?.colorCurso = parametrosDisenioData.color1;
-          rubroEvaluacionUi.cursoUi?.colorCurso2 = parametrosDisenioData.color2;
-          rubroEvaluacionUi.cursoUi?.colorCurso3 = parametrosDisenioData.color3;
-        }else{
-          if(defaultParametrosDisenioData!=null){
-            rubroEvaluacionUi.cursoUi?.colorCurso = defaultParametrosDisenioData.color1;
-            rubroEvaluacionUi.cursoUi?.colorCurso2 = defaultParametrosDisenioData.color2;
-            rubroEvaluacionUi.cursoUi?.colorCurso3 = defaultParametrosDisenioData.color3;
-          }
+    print("getEvaluacionesPorCurso 1");
+    for(var item in rows){
+      RubroEvalDesempenioData rubroEvalDesempenioData = item.readTable(SQL.rubroEvalDesempenio);
+      ParametrosDisenioData? parametrosDisenioData = item.readTableOrNull(SQL.parametrosDisenio);
+      RubroEvaluacionUi rubroEvaluacionUi = RubroEvaluacionUi();
+      rubroEvaluacionUi.rubroEvalId = rubroEvalDesempenioData.rubroEvalProcesoId;
+      rubroEvaluacionUi.titulo = rubroEvalDesempenioData.tituloEvaluacion;
+      rubroEvaluacionUi.tipo = rubroEvalDesempenioData.formaEvaluacion;
+      rubroEvaluacionUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
+      rubroEvaluacionUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalDesempenioData.tipoIdNivelLogro);
+      rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion != null ? rubroEvalDesempenioData.notaEvalaucion?.toStringAsFixed(1): "";
+      rubroEvaluacionUi.iconoNota = rubroEvalDesempenioData.iconoNivelLogro != null && (rubroEvalDesempenioData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (rubroEvalDesempenioData.iconoNivelLogro??""): null;
+      rubroEvaluacionUi.descNota = rubroEvalDesempenioData.descripcionNivelLogro;
+      rubroEvaluacionUi.tituloNota = rubroEvalDesempenioData.tituloNivelLogro;
+      rubroEvaluacionUi.cursoUi = CursoUi();
+      rubroEvaluacionUi.cursoUi?.silaboEventoId = rubroEvalDesempenioData.silaboEventoId;
+      rubroEvaluacionUi.cursoUi?.cargaCursoId = rubroEvalDesempenioData.cargaCursoId;
+      rubroEvaluacionUi.cursoUi?.nombre = rubroEvalDesempenioData.nombreCurso;
+      if(parametrosDisenioData!=null){
+        rubroEvaluacionUi.cursoUi?.colorCurso = parametrosDisenioData.color1;
+        rubroEvaluacionUi.cursoUi?.colorCurso2 = parametrosDisenioData.color2;
+        rubroEvaluacionUi.cursoUi?.colorCurso3 = parametrosDisenioData.color3;
+      }else{
+        if(defaultParametrosDisenioData!=null){
+          rubroEvaluacionUi.cursoUi?.colorCurso = defaultParametrosDisenioData.color1;
+          rubroEvaluacionUi.cursoUi?.colorCurso2 = defaultParametrosDisenioData.color2;
+          rubroEvaluacionUi.cursoUi?.colorCurso3 = defaultParametrosDisenioData.color3;
         }
-        rubroEvaluacionList.add(rubroEvaluacionUi);
       }
-
-      return rubroEvaluacionList;
-    }catch(e){
-      throw Exception(e);
+      rubroEvaluacionList.add(rubroEvaluacionUi);
     }
+    print("getEvaluacionesPorCurso 2");
+    return rubroEvaluacionList;
   }
 
   @override
@@ -483,7 +478,7 @@ class DataCursoRepository extends CursoRepository{
       //query.where(SQL.evaluacionDesempenio.secRubroEvalProcesoId.equals(""));
       var rows = await query.get();
 
-      ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
+      ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
 
       for(var item in rows) {
         TareaCursoData tareaCursoData = item.readTable(SQL.tareaCurso);
@@ -640,7 +635,7 @@ class DataCursoRepository extends CursoRepository{
       query.groupBy([SQL.silaboEvento.silaboEventoId]);
       var rows = await query.get();
 
-      ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
+      ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
       List<CursoUi> cursoUiList = [];
       for(var data in rows){
         CursoUi cursoUi = CursoUi();
@@ -787,7 +782,7 @@ class DataCursoRepository extends CursoRepository{
       //query.where(SQL.evaluacionDesempenio.secRubroEvalProcesoId.equals(""));
       var rows = await query.get();
 
-      ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
+      ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
 
       for(var item in rows){
         AsistenciaAlumno asistenciaAlumnoData = item.readTable(SQL.asistenciaAlumnos);
@@ -796,7 +791,7 @@ class DataCursoRepository extends CursoRepository{
         AsistenciaUi asistenciaUi = AsistenciaUi();
         asistenciaUi.asistenciaId = asistenciaAlumnoData.asistenciaSesionId;
 
-        AsistenciaJustificacionData asistenciaJustificacionData = await (SQL.selectSingle(SQL.asistenciaJustificacion)..where((tbl) => tbl.asistenciaSesionId.equals(asistenciaAlumnoData.asistenciaSesionId))).getSingle();
+        AsistenciaJustificacionData? asistenciaJustificacionData = await (SQL.selectSingle(SQL.asistenciaJustificacion)..where((tbl) => tbl.asistenciaSesionId.equals(asistenciaAlumnoData.asistenciaSesionId))).getSingleOrNull();
         if(asistenciaJustificacionData!=null){
           asistenciaUi.descripcion = asistenciaJustificacionData.descripcion;
         }

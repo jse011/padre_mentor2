@@ -12,8 +12,7 @@ import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 class GetEventoAgenda extends UseCase<GetEvaluacionCaseResponse, GetEventoAgendaParams>{
   UsuarioAndConfiguracionRepository repository;
   HttpDatosRepository httpRepository;
-  CheckConexRepository checkConexRepository;
-  GetEventoAgenda(this.checkConexRepository, this.repository, this.httpRepository);
+  GetEventoAgenda(this.repository, this.httpRepository);
 
   @override
   Future<Stream<GetEvaluacionCaseResponse>> buildUseCaseStream(GetEventoAgendaParams? params) async{
@@ -99,9 +98,9 @@ class GetEventoAgenda extends UseCase<GetEvaluacionCaseResponse, GetEventoAgenda
 }
 
 class GetEventoAgendaParams {
-  int usuarioId;
-  int tipoEventoId;
-  List<int> hijoIdList;
+  int? usuarioId;
+  int? tipoEventoId;
+  List<int>? hijoIdList;
 
   GetEventoAgendaParams(this.usuarioId, this.tipoEventoId, this.hijoIdList);
 

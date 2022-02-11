@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:padre_mentor/src/app/page/asistencia/asistencia_router.dart';
 import 'package:padre_mentor/src/app/page/boleta_notas/boleta_notas_router.dart';
@@ -12,11 +13,13 @@ import 'package:padre_mentor/src/app/page/comportamiento/comportamiento_router.d
 import 'package:padre_mentor/src/app/page/cursos/cursos_router.dart';
 import 'package:padre_mentor/src/app/page/estado_cuenta/estado_cuenta_router.dart';
 import 'package:padre_mentor/src/app/page/evaluacion/evaluacion_router.dart';
+import 'package:padre_mentor/src/app/page/eventos_agenda/informacion/evento_info_router.dart';
 import 'package:padre_mentor/src/app/page/horarios/horarios_router.dart';
 import 'package:padre_mentor/src/app/page/informacion_evento_agenda/informacion_evento_agenda_view.dart';
 import 'package:padre_mentor/src/app/page/portal_alumno/portal_alumno_controller.dart';
 import 'package:padre_mentor/src/app/page/prematricula/prematricula_router.dart';
 import 'package:padre_mentor/src/app/page/tarea_evaluacion/tarea_evaluacion_router.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/utils/hex_color.dart';
 import 'package:padre_mentor/src/app/widgets/animation_view.dart';
@@ -30,7 +33,6 @@ import 'package:padre_mentor/src/app/widgets/running_view.dart';
 import 'package:padre_mentor/src/app/widgets/title_view.dart';
 import 'package:padre_mentor/src/app/widgets/workout_view.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
-import 'package:padre_mentor/src/device/repositories/check_conexion/device_conex_provider.dart';
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_evento_ui.dart';
 
@@ -57,7 +59,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
 
   int _currentIndex = 0;
 
-  _PortalAlumnoState(buttonCarouselController) :  super(PortalAlumnoController(DeviceCheckConexRepository(), DeviceHttpDatosRepositorio(), DataUsuarioAndRepository()));
+  _PortalAlumnoState(buttonCarouselController) :  super(PortalAlumnoController( DeviceHttpDatosRepositorio(), DataUsuarioAndRepository()));
 
   @override
   void initState() {
@@ -148,10 +150,10 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 48,
-                            right: 16,
-                            top: 16 - 8.0 * topBarOpacity,
-                            bottom: 12 - 8.0 * topBarOpacity),
+                            left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 48),
+                            right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 16),
+                            top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 10 ),
+                            bottom: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 12 - 8.0 * topBarOpacity)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -161,12 +163,12 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Estudiante',
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontFamily: AppTheme.fontName,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 22 + 6 - 6 * topBarOpacity,
+                                    fontFamily: AppTheme.fontTTNorms,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16 + 10 - 4 * topBarOpacity,
                                     letterSpacing: 1.2,
                                     color: AppTheme.darkerText,
                                   ),
@@ -184,8 +186,8 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                       placeholder: (context, url) => CircularProgressIndicator(),
                                       imageUrl:controller.hijoSelected == null ? '' : '${controller.hijoSelected?.foto}',
                                       imageBuilder: (context, imageProvider) => Container(
-                                          height: 50,
-                                          width: 50,
+                                          height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 48),
+                                          width: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 48),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(Radius.circular(50)),
                                             image: DecorationImage(
@@ -223,7 +225,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
           top: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top +
               0,
-          bottom: 62 + MediaQuery.of(context).padding.bottom,
+          bottom: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 62) + MediaQuery.of(context).padding.bottom,
         ),
       child: ControlledWidgetBuilder<PortalAlumnoController>(
           builder: (context, controller) {
@@ -245,10 +247,10 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                         delegate: SliverChildListDelegate(
                           [
                             Container(
-                              height: 220.0,
+                              height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 220),
                               child: CarouselSlider(
                                 options: CarouselOptions(
-                                  height: 220.0,
+                                  height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 220),
                                   autoPlay: true,
                                   autoPlayInterval: Duration(seconds: 10),
                                   autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -295,14 +297,20 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                   String? foto;
                                   if (item.tipoEventoUi?.tipo == EventoIconoEnumUI.NOTICIA ||
                                       item.tipoEventoUi?.tipo == EventoIconoEnumUI.EVENTO || (item.tipoEventoUi?.tipo == EventoIconoEnumUI.AGENDA && item.foto!=null&&(item.foto??"").isNotEmpty)){
-                                    foto = item.foto;
+
+                                    if(item.eventoAdjuntoUiPreviewList?.isNotEmpty??false){
+                                      foto = item.eventoAdjuntoUiPreviewList![0].imagePreview;
+                                    }else{
+                                      foto = item.foto;
+                                    }
+
                                   }else{
                                     foto = null;
                                   }
 
                                   return InkWell(
                                     onTap: (){
-                                      if(item!=null)Navigator.of(context).push(InformacionEventoAgendaView.createRouteAgenda(item));
+                                      Navigator.of(context).push(EventoInfoRouter.createRouteInfoEventoComplejo(eventoUi: item));
                                     },
                                     child: WorkoutView(
                                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
@@ -345,12 +353,15 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                   Interval((1 / countView) * 3, 1.0, curve: Curves.fastOutSlowIn))),
                               animationController: widget.animationController,
                               child:  Container(
-                                height: 100.0,
+                                margin: EdgeInsets.only(
+                                  top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 8),
+                                ),
+                                height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 120),
                                 child: CarouselSlider(
                                   key: Key("car_"+ (pagePosition!=null?pagePosition.toString():"0")),
                                   carouselController: carouselController,
                                   options: CarouselOptions(
-                                    height: 100.0,
+                                    height: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 120),
                                     autoPlay: false,
                                     autoPlayInterval: Duration(seconds: 3),
                                     autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -373,13 +384,18 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                         )
                     ),
                     SliverPadding(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      padding: EdgeInsets.only(
+                        top: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 8),
+                          left: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 48),
+                          right: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 48),
+                      ),
                       sliver: SliverGrid(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 16.0,
-                            crossAxisSpacing: 16.0,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: ColumnCountProvider.columnsForWidthPortalAlumnoOpciones(context),
+                            mainAxisSpacing: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 24),
+                            crossAxisSpacing: ColumnCountProvider.aspectRatioForWidthPortalAlumno(context, 24),
                             childAspectRatio: 1.0,
+
                           ),
                           delegate: SliverChildListDelegate(
                               [
@@ -503,7 +519,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                     }
                                   },
                                 ),
-                                if(controller.showPrematricula??false)
+                                if(controller.showPrematricula)
                                   MenuItemView(
                                     animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                                         parent: widget.animationController,
@@ -529,7 +545,8 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                           [
                             Container(
                               height: 100,
-                            )
+                            ),
+
 
                           ],
                         )
@@ -705,3 +722,48 @@ class BodyWidget extends StatelessWidget {
   }
 }
 
+class Tile extends StatelessWidget {
+  const Tile({
+    Key? key,
+    required this.index,
+    this.extent,
+    this.backgroundColor,
+    this.bottomSpace,
+  }) : super(key: key);
+
+  final int index;
+  final double? extent;
+  final double? bottomSpace;
+  final Color? backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Container(
+      color: backgroundColor ?? AppTheme.colorPrimary,
+      height: extent,
+      child: Center(
+        child: CircleAvatar(
+          minRadius: 20,
+          maxRadius: 20,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          child: Text('$index', style: const TextStyle(fontSize: 20)),
+        ),
+      ),
+    );
+
+    if (bottomSpace == null) {
+      return child;
+    }
+
+    return Column(
+      children: [
+        Expanded(child: child),
+        Container(
+          height: bottomSpace,
+          color: Colors.green,
+        )
+      ],
+    );
+  }
+}

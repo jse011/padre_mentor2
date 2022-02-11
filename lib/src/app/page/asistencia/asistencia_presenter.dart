@@ -7,16 +7,16 @@ import 'package:padre_mentor/src/domain/usecases/get_evaluacion.dart';
 
 class AsistenciaPresenter extends Presenter{
   GetCalendarioPerido _getCalendarioPerido;
-  Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
+  late Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
   GetAsistenciaGeneral _getAsistenciaGeneral;
-  Function getAsistenciaGeneralOnNext, getAsistenciaGeneralOnComplete, getAsistenciaGeneralOnError;
+  late Function getAsistenciaGeneralOnNext, getAsistenciaGeneralOnComplete, getAsistenciaGeneralOnError;
 
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
   GetAsistencia _getAsistencia;
-  Function getAsistenciaOnNext, getAsistenciaOnComplete, getAsistenciaOnError;
+  late Function getAsistenciaOnNext, getAsistenciaOnComplete, getAsistenciaOnError;
 
   AsistenciaPresenter(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo): _getCalendarioPerido = GetCalendarioPerido(cursoRepo), _getAsistencia = GetAsistencia(httpDatosRepo, cursoRepo, usuarioConfigRepo), _getAsistenciaGeneral = GetAsistenciaGeneral(httpDatosRepo, cursoRepo, usuarioConfigRepo), super();
 
@@ -29,11 +29,11 @@ class AsistenciaPresenter extends Presenter{
     _getCalendarioPerido.execute(_GetCalendarioPeridoCase(this),GetCalendarioPeridoParams(alumnoId: alumnoId, anioAcademico: anioAcademicoId, programaAcademicoId: programaAcademicoId));
   }
 
-  void getEvaluacion(CalendarioPeriodoUI calendarioPeriodoUi){
+  void getEvaluacion(CalendarioPeriodoUI? calendarioPeriodoUi){
     _getAsistencia.execute(_GetAsistenciaCase(this), GetAsistenciaParameters(anioAcademicoId, programaAcademicoId, calendarioPeriodoUi==null?0:calendarioPeriodoUi.id, alumnoId));
   }
 
-  void getEvaluacionGeneral(CalendarioPeriodoUI calendarioPeriodoUi){
+  void getEvaluacionGeneral(CalendarioPeriodoUI? calendarioPeriodoUi){
     _getAsistenciaGeneral.execute(_GetAsistenciaGeneralCase(this), GetAsistenciaGeneralParameters(calendarioPeriodoUi==null?0:calendarioPeriodoUi.id, alumnoId));
   }
 
@@ -57,9 +57,9 @@ class _GetCalendarioPeridoCase extends Observer<GetCalendarioPeridoResponse>{
   }
 
   @override
-  void onNext(GetCalendarioPeridoResponse response) {
+  void onNext(GetCalendarioPeridoResponse? response) {
     assert(presenter.getCalendarioPeridoOnNext != null);
-    presenter.getCalendarioPeridoOnNext(response.calendarioPeriodoList, response.calendarioPeriodoUI);
+    presenter.getCalendarioPeridoOnNext(response?.calendarioPeriodoList, response?.calendarioPeriodoUI);
   }
 
 }
@@ -82,9 +82,9 @@ class _GetAsistenciaCase extends Observer<GetAsistenciaResponse>{
   }
 
   @override
-  void onNext(GetAsistenciaResponse response) {
+  void onNext(GetAsistenciaResponse? response) {
     assert(presenter.getAsistenciaOnNext != null);
-    presenter.getAsistenciaOnNext(response.asistenciaAlumnoList, response.asistenciaTipoList, response.porcentaje, response.cantidad, response.errorServidor, response.offlineServidor);
+    presenter.getAsistenciaOnNext(response?.asistenciaAlumnoList, response?.asistenciaTipoList, response?.porcentaje, response?.cantidad, response?.errorServidor, response?.offlineServidor);
   }
 
 }
@@ -107,9 +107,9 @@ class _GetAsistenciaGeneralCase extends Observer<GetAsistenciaGeneralResponse>{
   }
 
   @override
-  void onNext(GetAsistenciaGeneralResponse response) {
+  void onNext(GetAsistenciaGeneralResponse? response) {
     assert(presenter.getAsistenciaGeneralOnNext != null);
-    presenter.getAsistenciaGeneralOnNext(response.asistenciaAlumnoList, response.asistenciaTipoList, response.porcentaje, response.cantidad, response.errorServidor, response.offlineServidor);
+    presenter.getAsistenciaGeneralOnNext(response?.asistenciaAlumnoList, response?.asistenciaTipoList, response?.porcentaje, response?.cantidad, response?.errorServidor, response?.offlineServidor);
   }
 
 }

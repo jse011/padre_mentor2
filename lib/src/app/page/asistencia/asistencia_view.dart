@@ -20,10 +20,10 @@ import 'package:padre_mentor/src/domain/entities/rubro_evaluacion_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_nota_enum_ui.dart';
 
 class AsistenciaView extends View{
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
   AsistenciaView({this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno});
 
@@ -34,10 +34,10 @@ class AsistenciaView extends View{
 
 class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaController> with TickerProviderStateMixin{
   _AsistenciaViewState(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno) : super(AsistenciaController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, DataUsuarioAndRepository(),DataCursoRepository(), DeviceHttpDatosRepositorio()));
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -226,9 +226,9 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                   animationController: animationController,
                   child:  ControlledWidgetBuilder<AsistenciaController>(
                       builder: (context, controller){
-                        if(controller.msgConexion!=null&&controller.msgConexion.isNotEmpty){
+                        if(controller.msgConexion!=null&&(controller.msgConexion??"").isNotEmpty){
                           Fluttertoast.showToast(
-                            msg: controller.msgConexion,
+                            msg: controller.msgConexion!,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -311,10 +311,10 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                     ],
                                                                   ),
                                                                   Expanded(
-                                                                    child: StaggeredGridView.count(
+                                                                    child: StaggeredGrid.count(
                                                                       key: Key("Lista_"+ (controller.asistenciaTipoList.length!=0?controller.asistenciaTipoList.length.toString():"1")),
                                                                       crossAxisCount: controller.asistenciaTipoList.length!=0?controller.asistenciaTipoList.length:1, // I only need two card horizontally
-                                                                      padding: const EdgeInsets.all(0),
+                                                                      //padding: const EdgeInsets.all(0),
                                                                       children: controller.asistenciaTipoList.map<Widget>((item) {
                                                                         return Container(
                                                                           height: 126,
@@ -328,17 +328,17 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                                   children: [
-                                                                                    Text(item.alias, style: TextStyle(fontSize: 16, color: AppTheme.colorAccent)),
+                                                                                    Text(item.alias??"", style: TextStyle(fontSize: 16, color: AppTheme.colorAccent)),
                                                                                         (){
 
-                                                                                      if(item.logo!=null&&item.logo.isNotEmpty){
+                                                                                      if(item.logo!=null&&(item.logo??"").isNotEmpty){
                                                                                         return Container(
                                                                                           margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
                                                                                           width: 25,
                                                                                           height: 25,
                                                                                           child: CachedNetworkImage(
                                                                                               placeholder: (context, url) => CircularProgressIndicator(),
-                                                                                              imageUrl: item.logo,
+                                                                                              imageUrl: item.logo??"",
                                                                                               imageBuilder: (context, imageProvider) => Container(
                                                                                                   decoration: BoxDecoration(
                                                                                                     borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -362,7 +362,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                   shape: BoxShape.circle,
                                                                                                   color: AppTheme.greenAccent4),
                                                                                             );
-                                                                                            break;
                                                                                           case AsistenciaEstadoEnumUi.TARDE:
                                                                                             return Container(
                                                                                               margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -372,7 +371,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                   shape: BoxShape.circle,
                                                                                                   color: AppTheme.yellowAccent4),
                                                                                             );
-                                                                                            break;
                                                                                           case AsistenciaEstadoEnumUi.AUSENTE:
                                                                                             return Container(
                                                                                               margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -382,7 +380,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                   shape: BoxShape.circle,
                                                                                                   color: AppTheme.redAccent4),
                                                                                             );
-                                                                                            break;
                                                                                           case AsistenciaEstadoEnumUi.TARDE_JDT:
                                                                                             return Container(
                                                                                               margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -392,7 +389,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                   shape: BoxShape.circle,
                                                                                                   color: AppTheme.yellowAccent4),
                                                                                             );
-                                                                                            break;
                                                                                           case AsistenciaEstadoEnumUi.AUSENTE_JDT:
                                                                                             return Container(
                                                                                               margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -402,7 +398,8 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                   shape: BoxShape.circle,
                                                                                                   color: AppTheme.redAccent4),
                                                                                             );
-                                                                                            break;
+                                                                                          default:
+                                                                                            return Container();
                                                                                         }
                                                                                       }
                                                                                     }()
@@ -423,8 +420,8 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                       }).toList(),
 
                                                                       //Here is the place that we are getting flexible/ dynamic card for various images
-                                                                      staggeredTiles: controller.asistenciaTipoList.map<StaggeredTile>((_) => StaggeredTile.fit(1))
-                                                                          .toList(),
+                                                                      /*staggeredTiles: controller.asistenciaTipoList.map<StaggeredTile>((_) => StaggeredTile.fit(1))
+                                                                          .toList(),*/
                                                                       //mainAxisSpacing: 3.0,
                                                                       //crossAxisSpacing: 4.0, // add some space
                                                                     ),
@@ -466,7 +463,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                   ),
                                                                   child: Row(
                                                                     children: [
-                                                                      Expanded(child: Container(margin: const EdgeInsets.only(left: 20, right: 8, top: 12, bottom: 12), child: Text(o.nombre, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 20)))),
+                                                                      Expanded(child: Container(margin: const EdgeInsets.only(left: 20, right: 8, top: 12, bottom: 12), child: Text(o.nombre??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 20)))),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -485,7 +482,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                 child:
                                                                                 Container(
                                                                                   margin: const EdgeInsets.only(bottom: 4),
-                                                                                  color: o.cursoUi.colorCurso2 == null || o.cursoUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(o.cursoUi.colorCurso2),
+                                                                                  color: HexColor(o.cursoUi?.colorCurso2),
                                                                                   width: 3,
                                                                                 ),
                                                                               )
@@ -514,7 +511,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                 child:
                                                                                 Container(
                                                                                   margin: const EdgeInsets.only(top: 4),
-                                                                                  color:o.cursoUi.colorCurso2 == null || o.cursoUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(o.cursoUi.colorCurso2),
+                                                                                  color:  HexColor(o.cursoUi?.colorCurso2),
                                                                                   width: 3,
                                                                                 ),
                                                                               )
@@ -558,12 +555,13 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                   child: (() {
                                                                                     if(o.asistenciaTipoUi!=null){
 
-                                                                                      if(o.asistenciaTipoUi.logo!=null&&o.asistenciaTipoUi.logo.isNotEmpty){
+                                                                                      if(o.asistenciaTipoUi?.logo!=null && ( o.asistenciaTipoUi?.logo??"").isNotEmpty){
+
                                                                                         return CachedNetworkImage(
                                                                                             height: 35.0,
                                                                                             width: 35.0,
                                                                                             placeholder: (context, url) => CircularProgressIndicator(),
-                                                                                            imageUrl: o.asistenciaTipoUi.logo,
+                                                                                            imageUrl: o.asistenciaTipoUi?.logo??"",
                                                                                             imageBuilder: (context, imageProvider) => Container(
                                                                                                 decoration: BoxDecoration(
                                                                                                   borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -575,7 +573,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                             )
                                                                                         );
                                                                                       }else{
-                                                                                        switch(o.asistenciaTipoUi.estado){
+                                                                                        switch(o.asistenciaTipoUi?.estado){
                                                                                           case AsistenciaEstadoEnumUi.PUNTUAL:
                                                                                             return Container(
                                                                                               margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -705,10 +703,10 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                    ],
                                                                  ),
                                                                  Expanded(
-                                                                   child: StaggeredGridView.count(
+                                                                   child: StaggeredGrid.count(
                                                                      key: Key("Lista_"+ (controller.asistenciaTipoGeneralList.length!=0?controller.asistenciaTipoGeneralList.length.toString():"1")),
                                                                      crossAxisCount: controller.asistenciaTipoGeneralList.length!=0?controller.asistenciaTipoGeneralList.length:1, // I only need two card horizontally
-                                                                     padding: const EdgeInsets.all(0),
+                                                                     //padding: const EdgeInsets.all(0),
                                                                      children: controller.asistenciaTipoGeneralList.map<Widget>((item) {
                                                                        return Container(
                                                                          height: 126,
@@ -722,17 +720,17 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                                                  children: [
-                                                                                   Text(item.alias, style: TextStyle(fontSize: 16, color: AppTheme.colorAccent)),
+                                                                                   Text(item.alias??"", style: TextStyle(fontSize: 16, color: AppTheme.colorAccent)),
                                                                                        (){
 
-                                                                                     if(item.logo!=null&&item.logo.isNotEmpty){
+                                                                                     if(item.logo!=null&&(item.logo??"").isNotEmpty){
                                                                                        return Container(
                                                                                          margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
                                                                                          width: 25,
                                                                                          height: 25,
                                                                                          child: CachedNetworkImage(
                                                                                              placeholder: (context, url) => CircularProgressIndicator(),
-                                                                                             imageUrl: item.logo,
+                                                                                             imageUrl: item.logo??"",
                                                                                              imageBuilder: (context, imageProvider) => Container(
                                                                                                  decoration: BoxDecoration(
                                                                                                    borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -756,7 +754,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                  shape: BoxShape.circle,
                                                                                                  color: AppTheme.greenAccent4),
                                                                                            );
-                                                                                           break;
                                                                                          case AsistenciaEstadoEnumUi.TARDE:
                                                                                            return Container(
                                                                                              margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -766,7 +763,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                  shape: BoxShape.circle,
                                                                                                  color: AppTheme.yellowAccent4),
                                                                                            );
-                                                                                           break;
                                                                                          case AsistenciaEstadoEnumUi.AUSENTE:
                                                                                            return Container(
                                                                                              margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -776,7 +772,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                  shape: BoxShape.circle,
                                                                                                  color: AppTheme.redAccent4),
                                                                                            );
-                                                                                           break;
                                                                                          case AsistenciaEstadoEnumUi.TARDE_JDT:
                                                                                            return Container(
                                                                                              margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -786,7 +781,6 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                  shape: BoxShape.circle,
                                                                                                  color: AppTheme.yellowAccent4),
                                                                                            );
-                                                                                           break;
                                                                                          case AsistenciaEstadoEnumUi.AUSENTE_JDT:
                                                                                            return Container(
                                                                                              margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -796,7 +790,8 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                                  shape: BoxShape.circle,
                                                                                                  color: AppTheme.redAccent4),
                                                                                            );
-                                                                                           break;
+                                                                                         default:
+                                                                                           return Container();
                                                                                        }
                                                                                      }
                                                                                    }()
@@ -817,8 +812,8 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                      }).toList(),
 
                                                                      //Here is the place that we are getting flexible/ dynamic card for various images
-                                                                     staggeredTiles: controller.asistenciaTipoGeneralList.map<StaggeredTile>((_) => StaggeredTile.fit(1))
-                                                                         .toList(),
+                                                                    // staggeredTiles: controller.asistenciaTipoGeneralList.map<StaggeredTile>((_) => StaggeredTile.fit(1))
+                                                                      //   .toList(),
                                                                      //mainAxisSpacing: 3.0,
                                                                      //crossAxisSpacing: 4.0, // add some space
                                                                    ),
@@ -922,12 +917,12 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                child: (() {
                                                                                  if(o.asistenciaTipoUi!=null){
 
-                                                                                   if(o.asistenciaTipoUi.logo!=null&&o.asistenciaTipoUi.logo.isNotEmpty){
+                                                                                   if(o.asistenciaTipoUi?.logo!=null&&(o.asistenciaTipoUi?.logo??"").isNotEmpty){
                                                                                      return CachedNetworkImage(
                                                                                          height: 35.0,
                                                                                          width: 35.0,
                                                                                          placeholder: (context, url) => CircularProgressIndicator(),
-                                                                                         imageUrl: o.asistenciaTipoUi.logo,
+                                                                                         imageUrl: o.asistenciaTipoUi?.logo??"",
                                                                                          imageBuilder: (context, imageProvider) => Container(
                                                                                              decoration: BoxDecoration(
                                                                                                borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -939,7 +934,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                                                                          )
                                                                                      );
                                                                                    }else{
-                                                                                     switch(o.asistenciaTipoUi.estado){
+                                                                                     switch(o.asistenciaTipoUi?.estado){
                                                                                        case AsistenciaEstadoEnumUi.PUNTUAL:
                                                                                          return Container(
                                                                                            margin: const EdgeInsets.only(top: 4, bottom: 0, left: 0),
@@ -1068,7 +1063,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                   height: 110,
                                   margin: const EdgeInsets.only(top: 1, left: 1, right: 1, bottom: 1),
                                   decoration: BoxDecoration(
-                                    color:controller.calendarioPeriodoList[index].selected ? AppTheme.white: AppTheme.colorAccent,
+                                    color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.white: AppTheme.colorAccent,
                                     borderRadius: new BorderRadius.only(
                                       topLeft: const Radius.circular(10.0),
                                       bottomLeft:const Radius.circular(10.0),
@@ -1087,7 +1082,7 @@ class _AsistenciaViewState extends ViewState<AsistenciaView, AsistenciaControlle
                                       },
                                       child: Center(
                                         child: RotatedBox(quarterTurns: 1,
-                                            child: Text(controller.calendarioPeriodoList[index].nombre?.toUpperCase(), style: TextStyle(color: controller.calendarioPeriodoList[index].selected ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
+                                            child: Text((controller.calendarioPeriodoList[index].nombre??"").toUpperCase(), style: TextStyle(color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
                                         ),
                                       ),
                                     ),

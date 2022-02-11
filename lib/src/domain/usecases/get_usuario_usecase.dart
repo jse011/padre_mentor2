@@ -17,6 +17,7 @@ class GetSessionUsuarioCase extends UseCase<GetSessionUsuarioCaseResponse, GetSe
     try {
       // get user
       final usuarioUi = await repository.getSessionUsuario();
+      print("usuario: ${usuarioUi.nombre}");
       // Adding it triggers the .onNext() in the `Observer`
       // It is usually better to wrap the reponse inside a respose object.
       controller.add(GetSessionUsuarioCaseResponse(usuarioUi));

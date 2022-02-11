@@ -8,11 +8,11 @@ import 'package:padre_mentor/src/domain/usecases/update_familia.dart';
 class EditarUsuarioPresenter extends Presenter{
   GetSessionUsuarioCase _getSessionUsuarioCase;
 
-  Function getUserOnComplete, getUserOnError, getUserOnNext;
+  late Function getUserOnComplete, getUserOnError, getUserOnNext;
   UpdateFamilia _updateFamilia;
-  Function updateFamiliaOnComplete, updateFamiliaOnError, updateFamiliaOnNext;
+  late Function updateFamiliaOnComplete, updateFamiliaOnError, updateFamiliaOnNext;
 
-  EditarUsuarioPresenter(httpRepo, usuarioConfRepo, checkInternetRepo, compresImageRepo):this._getSessionUsuarioCase=GetSessionUsuarioCase(usuarioConfRepo),_updateFamilia = UpdateFamilia(httpRepo, usuarioConfRepo, checkInternetRepo, compresImageRepo);
+  EditarUsuarioPresenter(httpRepo, usuarioConfRepo, compresImageRepo):this._getSessionUsuarioCase=GetSessionUsuarioCase(usuarioConfRepo),_updateFamilia = UpdateFamilia(httpRepo, usuarioConfRepo, compresImageRepo);
 
   void getSessionUsuarioCase(){
     _getSessionUsuarioCase.execute(_GetSessionUsuarioCase(this), GetSessionUsuarioCaseParams());
@@ -24,7 +24,7 @@ class EditarUsuarioPresenter extends Presenter{
     _updateFamilia.dispose();
   }
 
-  void onSaveFamiliar(UsuarioUi usuarioUi, List<HijosUi> hijoUiList, List<FamiliaUi> familiaUiList) {
+  void onSaveFamiliar(UsuarioUi? usuarioUi, List<HijosUi>? hijoUiList, List<FamiliaUi>? familiaUiList) {
     _updateFamilia.execute(_UpdateFamiliaCase(this), UpdateFamiliaCaseParams(usuarioUi, hijoUiList, familiaUiList));
   }
 
@@ -48,9 +48,9 @@ class _GetSessionUsuarioCase extends Observer<GetSessionUsuarioCaseResponse>{
   }
 
   @override
-  void onNext(GetSessionUsuarioCaseResponse response) {
+  void onNext(GetSessionUsuarioCaseResponse? response) {
     assert(presenter.getUserOnNext != null);
-    presenter.getUserOnNext(response.usurio);
+    presenter.getUserOnNext(response?.usurio);
   }
 
 }
@@ -73,9 +73,9 @@ class _UpdateFamiliaCase extends Observer<UpdateFamiliaCaseResponse>{
   }
 
   @override
-  void onNext(UpdateFamiliaCaseResponse response) {
+  void onNext(UpdateFamiliaCaseResponse? response) {
     assert(presenter.updateFamiliaOnNext != null);
-    presenter.updateFamiliaOnNext(response.hayconexion);
+    presenter.updateFamiliaOnNext();
   }
 
 }

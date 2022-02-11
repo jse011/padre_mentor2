@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:padre_mentor/src/app/page/contactos/contactos_controller.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/widgets/animation_view.dart';
 import 'package:padre_mentor/src/app/widgets/custom_expansion_tile.dart';
@@ -17,7 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactosView extends View{
   final AnimationController animationController;
 
-  ContactosView({this.animationController});
+  ContactosView({required this.animationController});
 
   @override
   _ContactosViewState createState() => _ContactosViewState();
@@ -25,10 +26,10 @@ class ContactosView extends View{
 }
 
 class _ContactosViewState extends ViewState<ContactosView, ContactosController> with SingleTickerProviderStateMixin{
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  ValueNotifier<Key> _expanded = ValueNotifier(null);
+  late ValueNotifier<Key?> _expanded = ValueNotifier(null);
 
   _ContactosViewState() : super(ContactosController(DeviceHttpDatosRepositorio(), DataCursoRepository(), DataUsuarioAndRepository()));
 
@@ -103,7 +104,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-                                  child: Text(controller.msgConexion, style: TextStyle(color: AppTheme.white),),
+                                  child: Text(controller.msgConexion??"", style: TextStyle(color: AppTheme.white),),
                                 ),
                               )
                             ],
@@ -125,7 +126,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
       children: <Widget>[
         AnimatedBuilder(
           animation: widget.animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -154,7 +155,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                         padding: EdgeInsets.only(
                             left: 48,
                             right: 16,
-                            top: 16 - 8.0 * topBarOpacity,
+                            top: 10 - 8.0 * topBarOpacity,
                             bottom: 12 - 8.0 * topBarOpacity),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -165,12 +166,12 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Contactos',
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontFamily: AppTheme.fontName,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 22 + 6 - 6 * topBarOpacity,
+                                    fontFamily: AppTheme.fontTTNorms,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16 + 10 - 4 * topBarOpacity,
                                     letterSpacing: 1.2,
                                     color: AppTheme.darkerText,
                                   ),
@@ -195,10 +196,10 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                       },
                                       child:  CachedNetworkImage(
                                           placeholder: (context, url) => CircularProgressIndicator(),
-                                          imageUrl: controller.hijoSelected == null ? '' : '${controller.hijoSelected.foto}',
+                                          imageUrl: controller.hijoSelected == null ? '' : '${controller.hijoSelected?.foto}',
                                           imageBuilder: (context, imageProvider) => Container(
-                                              height: 45 + 6 - 6 * topBarOpacity,
-                                              width: 45 + 6 - 6 * topBarOpacity,
+                                              height: ColumnCountProvider.aspectRatioForWidthContactos(context, 45),
+                                              width: ColumnCountProvider.aspectRatioForWidthContactos(context, 45),
                                               decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.all(Radius.circular(50)),
                                                   image: DecorationImage(
@@ -277,7 +278,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.only(left: 0, right: 5, top: 0),
-                                                    child: Text(o??'', style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
+                                                    child: Text(o, style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
                                                   ),
                                                   Expanded(
                                                       child: Container(
@@ -337,7 +338,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                                                   splashColor: AppTheme.colorPrimary.withOpacity(0.2),
                                                                   onTap: () {
-                                                                    if(contactoUi.telfono!=null&&contactoUi.telfono.isNotEmpty){
+                                                                    if(contactoUi.telfono!=null&&(contactoUi.telfono??"").isNotEmpty){
                                                                       launch("tel://${contactoUi.telfono}");
                                                                     }else{
                                                                       Fluttertoast.showToast(
@@ -372,7 +373,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                                                   splashColor: AppTheme.colorPrimary.withOpacity(0.2),
                                                                   onTap: () {
-                                                                    if(contactoUi.apoderadoTelfono!=null&&contactoUi.apoderadoTelfono.isNotEmpty){
+                                                                    if(contactoUi.apoderadoTelfono!=null&&(contactoUi.apoderadoTelfono??"").isNotEmpty){
                                                                       launch("tel://${contactoUi.apoderadoTelfono}");
                                                                     }else{
                                                                       Fluttertoast.showToast(
@@ -468,7 +469,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.only(left: 0, right: 5, top: 0),
-                                                    child: Text(o??'', style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
+                                                    child: Text(o, style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
                                                   ),
                                                   Expanded(
                                                       child: Container(
@@ -534,7 +535,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                                                 splashColor: AppTheme.colorPrimary.withOpacity(0.2),
                                                                 onTap: () {
-                                                                  if(contactoUi.telfono!=null&&contactoUi.telfono.isNotEmpty){
+                                                                  if(contactoUi.telfono!=null&&(contactoUi.telfono??"").isNotEmpty){
                                                                     launch("tel://${contactoUi.telfono}");
                                                                   }else{
                                                                     Fluttertoast.showToast(
@@ -631,7 +632,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.only(left: 0, right: 5, top: 0),
-                                                    child: Text(o??'', style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
+                                                    child: Text(o, style: TextStyle( color: AppTheme.lightText, fontSize: 14, fontWeight: FontWeight.w700),),
                                                   ),
                                                   Expanded(
                                                       child: Container(
@@ -697,7 +698,7 @@ class _ContactosViewState extends ViewState<ContactosView, ContactosController> 
                                                                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                                                 splashColor: AppTheme.colorPrimary.withOpacity(0.2),
                                                                 onTap: () {
-                                                                  if(contactoUi.telfono!=null&&contactoUi.telfono.isNotEmpty){
+                                                                  if(contactoUi.telfono!=null&&(contactoUi.telfono??"").isNotEmpty){
                                                                     launch("tel://${contactoUi.telfono}");
                                                                   }else{
                                                                     Fluttertoast.showToast(

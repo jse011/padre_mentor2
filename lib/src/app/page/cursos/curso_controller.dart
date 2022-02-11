@@ -34,8 +34,8 @@ class CursoController extends Controller{
       presenter.getCursosOnComple = (){
 
       };
-      presenter.getCursosOnNext = (List<CursoUi> cursoUiList){
-        _cursoUiList = cursoUiList;
+      presenter.getCursosOnNext = (List<CursoUi>? cursoUiList){
+        _cursoUiList = cursoUiList??[];
         refreshUI();
       };
   }

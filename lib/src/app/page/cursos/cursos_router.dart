@@ -4,7 +4,7 @@ import 'package:padre_mentor/src/app/page/cursos/curso_view.dart';
 
 class CursosRouter{
 
-  static Route createRouteCursosRouter({@required programaAcademicoId, @required  alumnoId, @required anioAcademico, @required String fotoAlumno}) {
+  static Route createRouteCursosRouter({int? programaAcademicoId, int?  alumnoId, int? anioAcademico, String? fotoAlumno}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => CursoView(alumnoId: alumnoId, programaAcademicoId: programaAcademicoId, anioAcademicoId: anioAcademico, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

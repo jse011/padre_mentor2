@@ -3,7 +3,7 @@ import 'package:padre_mentor/src/domain/usecases/get_cursos.dart';
 
 class CursoPresenter extends Presenter{
   GetCursos _getCursos;
-  Function getCursosOnComple, getCursosOnError, getCursosOnNext;
+  late Function getCursosOnComple, getCursosOnError, getCursosOnNext;
   CursoPresenter(cursoRepo):this._getCursos=GetCursos(cursoRepo);
 
   void getCursos(alumnoId, programaAcademicoId, anioAcademicoId){
@@ -36,9 +36,9 @@ class _GetCursoCaseState extends Observer<GetCursosResponse>{
   }
 
   @override
-  void onNext(GetCursosResponse response) {
+  void onNext(GetCursosResponse? response) {
     assert(presenter.getCursosOnNext != null);
-    presenter.getCursosOnNext(response.cursoUiList);
+    presenter.getCursosOnNext(response?.cursoUiList);
   }
 
 }

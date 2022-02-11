@@ -13,21 +13,21 @@ import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_reposi
 class ContactosController extends Controller{
   ContactosPresenter presenter;
 
-  HijosUi _hijoSelected = null;
-  UsuarioUi _usuarioUi = null;
+  HijosUi? _hijoSelected = null;
+  UsuarioUi? _usuarioUi = null;
 
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
 
-  HijosUi get hijoSelected => _hijoSelected;
+  HijosUi? get hijoSelected => _hijoSelected;
   List<dynamic> _companieroList = [];
   List<dynamic> get companieroList => _companieroList;
   List<dynamic> _directivosList = [];
   List<dynamic> get directivosList => _directivosList;
   List<dynamic> _doncentesList = [];
   List<dynamic> get doncentesList => _doncentesList;
-  ContactoUi _companiero = null;
-  ContactoUi get companiero => companiero;
+  ContactoUi? _companiero = null;
+  ContactoUi? get companiero => companiero;
   bool _isLoading = false;
   get isLoading => _isLoading;
 
@@ -45,8 +45,8 @@ class ContactosController extends Controller{
 
   @override
   void initListeners() {
-    presenter.getSesionUsuarioOnNext = (UsuarioUi usuarioUi) {
-      _hijoSelected = usuarioUi.hijoSelected;
+    presenter.getSesionUsuarioOnNext = (UsuarioUi? usuarioUi) {
+      _hijoSelected = usuarioUi?.hijoSelected;
       //refreshUI(); // Refreshes the UI manually
       _usuarioUi = usuarioUi;
       refreshUI();
@@ -67,12 +67,12 @@ class ContactosController extends Controller{
       refreshUI(); // Refreshes the UI manually
     };
 
-    presenter.getContactosOnNext = (List<dynamic> alumnosList, List<dynamic> docentesList, List<dynamic> directivosList,  bool datosOffline, bool errorServidor){
-      _companieroList=alumnosList;
-      _doncentesList=docentesList;
-      _directivosList = directivosList;
-      _msgConexion = errorServidor? "!Oops! Al parecer ocurrió un error involuntario.":null;
-      _msgConexion = datosOffline? "No hay Conexión a Internet...":null;
+    presenter.getContactosOnNext = (List<dynamic>? alumnosList, List<dynamic>? docentesList, List<dynamic>? directivosList,  bool? datosOffline, bool? errorServidor){
+      _companieroList=alumnosList??[];
+      _doncentesList=docentesList??[];
+      _directivosList = directivosList??[];
+      _msgConexion = (errorServidor??false)? "!Oops! Al parecer ocurrió un error involuntario.":null;
+      _msgConexion = (datosOffline??false)? "No hay Conexión a Internet...":null;
       hideProgress();
       refreshUI();
     };
@@ -95,15 +95,15 @@ class ContactosController extends Controller{
 
     if(!_isLoading){
       showProgress();
-      if(_usuarioUi.hijos!=null&&_usuarioUi.hijoSelected!=null){
-        int position = _usuarioUi.hijos.indexWhere((element) => element.personaId == _hijoSelected.personaId);
-        if(position == _usuarioUi.hijos.length-1){
-          _hijoSelected =_usuarioUi.hijos[0];
+      if(_usuarioUi?.hijos!=null&&_usuarioUi?.hijoSelected!=null){
+        int position = _usuarioUi?.hijos?.indexWhere((element) => element.personaId == _hijoSelected?.personaId)??-1;
+        if(position == (_usuarioUi?.hijos?.length??0)-1){
+          _hijoSelected =_usuarioUi?.hijos?[0];
         }else{
-          _hijoSelected =_usuarioUi.hijos[position+1];
+          _hijoSelected =_usuarioUi?.hijos?[position+1];
         }
       }
-      _usuarioUi.hijoSelected = hijoSelected;
+      _usuarioUi?.hijoSelected = hijoSelected;
       presenter.getContactos(_usuarioUi);
       print("GetEventoAgenda onChagenHijo");
       presenter.onChagenHijo(_hijoSelected);
@@ -114,7 +114,7 @@ class ContactosController extends Controller{
   void onClickCompanieroContacto(ContactoUi contactoUi) {
     _companiero = contactoUi;
     for(dynamic comp in _companieroList)if(comp is ContactoUi)comp.toogle =  false;
-    _companiero.toogle = true;
+    _companiero?.toogle = true;
     refreshUI();
 
 

@@ -17,10 +17,10 @@ import 'package:padre_mentor/src/domain/entities/curso_boleta_ui.dart';
 import 'package:padre_mentor/src/domain/repositories/http_datos_repository.dart';
 
 class BoletasNotasView extends View {
-  final int programaAcademicoId;
-  final int alumnoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? programaAcademicoId;
+  final int? alumnoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
   BoletasNotasView({this.programaAcademicoId, this.alumnoId, this.anioAcademicoId, this.fotoAlumno});
 
@@ -30,10 +30,10 @@ class BoletasNotasView extends View {
 
 
 class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaController> with TickerProviderStateMixin{
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   _BoletasNotasViewState(alumnoId,programaAcademicoId, anioAcademicoId, fotoAlumno) : super(BoletaNotaController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno,DataUsuarioAndRepository(), DataCursoRepository(), DeviceHttpDatosRepositorio()));
 
@@ -105,7 +105,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -177,7 +177,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                 }else{
                                   return CachedNetworkImage(
                                       placeholder: (context, url) => CircularProgressIndicator(),
-                                      imageUrl: controller.fotoAlumno,
+                                      imageUrl: controller.fotoAlumno??"",
                                       imageBuilder: (context, imageProvider) => Container(
                                           height: 45 + 6 - 6 * topBarOpacity,
                                           width: 45 + 6 - 6 * topBarOpacity,
@@ -230,9 +230,9 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                   child:  ControlledWidgetBuilder<BoletaNotaController>(
                       builder: (context, controller) {
 
-                        if(controller.msgConexion!=null&&controller.msgConexion.isNotEmpty){
+                        if(controller.msgConexion!=null&&(controller.msgConexion??"").isNotEmpty){
                           Fluttertoast.showToast(
-                            msg: controller.msgConexion,
+                            msg: controller.msgConexion!,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -249,7 +249,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                   delegate: SliverChildBuilderDelegate(
                                         (BuildContext context, int index){
                                       CursoBoletaUi cursoBoletaUi = controller.cursoBoletaUiList[index];
-                                      if(cursoBoletaUi.padre){
+                                      if(cursoBoletaUi.padre??false){
                                         return Card(
                                           color: cursoBoletaUi.colorCurso == null ? AppTheme.colorAccent : HexColor(cursoBoletaUi.colorCurso),
                                           margin: const EdgeInsets.only(top: 24, left: 16, right: 0, bottom: 8),
@@ -273,13 +273,13 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                             ),
                                             child: Row(
                                               children: [
-                                                Expanded(child: Container(margin: const EdgeInsets.only(left: 20, right: 8, top: 12, bottom: 12), child: Text(cursoBoletaUi.nombre, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 20)))),
+                                                Expanded(child: Container(margin: const EdgeInsets.only(left: 20, right: 8, top: 12, bottom: 12), child: Text(cursoBoletaUi.nombre??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 20)))),
                                                 Container(
                                                   margin: const EdgeInsets.only(right: 16),
                                                   height: 40.0,
                                                   width: 40.0,
                                                   decoration: BoxDecoration(
-                                                      color: cursoBoletaUi.color == null || cursoBoletaUi.color.isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
+                                                      color: cursoBoletaUi.color == null || (cursoBoletaUi.color??"").isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
                                                       borderRadius: new BorderRadius.only(
                                                         topLeft: const Radius.circular(10.0),
                                                         topRight: const Radius.circular(10.0),
@@ -288,7 +288,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                       )
                                                   ),
                                                   child: Center(
-                                                    child: Text(cursoBoletaUi.nota == null? "":cursoBoletaUi.nota, style: TextStyle( color: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 18)),
+                                                    child: Text(cursoBoletaUi.nota == null? "": (cursoBoletaUi.nota??""), style: TextStyle( color: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 18)),
                                                   ),
                                                 )
                                               ],
@@ -309,7 +309,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                           child:
                                                           Container(
                                                             margin: const EdgeInsets.only(bottom: 4),
-                                                            color: cursoBoletaUi.colorCurso2 == null || cursoBoletaUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(cursoBoletaUi.colorCurso2),
+                                                            color: HexColor(cursoBoletaUi.colorCurso2),
                                                             width: 3,
                                                           ),
                                                         )
@@ -320,7 +320,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                       decoration: BoxDecoration(
                                                           shape: BoxShape.circle,
                                                           color: Colors.white,
-                                                          border: Border.all(color: cursoBoletaUi.color == null || cursoBoletaUi.color.isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color), width: 2)
+                                                          border: Border.all(color: cursoBoletaUi.color == null || (cursoBoletaUi.color??"").isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color), width: 2)
                                                       ),
                                                       child: Center(
                                                         child: Container(
@@ -328,7 +328,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                           height: 9,
                                                           decoration: BoxDecoration(
                                                             shape: BoxShape.circle,
-                                                            color: cursoBoletaUi.color == null || cursoBoletaUi.color.isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
+                                                            color: cursoBoletaUi.color == null || (cursoBoletaUi.color??"").isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
                                                           ),
                                                         ),
                                                       ),
@@ -338,7 +338,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                           child:
                                                           Container(
                                                             margin: const EdgeInsets.only(top: 4),
-                                                            color:cursoBoletaUi.colorCurso2 == null || cursoBoletaUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(cursoBoletaUi.colorCurso2),
+                                                            color:cursoBoletaUi.colorCurso2 == null || (cursoBoletaUi.colorCurso2??"").isEmpty ?  Colors.black :  HexColor(cursoBoletaUi.colorCurso2),
                                                             width: 3,
                                                           ),
                                                         )
@@ -363,7 +363,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                           Expanded(
                                                               child: Container(
                                                                   margin: const EdgeInsets.only(left: 20, right: 8, top: 12, bottom: 12),
-                                                                  child: Text(cursoBoletaUi.competencia, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 16))
+                                                                  child: Text(cursoBoletaUi.competencia??"", maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 16))
                                                               )
                                                           ),
                                                           Container(
@@ -371,7 +371,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                             height: 40.0,
                                                             width: 40.0,
                                                             decoration: BoxDecoration(
-                                                                color: cursoBoletaUi.color == null || cursoBoletaUi.color.isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
+                                                                color: cursoBoletaUi.color == null || (cursoBoletaUi.color??"").isEmpty ?  HexColor("#757575") :  HexColor(cursoBoletaUi.color),
                                                                 borderRadius: new BorderRadius.only(
                                                                   topLeft: const Radius.circular(10.0),
                                                                   topRight: const Radius.circular(10.0),
@@ -380,7 +380,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                                                 )
                                                             ),
                                                             child: Center(
-                                                              child: Text(cursoBoletaUi.nota==null?"":cursoBoletaUi.nota, style: TextStyle( color: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 18)),
+                                                              child: Text(cursoBoletaUi.nota==null?"":cursoBoletaUi.nota??"", style: TextStyle( color: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w400, fontSize: 18)),
                                                             ),
                                                           )
                                                         ],
@@ -441,7 +441,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                 height: 110,
                                 margin: const EdgeInsets.only(top: 1, left: 1, right: 1, bottom: 1),
                                 decoration: BoxDecoration(
-                                  color:controller.calendarioPeriodoList[index].selected ? AppTheme.white: AppTheme.colorAccent,
+                                  color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.white: AppTheme.colorAccent,
                                   borderRadius: new BorderRadius.only(
                                     topLeft: const Radius.circular(10.0),
                                     bottomLeft:const Radius.circular(10.0),
@@ -460,7 +460,7 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                     },
                                     child: Center(
                                       child: RotatedBox(quarterTurns: 1,
-                                          child: Text(controller.calendarioPeriodoList[index].nombre?.toUpperCase()??'', style: TextStyle(color: controller.calendarioPeriodoList[index].selected ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
+                                          child: Text(controller.calendarioPeriodoList[index].nombre?.toUpperCase()??'', style: TextStyle(color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
                                       ),
                                     ),
                                   ),

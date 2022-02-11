@@ -125,7 +125,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                         padding: EdgeInsets.only(
                             left: 48,
                             right: 16,
-                            top: 16 - 8.0 * topBarOpacity,
+                            top: 10,
                             bottom: 12 - 8.0 * topBarOpacity),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,12 +136,12 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Mi perfil',
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontFamily: AppTheme.fontName,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 22 + 6 - 6 * topBarOpacity,
+                                    fontFamily: AppTheme.fontTTNorms,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16 + 10 - 4 * topBarOpacity,
                                     letterSpacing: 1.2,
                                     color: AppTheme.darkerText,
                                   ),
@@ -337,7 +337,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                                   child: CustomExpansionTile(
                                     expandedItem: widget._expanded,
-                                    key: Key(hijoUi.personaId.toString()??''),
+                                    key: Key(hijoUi.personaId.toString()),
                                     title: Container(
                                         margin: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                                         padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
@@ -450,15 +450,15 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                                   child: CustomExpansionTile(
                                     expandedItem: widget._expanded,
-                                    key: Key(familiaUi?.personaId.toString()??''),
+                                    key: Key(familiaUi.personaId.toString()),
                                     title: Container(
                                         margin: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                                         padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(familiaUi?.nombre??'', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 16, color: AppTheme.darkerText, fontWeight: FontWeight.w400),),
-                                            Text(familiaUi?.relacion??'', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 12, color: AppTheme.lightText.withOpacity(0.9), fontWeight: FontWeight.w400),),
+                                            Text(familiaUi.nombre??'', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 16, color: AppTheme.darkerText, fontWeight: FontWeight.w400),),
+                                            Text(familiaUi.relacion??'', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 12, color: AppTheme.lightText.withOpacity(0.9), fontWeight: FontWeight.w400),),
                                           ],
                                         )
 
@@ -472,7 +472,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                         height: 50,
                                         width: 50,
                                         placeholder: (context, url) => CircularProgressIndicator(),
-                                        imageUrl: familiaUi?.foto??'',
+                                        imageUrl: familiaUi.foto??'',
                                         imageBuilder: (context, imageProvider) =>
                                             Container(
                                                 decoration: BoxDecoration(
@@ -496,7 +496,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 14, top: 8, right: 24),
-                                        child: Text(familiaUi?.fechaNacimiento??'', style: TextStyle(fontSize: 16)),
+                                        child: Text(familiaUi.fechaNacimiento??'', style: TextStyle(fontSize: 16)),
                                       ),
 
                                       Container(

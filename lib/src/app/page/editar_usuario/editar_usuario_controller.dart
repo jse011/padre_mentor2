@@ -14,30 +14,30 @@ class EditarUsuarioController extends Controller{
 
   EditarUsuarioPresenter presenter;
 
-  UsuarioUi _usuarioUi;
+  UsuarioUi? _usuarioUi;
   bool _showDialog = false;
   bool get showDialog => _showDialog;
   bool _dissmis = false;
   bool get dissmis => _dissmis;
-  UsuarioUi get usuarioUi => _usuarioUi;
+  UsuarioUi? get usuarioUi => _usuarioUi;
   List<HijosUi> _hijoUiList = [];
   List<HijosUi> get hijoUiList => _hijoUiList;
   List<FamiliaUi> _familiaUiList = [];
   List<FamiliaUi> get familiaUiList => _familiaUiList;
-  String _mensaje = null;
-  String get mensaje => _mensaje;
+  String? _mensaje = null;
+  String? get mensaje => _mensaje;
   bool _fotoUsuarioSelected = false;
-  HijosUi _fotoHijosUiSelected = null;
-  FamiliaUi _fotoFamiliaUiSelected = null;
+  HijosUi? _fotoHijosUiSelected = null;
+  FamiliaUi? _fotoFamiliaUiSelected = null;
 
-  EditarUsuarioController(httpRepo, usuarioConfRepo, checkInternetRepo, compresImageRepo):this.presenter=EditarUsuarioPresenter(httpRepo, usuarioConfRepo, checkInternetRepo, compresImageRepo);
+  EditarUsuarioController(httpRepo, usuarioConfRepo, compresImageRepo):this.presenter=EditarUsuarioPresenter(httpRepo, usuarioConfRepo, compresImageRepo);
 
   @override
   void initListeners() {
-    presenter.getUserOnNext = (UsuarioUi user) {
+    presenter.getUserOnNext = (UsuarioUi? user) {
       _usuarioUi = user;
-      _hijoUiList = user.hijos;
-      _familiaUiList = user.familiaUiList;
+      _hijoUiList = user?.hijos??[];
+      _familiaUiList = user?.familiaUiList??[];
       refreshUI(); // Refreshes the UI manually
     };
 
@@ -54,20 +54,13 @@ class EditarUsuarioController extends Controller{
       refreshUI(); // Refreshes the UI manually
     };
 
-    presenter.updateFamiliaOnNext = (bool hayconexion) {
+    presenter.updateFamiliaOnNext = () {
 
 
-      if(hayconexion){
-        _showDialog = true;
-        _mensaje=null;
-        _dissmis = true;
-        refreshUI();
-      }else{
-      _showDialog = false;
-      _diabledSave = false;
-      _mensaje = "No hay Conexión a Internet...";
+      _showDialog = true;
+      _mensaje=null;
+      _dissmis = true;
       refreshUI();
-      }
     };
 
     presenter.updateFamiliaOnError = (e){
@@ -127,17 +120,17 @@ class EditarUsuarioController extends Controller{
     _fotoFamiliaUiSelected = familiaUi;
   }
 
-  void changeImage(File image) {
+  void changeImage(File? image) {
     refreshUI();
     if(_fotoUsuarioSelected){
-      _usuarioUi.fotoFile = image;
-      _usuarioUi.change = true;
+      _usuarioUi?.fotoFile = image;
+      _usuarioUi?.change = true;
     }else if(_fotoHijosUiSelected!=null){
-      _fotoHijosUiSelected.fotoFile = image;
-      _fotoHijosUiSelected.change = true;
+      _fotoHijosUiSelected?.fotoFile = image;
+      _fotoHijosUiSelected?.change = true;
     }else if(_fotoFamiliaUiSelected!=null){
-      _fotoFamiliaUiSelected.fotoFile = image;
-      _fotoFamiliaUiSelected.change = true;
+      _fotoFamiliaUiSelected?.fotoFile = image;
+      _fotoFamiliaUiSelected?.change = true;
     }
   }
 

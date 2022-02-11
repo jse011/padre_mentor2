@@ -37,7 +37,7 @@ class _MenuAlumnoListViewState extends State<MenuAlumnoListView>
 
   @override
   void dispose() {
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
   }
 

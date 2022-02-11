@@ -72,7 +72,7 @@ class GetContactos extends UseCase<GetContactosCaseResponse, GetContactosCasePar
     for(ContactoUi contactoUi in contactoUiList){
       if(tipo == contactoUi.tipo){
         String letra = contactoUi.nombre!=null&&contactoUi.nombre!.length>0?contactoUi.nombre![0]:" ";
-        String cabecera = list.firstWhere((element)=>element==letra, orElse: ()=> null);
+        String? cabecera = list.firstWhere((element)=>element==letra, orElse: ()=> null);
         if(cabecera==null)list.add(letra);
         list.add(contactoUi);
       }

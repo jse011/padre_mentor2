@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:padre_mentor/src/app/page/evaluacion/evaluacion_view.dart';
 
 class EvaluacionRouter {
-  static Route createRouteEvaluacion({required programaAcademicoId, required  alumnoId, required anioAcademico, String? fotoAlumno}) {
+  static Route createRouteEvaluacion({int? programaAcademicoId, int?  alumnoId, int? anioAcademico, String? fotoAlumno}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => EvaluacionView(alumnoId: alumnoId, programaAcademicoId: programaAcademicoId, anioAcademicoId: anioAcademico, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

@@ -41,7 +41,7 @@ class GetEvaluacion extends UseCase<GetEvaluacionCaseResponse, GetEvaluacionCase
       for(RubroEvaluacionUi rubroEvalItem in rubroEvaluacionList){
         CursoUi? cursoUi = rubroEvalItem.cursoUi;
 
-        CursoEvaluacionUi search = lista.firstWhere((element)=> element is CursoEvaluacionUi? element.cursoUi?.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
+        CursoEvaluacionUi? search = lista.firstWhere((element)=> element is CursoEvaluacionUi? element.cursoUi?.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
         if(search == null){
           search = CursoEvaluacionUi(cursoUi: cursoUi, evaluacionUiList: []);
           lista.add(search);
@@ -65,10 +65,10 @@ class GetEvaluacion extends UseCase<GetEvaluacionCaseResponse, GetEvaluacionCase
 }
 /// Wrapping params inside an object makes it easier to change later
 class GetEvaluacionCaseParams {
-  final int anioAcademicoId;
-  final int programaId;
-  final int calendarioPeridoId;
-  final int alumnoId;
+  final int? anioAcademicoId;
+  final int? programaId;
+  final int? calendarioPeridoId;
+  final int? alumnoId;
 
   GetEvaluacionCaseParams(this.anioAcademicoId, this.programaId,
       this.calendarioPeridoId, this.alumnoId);

@@ -31,8 +31,8 @@ class PortalAlumnoController extends Controller{
   bool _showDeuda = false;
   bool get showDeuda => _showDeuda;
 
-  PortalAlumnoController(checkConexRepo, httpRepository, usuarioConfiRepo)
-      :this.presenter = PortalAlumnoPresenter(checkConexRepo, httpRepository, usuarioConfiRepo)
+  PortalAlumnoController(httpRepository, usuarioConfiRepo)
+      :this.presenter = PortalAlumnoPresenter(httpRepository, usuarioConfiRepo)
   ,super();
 
   @override
@@ -80,7 +80,7 @@ class PortalAlumnoController extends Controller{
 
     };
 
-    presenter.getPrematiculaOnNext = (String titulo){
+    presenter.getPrematiculaOnNext = (String? titulo){
       _showPrematricula = titulo!=null&&titulo.isNotEmpty;
       _tituloPrematricula = titulo;
       refreshUI();
@@ -92,8 +92,8 @@ class PortalAlumnoController extends Controller{
     };
 
 
-    presenter.isHabilitadoOnComplete = (bool habilitar){
-      _showDeuda = (!habilitar);
+    presenter.isHabilitadoOnComplete = (bool? habilitar){
+      _showDeuda = (!(habilitar??false));
       refreshUI();
     };
 

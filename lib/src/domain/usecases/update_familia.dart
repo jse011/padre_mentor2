@@ -13,52 +13,46 @@ import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_reposi
 class UpdateFamilia extends UseCase<UpdateFamiliaCaseResponse, UpdateFamiliaCaseParams>{
   HttpDatosRepository httpRepository;
   UsuarioAndConfiguracionRepository repository;
-  CheckConexRepository checkConexRepository;
   CompressImageRepository compressImageRepository;
 
-  UpdateFamilia(this.httpRepository, this.repository, this.checkConexRepository, this.compressImageRepository);
+  UpdateFamilia(this.httpRepository, this.repository, this.compressImageRepository);
 
   @override
   Future<Stream<UpdateFamiliaCaseResponse>> buildUseCaseStream(UpdateFamiliaCaseParams? params) async {
     final controller = StreamController<UpdateFamiliaCaseResponse>();
 
     try {
-      bool hayconexion = await checkConexRepository.hayConexcion();
-      if(hayconexion){
-        int usuarioId = await repository.getSessionUsuarioId();
-        String urlServidorLocal = await repository.getSessionUsuarioUrlServidor();
+      int usuarioId = await repository.getSessionUsuarioId();
+      String urlServidorLocal = await repository.getSessionUsuarioUrlServidor();
 
-        if(params?.usuarioUi.fotoFile!=null){
-          Uint8List? uint8list = await compressImageRepository.compressImage(params?.usuarioUi.fotoFile);
-          String base64  = base64Encode(uint8list!);
-          params?.usuarioUi.image64 =  base64;
-        }
-
-        for(HijosUi hijosUi in params?.hijosUiList??[]){
-          if(hijosUi.fotoFile!=null){
-            Uint8List? uint8list = await compressImageRepository.compressImage(hijosUi.fotoFile);
-            String base64  = base64Encode(uint8list!);
-            hijosUi.image64 = base64;
-          }
-        }
-
-        for(FamiliaUi familiarUi in params?.familiaUiList??[]){
-          if(familiarUi.fotoFile!=null){
-            Uint8List? uint8list = await compressImageRepository.compressImage(familiarUi.fotoFile);
-            String base64  = base64Encode(uint8list!);
-            familiarUi.image64 = base64;
-          }
-        }
-
-        List<dynamic> jsonPersonas =  repository.getJsonUpdatePersonas(params?.usuarioUi, params?.hijosUiList, params?.familiaUiList);
-        if(jsonPersonas!=null&&jsonPersonas.isNotEmpty){
-          List<dynamic>? jsonPersonasUpdate = await httpRepository.updateFamilia(urlServidorLocal, usuarioId, jsonPersonas);
-          await repository.updatePersona(jsonPersonasUpdate);
-        }
-
-        logger.finest('UpdateFamilia successful.');
+      if(params?.usuarioUi?.fotoFile!=null){
+        Uint8List? uint8list = await compressImageRepository.compressImage(params?.usuarioUi?.fotoFile);
+        String base64  = base64Encode(uint8list!);
+        params?.usuarioUi?.image64 =  base64;
       }
-      controller.add(UpdateFamiliaCaseResponse(hayconexion));
+
+      for(HijosUi hijosUi in params?.hijosUiList??[]){
+        if(hijosUi.fotoFile!=null){
+          Uint8List? uint8list = await compressImageRepository.compressImage(hijosUi.fotoFile);
+          String base64  = base64Encode(uint8list!);
+          hijosUi.image64 = base64;
+        }
+      }
+
+      for(FamiliaUi familiarUi in params?.familiaUiList??[]){
+        if(familiarUi.fotoFile!=null){
+          Uint8List? uint8list = await compressImageRepository.compressImage(familiarUi.fotoFile);
+          String base64  = base64Encode(uint8list!);
+          familiarUi.image64 = base64;
+        }
+      }
+
+      List<dynamic> jsonPersonas =  repository.getJsonUpdatePersonas(params?.usuarioUi, params?.hijosUiList, params?.familiaUiList);
+      if(jsonPersonas!=null&&jsonPersonas.isNotEmpty){
+        List<dynamic>? jsonPersonasUpdate = await httpRepository.updateFamilia(urlServidorLocal, usuarioId, jsonPersonas);
+        await repository.updatePersona(jsonPersonasUpdate);
+      }
+      controller.add(UpdateFamiliaCaseResponse());
       controller.close();
     } catch (e) {
       logger.severe('UpdateFamilia unsuccessful: ' + e.toString());
@@ -71,15 +65,14 @@ class UpdateFamilia extends UseCase<UpdateFamiliaCaseResponse, UpdateFamiliaCase
 }
 
 class UpdateFamiliaCaseResponse {
-    bool hayconexion;
 
-    UpdateFamiliaCaseResponse(this.hayconexion);
+    UpdateFamiliaCaseResponse();
 }
 
 class UpdateFamiliaCaseParams {
-  UsuarioUi usuarioUi;
-  List<HijosUi> hijosUiList;
-  List<FamiliaUi> familiaUiList;
+  UsuarioUi? usuarioUi;
+  List<HijosUi>? hijosUiList;
+  List<FamiliaUi>? familiaUiList;
 
   UpdateFamiliaCaseParams(this.usuarioUi, this.hijosUiList, this.familiaUiList);
 

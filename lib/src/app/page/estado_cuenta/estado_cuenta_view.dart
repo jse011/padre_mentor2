@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -24,14 +25,15 @@ class EstadoCuentaView extends View{
 class _EstadoCuentaViewState extends ViewState<EstadoCuentaView, EstadoCuentaController>  with TickerProviderStateMixin{
   double _webViewHeight = 1;
   bool _visibleWebView = false;
-  InAppWebViewController _webView;
-  String url = "";
+
+  Uri? url = null;
   double progress = 0;
 
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
+  InAppWebViewController? _webView;
 
   _EstadoCuentaViewState(alumnoId, fotoAlumno) : super(EstadoCuentaController(alumnoId, fotoAlumno, DataUsuarioAndRepository()));
 
@@ -107,7 +109,7 @@ class _EstadoCuentaViewState extends ViewState<EstadoCuentaView, EstadoCuentaCon
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -179,7 +181,7 @@ class _EstadoCuentaViewState extends ViewState<EstadoCuentaView, EstadoCuentaCon
                                 }else{
                                   return CachedNetworkImage(
                                       placeholder: (context, url) => CircularProgressIndicator(),
-                                      imageUrl: controller.fotoAlumno,
+                                      imageUrl: controller.fotoAlumno??"",
                                       imageBuilder: (context, imageProvider) => Container(
                                           height: 45 + 6 - 6 * topBarOpacity,
                                           width: 45 + 6 - 6 * topBarOpacity,
@@ -244,27 +246,31 @@ class _EstadoCuentaViewState extends ViewState<EstadoCuentaView, EstadoCuentaCon
                                 height: _webViewHeight==0?  MediaQuery.of(context).size.height:_webViewHeight,
                                 child: InAppWebView(
                                   //initialUrl: 'http://educar.icrmedu.com/CRMMovil/PortalAcadMovil.ashx' +'/?misaldo',
-                                  initialHeaders: {},
+                                  //initialHeaders: {},
                                   initialOptions: InAppWebViewGroupOptions(
                                       crossPlatform: InAppWebViewOptions(
-                                        debuggingEnabled: true,
+                                    //    debuggingEnabled: true,
                                       )),
                                   onWebViewCreated: (InAppWebViewController webController) {
 
-                                    var data = "nrodocumento=" + (controller.hijosUi!=null?controller.hijosUi.documento:"") + "&password="+(controller.hijosUi!=null?controller.hijosUi.personaId.toString():"");
+
+                                    var data = "nrodocumento=${controller.hijosUi?.documento}&password=${controller.hijosUi?.personaId}";
+                                    List<int> list = utf8.encode(data);
+                                    Uint8List bytes = Uint8List.fromList(list);
+
                                     webController.postUrl(
-                                        url: (controller.urlServidor??"") +'/?misaldo',
-                                        postData: utf8.encode(data));
+                                        url: Uri.parse('${controller.urlServidor}/?misaldo'),
+                                        postData: bytes);
                                     _webView = webController;
 
                                   },
-                                  onLoadStart: (InAppWebViewController controller, String url) {
+                                  onLoadStart: (InAppWebViewController controller, Uri? uri) {
                                     setState(() {
-                                      this.url = url;
+                                      this.url = uri;
                                     });
                                   },
                                   onLoadStop:
-                                      (  controller, String url) async {
+                                      (  controller, Uri? uri) async {
 
                                     controller.evaluateJavascript(source: '''(() => { return document.body.scrollHeight;})()''').then((value) {
                                       if(value == null || value == '') {
