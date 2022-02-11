@@ -27,7 +27,7 @@ class IsHabilitado extends UseCase<IsHabilitadoResponse, IsHabilitadoParams>{
 }
 class IsHabilitadoParams {
 
- int hijoPersonId;
+ int? hijoPersonId;
 
  IsHabilitadoParams(this.hijoPersonId);
 

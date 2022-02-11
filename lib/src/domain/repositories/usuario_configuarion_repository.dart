@@ -26,6 +26,6 @@ abstract class UsuarioAndConfiguracionRepository{
   Future<void> updateUsuarioSuccessData(int usuarioId);
   List<dynamic> getJsonUpdatePersonas(UsuarioUi? usuarioUi, List<HijosUi>? hijosUiList, List<FamiliaUi>? familiaUiList);
   Future<void> updatePersona(List<dynamic>? listaPersonas);
-  Future<String> gePrematricula();
+  Future<String?> gePrematricula();
   Future<String> getIconoPadre();
 }

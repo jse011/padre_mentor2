@@ -1,26 +1,27 @@
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+
 import 'package:flutter/material.dart';
+import 'package:padre_mentor/libs/fancy_shimer_image/fancy_shimmer_image.dart';
 import 'package:padre_mentor/src/app/utils/hex_color.dart';
 
 import '../utils/app_theme.dart';
 
 class WorkoutView extends StatelessWidget {
   final AnimationController animationController;
-  final Animation animation;
-  final String titulo1;
-  final String titulo2;
-  final String subTitulo;
-  final String foto;
-  final Color colors1;
-  final Color colors2;
-  const WorkoutView({Key key, this.animationController, this.animation, this.titulo1, this.titulo2, this.subTitulo, this.foto, this.colors1, this.colors2 })
+  final Animation<double> animation;
+  final String? titulo1;
+  final String? titulo2;
+  final String? subTitulo;
+  final String? foto;
+  final Color? colors1;
+  final Color? colors2;
+  const WorkoutView({Key? key, required this.animationController, required this.animation, this.titulo1, this.titulo2, this.subTitulo, this.foto, this.colors1, this.colors2 })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
           opacity: animation,
           child: new Transform(

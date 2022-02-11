@@ -5,14 +5,14 @@ const Duration _kExpand = Duration(milliseconds: 200);
 class CustomExpansionTile extends StatefulWidget {
 
   const CustomExpansionTile({
-    Key key,
+    Key? key,
     this.leading,
-    @required this.title,
+    required this.title,
     this.backgroundColor,
     this.children = const <Widget>[],
     this.trailing,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    @required this.expandedItem,
+    required this.expandedItem,
   }) :  super(key: key);
 
   final CrossAxisAlignment crossAxisAlignment;
@@ -20,7 +20,7 @@ class CustomExpansionTile extends StatefulWidget {
   /// A widget to display before the title.
   ///
   /// Typically a [CircleAvatar] widget.
-  final Widget leading;
+  final Widget? leading;
 
   /// The primary content of the list item.
   ///
@@ -33,12 +33,12 @@ class CustomExpansionTile extends StatefulWidget {
   final List<Widget> children;
 
   /// The color to display behind the sublist when expanded.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// A widget to display instead of a rotating arrow icon.
-  final Widget trailing;
+  final Widget? trailing;
 
-  final ValueNotifier<Key> expandedItem;
+  final ValueNotifier<Key?> expandedItem;
 
   @override
   _CustomExpansionTileState createState() => _CustomExpansionTileState();
@@ -54,13 +54,13 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
   final ColorTween _iconColorTween = ColorTween();
   final ColorTween _backgroundColorTween = ColorTween();
 
-  AnimationController _controller;
-  Animation<double> _iconTurns;
-  Animation<double> _heightFactor;
-  Animation<Color> _borderColor;
-  Animation<Color> _headerColor;
-  Animation<Color> _iconColor;
-  Animation<Color> _backgroundColor;
+  late AnimationController _controller;
+  late Animation<double> _iconTurns;
+  late Animation<double> _heightFactor;
+  late Animation<Color?> _borderColor;
+  late Animation<Color?> _headerColor;
+  late Animation<Color?> _iconColor;
+  late Animation<Color?> _backgroundColor;
 
   bool _isExpanded = false;
 
@@ -70,6 +70,8 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
     _controller = AnimationController(duration: _kExpand, vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
     _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
+
+
     _borderColor = _controller.drive(_borderColorTween.chain(_easeOutTween));
     _headerColor = _controller.drive(_headerColorTween.chain(_easeInTween));
     _iconColor = _controller.drive(_iconColorTween.chain(_easeInTween));
@@ -118,7 +120,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
     widget.expandedItem.value = _isExpanded ? widget.key : null;
   }
 
-  Widget _buildChildren(BuildContext context, Widget child) {
+  Widget _buildChildren(BuildContext context, Widget? child) {
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
 
     return Container(
@@ -162,11 +164,11 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
     _borderColorTween
       ..end = theme.dividerColor;
     _headerColorTween
-      ..begin = theme.textTheme.subhead.color
-      ..end = theme.accentColor;
+      ..begin = theme.textTheme.bodyText2?.color
+      ..end = theme.colorScheme.secondary;
     _iconColorTween
       ..begin = theme.unselectedWidgetColor
-      ..end = theme.accentColor;
+      ..end = theme.colorScheme.secondary;
     _backgroundColorTween
       ..end = widget.backgroundColor;
     super.didChangeDependencies();
@@ -177,7 +179,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
     final bool closed = !_isExpanded && _controller.isDismissed;
     return AnimatedBuilder(
       animation: _controller.view,
-      builder: _buildChildren,
+      builder: (context, child) => _buildChildren(context, child),
       child: closed ? null : Column(
           crossAxisAlignment: widget.crossAxisAlignment,
           children: widget.children

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:padre_mentor/src/app/page/estado_cuenta/estado_cuenta_view.dart';
 
 class EstadoCuentaRouter {
-  static Route createRouteEstadoCuenta({@required fotoAlumno, @required  alumnoId}) {
+  static Route createRouteEstadoCuenta({ String? fotoAlumno, int?  alumnoId}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => EstadoCuentaView(alumnoId: alumnoId, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

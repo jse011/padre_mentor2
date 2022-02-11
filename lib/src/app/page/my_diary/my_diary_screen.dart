@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class MyDiaryScreen extends StatefulWidget {
-  const MyDiaryScreen({Key key, this.animationController}) : super(key: key);
+  const MyDiaryScreen({Key? key, required this.animationController}) : super(key: key);
 
   final AnimationController animationController;
 

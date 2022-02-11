@@ -4,7 +4,7 @@ import 'package:padre_mentor/src/domain/usecases/login.dart';
 class LoginPresenter extends Presenter{
 
   Login _login;
-  Function loginOnComplete, loginOnNextValidate, loginOnError, loginOnNextDatos;
+  late Function loginOnComplete, loginOnNextValidate, loginOnError, loginOnNextDatos;
   LoginPresenter(HttpRepo, UsuarioConfRepo):this._login = Login(HttpRepo, UsuarioConfRepo);
 
 
@@ -37,7 +37,7 @@ class _LoginUseCase extends Observer<LoginResponse>{
   }
 
   @override
-  void onNext(LoginResponse response) {
+  void onNext(LoginResponse? response) {
 
     if(response is LoginResponseValidate){
       assert(presenter.loginOnNextValidate != null);

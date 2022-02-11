@@ -13,9 +13,9 @@ import '../my_diary/my_diary_screen.dart';
 
 class MyHomePage extends StatefulWidget {
 
-  const MyHomePage({Key key, this.logo}) : super(key: key);
+  const MyHomePage({Key? key, this.logo}) : super(key: key);
 
-  final String logo;
+  final String? logo;
 
   @override
   _MyHomePage createState() => _MyHomePage();
@@ -23,7 +23,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePage extends State<MyHomePage>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  late AnimationController animationController;
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
 
   Widget tabBody = Container(

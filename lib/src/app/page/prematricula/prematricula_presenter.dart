@@ -5,9 +5,9 @@ import 'package:padre_mentor/src/domain/usecases/get_url_servidor.dart';
 class PrematriculaPresenter extends Presenter{
   final int alumnoId;
   GetHijo _getHijo;
-  Function getHijonNext, getHijoOnComplete, getHijoOnError;
+  late Function getHijonNext, getHijoOnComplete, getHijoOnError;
   GetUrlServidor  _getUrlServidor;
-  Function getUrlServidorOnNext, getUrlServidorOnComplete, getUrlServidorOnError;
+  late Function getUrlServidorOnNext, getUrlServidorOnComplete, getUrlServidorOnError;
   PrematriculaPresenter(this.alumnoId, usuarioCongRepo): _getHijo = GetHijo(usuarioCongRepo), _getUrlServidor = GetUrlServidor(usuarioCongRepo);
 
   void getHijo(){
@@ -44,9 +44,9 @@ class _GetHijoCase extends Observer<GetHijoCaseResponse>{
   }
 
   @override
-  void onNext(GetHijoCaseResponse response) {
+  void onNext(GetHijoCaseResponse? response) {
     assert(presenter.getHijonNext != null);
-    presenter.getHijonNext(response.hijosUi);
+    presenter.getHijonNext(response?.hijosUi);
   }
 
 }
@@ -69,9 +69,9 @@ class _GetUrlServidorCase extends Observer<GetUrlServidorResponse>{
   }
 
   @override
-  void onNext(GetUrlServidorResponse response) {
+  void onNext(GetUrlServidorResponse? response) {
     assert(presenter.getUrlServidorOnNext != null);
-    presenter.getUrlServidorOnNext(response.url);
+    presenter.getUrlServidorOnNext(response?.url);
   }
 
 }

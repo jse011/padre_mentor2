@@ -6,14 +6,14 @@ import 'package:padre_mentor/src/app/widgets/image_picker/image_picker_handler.d
 
 class ImagePickerDialog extends StatelessWidget {
 
-  ImagePickerHandler _listener;
+  ImagePickerHandler? _listener;
   AnimationController _controller;
-  BuildContext context;
+  late BuildContext context;
 
   ImagePickerDialog(this._listener, this._controller);
 
-  Animation<double> _drawerContentsOpacity;
-  Animation<Offset> _drawerDetailsPosition;
+  late Animation<double> _drawerContentsOpacity;
+  late Animation<Offset> _drawerDetailsPosition;
 
   void initState() {
     _drawerContentsOpacity = new CurvedAnimation(
@@ -80,7 +80,7 @@ class ImagePickerDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 new GestureDetector(
-                  onTap: () => _listener.openCamera(),
+                  onTap: () => _listener?.openCamera(),
                   child: roundedButton(
                       Icons.camera,
                       "Camara",
@@ -89,7 +89,7 @@ class ImagePickerDialog extends StatelessWidget {
                       const Color(0xFFFFFFFF)),
                 ),
                 new GestureDetector(
-                  onTap: () => _listener.openGallery(),
+                  onTap: () => _listener?.openGallery(),
                   child: roundedButton(
                       Icons.add_photo_alternate_outlined,
                       "Galería",
@@ -117,7 +117,7 @@ class ImagePickerDialog extends StatelessWidget {
   }
 
   Widget roundedButton(
-      IconData icono,String buttonLabel, EdgeInsets margin, Color bgColor, Color textColor) {
+      IconData? icono,String buttonLabel, EdgeInsets margin, Color bgColor, Color textColor) {
     var loginBtn = new Container(
       margin: margin,
       padding: EdgeInsets.all(15.0),

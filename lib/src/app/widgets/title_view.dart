@@ -6,9 +6,9 @@ import '../utils/app_theme.dart';
 class TitleView extends StatelessWidget {
   final String titleTxt;
   final String subTxt;
-  final Function onClick;
+  final Function? onClick;
   const TitleView(
-      {Key key,
+      {Key? key,
       this.titleTxt: "",
       this.subTxt: "",
       this.onClick})
@@ -41,7 +41,7 @@ class TitleView extends StatelessWidget {
         highlightColor: Colors.transparent,
         borderRadius: BorderRadius.all(Radius.circular(4.0)),
         onTap: () {
-          if(onClick!=null)onClick();
+         onClick?.call();
         },
         child: Padding(
           padding: const EdgeInsets.only(left: 8),

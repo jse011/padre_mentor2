@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:padre_mentor/src/app/widgets/image_picker/image_picker_dialog.dart';
 
 class ImagePickerHandler {
-  ImagePickerDialog imagePicker;
+  late ImagePickerDialog imagePicker;
   AnimationController _controller;
   ImagePickerListener _listener;
   final picker = ImagePicker();
@@ -15,15 +15,15 @@ class ImagePickerHandler {
 
   openCamera() async {
     imagePicker.dismissDialog();
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-    final File image = File(pickedFile.path);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final File image = File(pickedFile?.path??"");
     cropImage(image);
   }
 
   openGallery() async {
     imagePicker.dismissDialog();
-    final  pickedFile = await picker.getImage(source: ImageSource.gallery);
-    final File image = File(pickedFile.path);
+    final  pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final File image = File(pickedFile?.path??"");
     cropImage(image);
   }
 
@@ -33,7 +33,7 @@ class ImagePickerHandler {
   }
 
   Future cropImage(File image) async {
-    File croppedFile = await ImageCropper.cropImage(
+    File? croppedFile = await ImageCropper.cropImage(
       sourcePath: image.path,
       //ratioX: 1.0,
       //ratioY: 1.0,
@@ -52,5 +52,5 @@ class ImagePickerHandler {
 }
 
 abstract class ImagePickerListener {
-  userImage(File _image);
+  userImage(File? _image);
 }

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class Carousel extends StatelessWidget {
   Carousel({
-    Key key,
-    @required this.items,
-    @required this.builderFunction,
-    @required this.height,
+    Key? key,
+    required this.items,
+    required this.builderFunction,
+    required this.height,
     this.dividerIndent = 10,
   }) : super(key: key);
 

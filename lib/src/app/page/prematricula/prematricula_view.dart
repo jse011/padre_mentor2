@@ -1,4 +1,6 @@
+
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,8 @@ import 'package:padre_mentor/src/app/widgets/animation_view.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
 
 class PrematriculaView extends View{
-  final String fotoAlumno;
-  final int alumnoId;
+  final String? fotoAlumno;
+  final int? alumnoId;
 
   PrematriculaView({this.fotoAlumno, this.alumnoId});
 
@@ -24,14 +26,14 @@ class PrematriculaView extends View{
 class _PrematriculaViewState extends ViewState<PrematriculaView, PrematriculaController>  with TickerProviderStateMixin{
   double _webViewHeight = 1;
   bool _visibleWebView = false;
-  InAppWebViewController _webView;
-  String url = "";
+  late InAppWebViewController _webView;
+  Uri? url = null;
   double progress = 0;
 
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   _PrematriculaViewState(alumnoId, fotoAlumno) : super(PrematriculaController(alumnoId, fotoAlumno, DataUsuarioAndRepository()));
 
@@ -107,7 +109,7 @@ class _PrematriculaViewState extends ViewState<PrematriculaView, PrematriculaCon
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -243,27 +245,30 @@ class _PrematriculaViewState extends ViewState<PrematriculaView, PrematriculaCon
                                 height: _webViewHeight==0?  MediaQuery.of(context).size.height:_webViewHeight,
                                 child: InAppWebView(
                                   //initialUrl: 'http://educar.icrmedu.com/CRMMovil/PortalAcadMovil.ashx' +'/?misaldo',
-                                  initialHeaders: {},
+                                  // initialHeaders: {},
                                   initialOptions: InAppWebViewGroupOptions(
                                       crossPlatform: InAppWebViewOptions(
-                                        debuggingEnabled: true,
+                                        //debuggingEnabled: true,
                                       )),
                                   onWebViewCreated: (InAppWebViewController webController) {
 
-                                    var data = "nrodocumento=" + (controller.hijosUi!=null?controller.hijosUi.documento:"") + "&password="+(controller.hijosUi!=null?controller.hijosUi.personaId.toString():"");
+                                    var source = "nrodocumento=${controller.hijosUi!=null?controller.hijosUi?.documento:""}&password=${controller.hijosUi!=null?controller.hijosUi?.personaId?.toString():""}";
+                                    List<int> list = utf8.encode(source);
+                                    Uint8List bytes = Uint8List.fromList(list);
+                                    //String outcome = utf8.decode(bytes);
                                     webController.postUrl(
-                                        url: (controller.urlServidor??"") +'/?prematricula',
-                                        postData: utf8.encode(data));
+                                        url: Uri.parse('${controller.urlServidor??""}/?prematricula'),
+                                        postData: bytes);
                                     _webView = webController;
 
                                   },
-                                  onLoadStart: (InAppWebViewController controller, String url) {
+                                  onLoadStart: (InAppWebViewController controller, Uri? url) {
                                     setState(() {
                                       this.url = url;
                                     });
                                   },
                                   onLoadStop:
-                                      (  controller, String url) async {
+                                      (  controller, Uri? url) async {
 
                                     controller.evaluateJavascript(source: '''(() => { return document.body.scrollHeight;})()''').then((value) {
                                       if(value == null || value == '') {

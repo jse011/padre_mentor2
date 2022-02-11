@@ -7,42 +7,43 @@ import 'package:padre_mentor/src/domain/entities/usuario_ui.dart';
 
 class PortalAlumnoController extends Controller{
   static const String TAG = "PortalAlumnoController";
-  HijosUi _hijoSelected;
+  HijosUi? _hijoSelected;
 
   var _selectedTipoEventoUi;
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
   List<EventoUi> _eventoUilIst = [];
   List<EventoUi> get eventoUiList => _eventoUilIst;
   bool _isLoading = false;
   get isLoading => _isLoading;
   bool _showPrematricula = false;
   bool get showPrematricula => _showPrematricula;
-  String _tituloPrematricula = null;
-  String get tituloPrematricula => _tituloPrematricula;
-  HijosUi get hijoSelected => _hijoSelected;
+  String? _tituloPrematricula = null;
+  String? get tituloPrematricula => _tituloPrematricula;
+  HijosUi? get hijoSelected => _hijoSelected;
   List<HijosUi> _hijoList = [];
   List<ProgramaEducativoUi> _programaEducativoList = [];
   List<ProgramaEducativoUi> get programaEducativoList => _programaEducativoList;
-  ProgramaEducativoUi _programaEducativoSelected;
-  ProgramaEducativoUi get programaEducativoSelected => _programaEducativoSelected;
+  ProgramaEducativoUi? _programaEducativoSelected = null;
+  ProgramaEducativoUi? get programaEducativoSelected => _programaEducativoSelected;
   PortalAlumnoPresenter presenter;
 
   bool _showDeuda = false;
   bool get showDeuda => _showDeuda;
 
-  PortalAlumnoController(checkConexRepo, httpRepository, usuarioConfiRepo):this.presenter = PortalAlumnoPresenter(checkConexRepo, httpRepository, usuarioConfiRepo)
+  PortalAlumnoController(checkConexRepo, httpRepository, usuarioConfiRepo)
+      :this.presenter = PortalAlumnoPresenter(checkConexRepo, httpRepository, usuarioConfiRepo)
   ,super();
 
   @override
   void initListeners() {
     presenter.getSesionUsuarioOnNext = (UsuarioUi user) {
 
-      _programaEducativoList = user.programaEducativoUiList;
+      _programaEducativoList = user.programaEducativoUiList??[];
      _programaEducativoSelected = user.programaEducativoUiSelected;
      _hijoSelected = user.hijoSelected;
       //print('User retrieved : ' + _hijoSelected.nombre);
-      _hijoList = user.hijos;
+      _hijoList = user.hijos??[];
       //SelectedPageProgramaEducativo();
       refreshUI(); // Refreshes the UI manually
       presenter.onChangeUsuario(user, _selectedTipoEventoUi);
@@ -110,14 +111,14 @@ class PortalAlumnoController extends Controller{
   void onSelectedProgramaSelected(ProgramaEducativoUi programaEducativo) {
     _programaEducativoSelected = programaEducativo;
     for(var hijo in _hijoList){
-        if(hijo.personaId == _programaEducativoSelected.hijoId){
+        if(hijo.personaId == _programaEducativoSelected?.hijoId){
           _hijoSelected = hijo;
         }
     }
     presenter.onSaveProgramaUsuario(_programaEducativoSelected);
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      if(_hijoSelected!=null)presenter.isHabilitado(_hijoSelected.personaId);
+      if(_hijoSelected!=null)presenter.isHabilitado(_hijoSelected?.personaId);
       refreshUI();
     });
 

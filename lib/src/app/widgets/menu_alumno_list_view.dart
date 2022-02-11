@@ -5,7 +5,7 @@ import '../utils/app_theme.dart';
 
 class MenuAlumnoListView extends StatefulWidget {
   const MenuAlumnoListView(
-      {Key key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key? key, required this.mainScreenAnimationController, required this.mainScreenAnimation})
       : super(key: key);
 
   final AnimationController mainScreenAnimationController;
@@ -16,7 +16,7 @@ class MenuAlumnoListView extends StatefulWidget {
 
 class _MenuAlumnoListViewState extends State<MenuAlumnoListView>
     with TickerProviderStateMixin {
-  AnimationController animationController;
+  late AnimationController animationController;
   List<ItemMenu> areaListData = <ItemMenu>[
    ItemMenu.TAREA,
     ItemMenu.EVALAUCION,
@@ -37,7 +37,7 @@ class _MenuAlumnoListViewState extends State<MenuAlumnoListView>
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController?.dispose();
     super.dispose();
   }
 
@@ -115,23 +115,23 @@ class _MenuAlumnoListViewState extends State<MenuAlumnoListView>
 
 class ItemMenuView extends StatelessWidget {
   const ItemMenuView({
-    Key key,
+    Key? key,
     this.titulo,
     this.imagepath,
-    this.animationController,
-    this.animation,
+    required this.animationController,
+    required this.animation,
   }) : super(key: key);
 
-  final String titulo;
-  final String imagepath;
+  final String? titulo;
+  final String? imagepath;
   final AnimationController animationController;
-  final Animation<dynamic> animation;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
           opacity: animation,
           child: Transform(
@@ -167,11 +167,11 @@ class ItemMenuView extends StatelessWidget {
                       Expanded(child: Padding(
                         padding:
                         const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-                        child: Image.asset(imagepath),
+                        child: Image.asset(imagepath??""),
                       )),
                       Container(
                         margin: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 16),
-                        child: Text(titulo),
+                        child: Text(titulo??""),
                       ),
                     ],
                   ),

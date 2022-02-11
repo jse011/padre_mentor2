@@ -13,7 +13,7 @@ class GetPrematicula extends UseCase<GetPrematriculaResponse, GetPrematriculaPar
   Future<Stream<GetPrematriculaResponse>> buildUseCaseStream(GetPrematriculaParams? params) async{
     final controller = StreamController<GetPrematriculaResponse>();
     try {
-     String titulo = await repository.gePrematricula();
+     String? titulo = await repository.gePrematricula();
       controller.add(GetPrematriculaResponse(titulo));
     logger.finest('GetHijo successful.');
     controller.close();

@@ -1,10 +1,13 @@
-import 'package:padre_mentor/src/data/repositories/floor_beta/mapping/usuario.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'rest_api_response.g.dart';
 /*
 Mac OS important
 export PATH="$PATH:/Users/edwinrubenpuente/SDKFlutter/flutter/bin"
+export PATH="$PATH:/Users/jose/SDKFlutter/flutter 2/bin"
+export PATH="$PATH:/Users/jose/flutter 2/bin"
+
+flutter 2
 
 * One-time code generation
 By running flutter pub run build_runner build in the project root, you generate JSON serialization code for your models whenever they are needed. This triggers a one-time build that goes through the source files, picks the relevant ones, and generates the necessary serialization code for them.
@@ -18,12 +21,12 @@ It is safe to start the watcher once and leave it running in the background.
 * */
 @JsonSerializable()
 class UsuarioSerial{
-  int usuarioId;
-  int personaId;
-  String usuario;
-  String password;
-  bool estado;
-  bool habilitarAcceso;
+  int? usuarioId;
+  int? personaId;
+  String? usuario;
+  String? password;
+  bool?  estado;
+  bool?  habilitarAcceso;
 
   UsuarioSerial({this.usuarioId, this.personaId, this.usuario, this.password,
     this.estado, this.habilitarAcceso});
@@ -36,23 +39,23 @@ class UsuarioSerial{
 
 @JsonSerializable()
 class PersonaSerial{
-  int personaId;
-  String nombres;
-  String apellidoPaterno;
-  String apellidoMaterno;
-  String celular;
-  String telefono;
-  String foto;
-  String fechaNac;
-  String genero;
-  String estadoCivil;
-  String numDoc;
-  String ocupacion;
-  int estadoId;
-  String correo;
-  String direccion;
-  String path;
-  String image64; //Solo sirve para guardar un imagen
+  int? personaId;
+  String? nombres;
+  String? apellidoPaterno;
+  String? apellidoMaterno;
+  String? celular;
+  String? telefono;
+  String? foto;
+  String? fechaNac;
+  String? genero;
+  String? estadoCivil;
+  String? numDoc;
+  String? ocupacion;
+  int? estadoId;
+  String? correo;
+  String? direccion;
+  String? path;
+  String? image64; //Solo sirve para guardar un imagen
 
   PersonaSerial(
       {this.personaId,
@@ -80,11 +83,11 @@ class PersonaSerial{
 
 @JsonSerializable()
 class RelacionesSerial{
-  int idRelacion;
-  int personaPrincipalId;
-  int personaVinculadaId;
-  int tipoId;
-  bool activo;
+  int? idRelacion;
+  int? personaPrincipalId;
+  int? personaVinculadaId;
+  int? tipoId;
+  bool?  activo;
 
   RelacionesSerial({this.idRelacion, this.personaPrincipalId, this.personaVinculadaId,
     this.tipoId, this.activo});
@@ -97,16 +100,16 @@ class RelacionesSerial{
 @JsonSerializable()
 class AnioAcademicoAlumnoSerial{
 
-  int idAnioAcademico;
-  String nombre;
-  String fechaInicio;
-  String fechaFin;
-  String denominacion;
-  int georeferenciaId;
-  int organigramaId;
-  int estadoId;
-  int tipoId;
-  int personaId;
+  int? idAnioAcademico;
+  String? nombre;
+  String? fechaInicio;
+  String? fechaFin;
+  String? denominacion;
+  int? georeferenciaId;
+  int? organigramaId;
+  int? estadoId;
+  int? tipoId;
+  int? personaId;
 
   AnioAcademicoAlumnoSerial(
       {this.idAnioAcademico,
@@ -128,29 +131,29 @@ class AnioAcademicoAlumnoSerial{
 @JsonSerializable()
 class CargaCursosSerial{
 
-  int cargaCursoId;
-  int planCursoId;
-  int empleadoId;
-  int cargaAcademicaId;
-  int complejo;
-  int evaluable;
-  int idempleado;
-  int idTipoHora;
-  String descripcion;
-  int fechaInicio;//Long
-  int fechafin;//Long
-  String modo;
-  int estado;
-  int anioAcademicoId;
-  int aulaId;
-  int grupoId;
-  int idPlanEstudio;
-  int idPlanEstudioVersion;
-  int CapacidadVacanteP;
-  int CapacidadVacanteD;
-  String nombreDocente;
-  int personaIdDocente;
-  String fotoDocente;
+  int? cargaCursoId;
+  int? planCursoId;
+  int? empleadoId;
+  int? cargaAcademicaId;
+  int? complejo;
+  int? evaluable;
+  int? idempleado;
+  int? idTipoHora;
+  String? descripcion;
+  int? fechaInicio;//Long
+  int? fechafin;//Long
+  String? modo;
+  int? estado;
+  int? anioAcademicoId;
+  int? aulaId;
+  int? grupoId;
+  int? idPlanEstudio;
+  int? idPlanEstudioVersion;
+  int? CapacidadVacanteP;
+  int? CapacidadVacanteD;
+  String? nombreDocente;
+  int? personaIdDocente;
+  String? fotoDocente;
 
   CargaCursosSerial(
       {this.cargaCursoId,
@@ -182,16 +185,16 @@ class CargaCursosSerial{
 @JsonSerializable()
 class ContratoSerial{
 
-  int idContrato;
-  int personaId;//Alum_Id
-  int idAnioAcademico;
-  int nroHno;
-  int nivelAcaId;
-  int seccionId;
-  int periodoId;
-  int vigente;
-  int estadoId;
-  int apoderadoId;
+  int? idContrato;
+  int? personaId;//Alum_Id
+  int? idAnioAcademico;
+  int? nroHno;
+  int? nivelAcaId;
+  int? seccionId;
+  int? periodoId;
+  int? vigente;
+  int? estadoId;
+  int? apoderadoId;
 
 
   ContratoSerial(
@@ -214,17 +217,17 @@ class ContratoSerial{
 @JsonSerializable()
 class DetalleContratoAcadSerial{
 
-  int idContratoDetAcad;
-  int idContrato;
-  int cargaCursoId;
-  int cargaAcademicaId;
-  String notaPromedio;
-  String escala;
-  int anioAcademicoId;
-  int idNivelAcademico;
-  int cursoId;
-  int grupoId;
-  int aulaId;
+  int? idContratoDetAcad;
+  int? idContrato;
+  int? cargaCursoId;
+  int? cargaAcademicaId;
+  String? notaPromedio;
+  String? escala;
+  int? anioAcademicoId;
+  int? idNivelAcademico;
+  int? cursoId;
+  int? grupoId;
+  int? aulaId;
 
   DetalleContratoAcadSerial(
       {this.idContratoDetAcad,
@@ -248,10 +251,10 @@ class DetalleContratoAcadSerial{
 @JsonSerializable()
 class PlanCursosSerial {
 
-  int planCursoId;
-  int cursoId;
-  int periodoId;
-  int planEstudiosId;
+  int? planCursoId;
+  int? cursoId;
+  int? periodoId;
+  int? planEstudiosId;
 
   PlanCursosSerial(
       {this.planCursoId, this.cursoId, this.periodoId, this.planEstudiosId});
@@ -264,16 +267,16 @@ class PlanCursosSerial {
 @JsonSerializable()
 class ProgramasEducativoSerial {
 
-  int programaEduId;
-  String nombre;
-  String nroCiclos;
-  int nivelAcadId;
-  int tipoEvaluacionId;
-  int estadoId;
-  int entidadId;
-  int tipoInformeSiagieId;
-  int tipoProgramaId;
-  int tipoMatriculaId;
+  int? programaEduId;
+  String? nombre;
+  String? nroCiclos;
+  int? nivelAcadId;
+  int? tipoEvaluacionId;
+  int? estadoId;
+  int? entidadId;
+  int? tipoInformeSiagieId;
+  int? tipoProgramaId;
+  int? tipoMatriculaId;
 
   ProgramasEducativoSerial(
       {this.programaEduId,
@@ -295,13 +298,13 @@ class ProgramasEducativoSerial {
 @JsonSerializable()
 class PlanEstudiosSerial {
 
-  int planEstudiosId;
-  int programaEduId;
-  String nombrePlan;
-  String alias;
-  int estadoId;
-  String nroResolucion;
-  String fechaResolucion;
+  int? planEstudiosId;
+  int? programaEduId;
+  String? nombrePlan;
+  String? alias;
+  int? estadoId;
+  String? nroResolucion;
+  String? fechaResolucion;
 
   PlanEstudiosSerial({this.planEstudiosId, this.programaEduId, this.nombrePlan,
     this.alias, this.estadoId, this.nroResolucion, this.fechaResolucion});
@@ -314,13 +317,13 @@ class PlanEstudiosSerial {
 @JsonSerializable()
 class CalendarioPeriodoSerial {
 
-  int calendarioPeriodoId;
-  int fechaInicio;//long
-  int fechaFin;//long
-  int calendarioAcademicoId;
-  int tipoId;
-  int estadoId;
-  int diazPlazo;
+  int? calendarioPeriodoId;
+  int? fechaInicio;//long
+  int? fechaFin;//long
+  int? calendarioAcademicoId;
+  int? tipoId;
+  int? estadoId;
+  int? diazPlazo;
 
   CalendarioPeriodoSerial(
       {this.calendarioPeriodoId,
@@ -339,10 +342,10 @@ class CalendarioPeriodoSerial {
 @JsonSerializable()
 class CalendarioAcademicoSerial{
 
-  int calendarioAcademicoId;
-  int programaEduId;
-  int idAnioAcademico;
-  int estadoId;
+  int? calendarioAcademicoId;
+  int? programaEduId;
+  int? idAnioAcademico;
+  int? estadoId;
 
   CalendarioAcademicoSerial({this.calendarioAcademicoId, this.programaEduId,
     this.idAnioAcademico, this.estadoId});
@@ -354,12 +357,12 @@ class CalendarioAcademicoSerial{
 @JsonSerializable()
 class TiposSerial {
 
-  int tipoId;
-  String objeto;
-  String concepto;
-  String nombre;
-  String codigo;
-  int parentId;
+  int? tipoId;
+  String? objeto;
+  String? concepto;
+  String? nombre;
+  String? codigo;
+  int? parentId;
 
   TiposSerial({this.tipoId, this.objeto, this.concepto, this.nombre, this.codigo,
     this.parentId});
@@ -372,21 +375,21 @@ class TiposSerial {
 @JsonSerializable()
 class AreasBoletaSerial{
 
-  int rubroEvalResultadoId;
-  String nombre;
-  int tipoConceptoId;
-  int totalHt;
-  int silaboEventoId;
-  String competencia;
-  int tipoId;//TipoNotaId
-  int tipoFormulaId;
-  int competenciaId;
-  int tipoCompetenciaId;
-  int calendarioPeriodoId;
-  int anioAcademicoId;
-  int programaEducativoId;
-  int periodoId;
-  int seccionId;
+  int? rubroEvalResultadoId;
+  String? nombre;
+  int? tipoConceptoId;
+  int? totalHt;
+  int? silaboEventoId;
+  String? competencia;
+  int? tipoId;//TipoNotaId
+  int? tipoFormulaId;
+  int? competenciaId;
+  int? tipoCompetenciaId;
+  int? calendarioPeriodoId;
+  int? anioAcademicoId;
+  int? programaEducativoId;
+  int? periodoId;
+  int? seccionId;
 
   AreasBoletaSerial(
       {this.rubroEvalResultadoId,
@@ -413,17 +416,17 @@ class AreasBoletaSerial{
 @JsonSerializable()
 class NotasCalendarioBoletaSerial{
 
-  int evaluacionResultadoId;
-  int rubroEvalResultadoId;
-  int alumnoId;
-  int silaboEventoId;
-  String nota;
-  double peso;
-  String valorTipoNotaId;
-  String tituloNota;
-  int tipoNotaId;
-  int calendarioPeriodoId;
-  String color;
+  int? evaluacionResultadoId;
+  int? rubroEvalResultadoId;
+  int? alumnoId;
+  int? silaboEventoId;
+  String? nota;
+  double? peso;
+  String? valorTipoNotaId;
+  String? tituloNota;
+  int? tipoNotaId;
+  int? calendarioPeriodoId;
+  String? color;
 
   NotasCalendarioBoletaSerial(
       {this.evaluacionResultadoId,
@@ -445,15 +448,15 @@ class NotasCalendarioBoletaSerial{
 @JsonSerializable()
 class ParametrosDisenioSerial{
 
-  int parametroDisenioId;
-  String objeto;
-  String concepto;
-  String nombre;
-  String path;
-  String color1;
-  String color2;
-  String color3;
-  bool estado;
+  int? parametroDisenioId;
+  String? objeto;
+  String? concepto;
+  String? nombre;
+  String? path;
+  String? color1;
+  String? color2;
+  String? color3;
+  bool?  estado;
 
   ParametrosDisenioSerial(
       {this.parametroDisenioId,
@@ -474,21 +477,21 @@ class ParametrosDisenioSerial{
 @JsonSerializable()
 class SilaboEventoSerial {
 
-  int silaboEventoId;
-  String titulo;
-  String descripcionGeneral;
-  int planCursoId;
-  int entidadId;
-  int docenteId;
-  int seccionId;
-  String fechaInicio;
-  String fechaFin;
-  int estadoId;
-  int anioAcademicoId;
-  int georeferenciaId;
-  int silaboBaseId;
-  int cargaCursoId;
-  int parametroDisenioId;
+  int? silaboEventoId;
+  String? titulo;
+  String? descripcionGeneral;
+  int? planCursoId;
+  int? entidadId;
+  int? docenteId;
+  int? seccionId;
+  String? fechaInicio;
+  String? fechaFin;
+  int? estadoId;
+  int? anioAcademicoId;
+  int? georeferenciaId;
+  int? silaboBaseId;
+  int? cargaCursoId;
+  int? parametroDisenioId;
 
   SilaboEventoSerial(
       {this.silaboEventoId,
@@ -514,31 +517,31 @@ class SilaboEventoSerial {
 
 @JsonSerializable()
 class RubroEvalDesempeniosSerial{
-  String nombreCurso;
-  int fechaEvaluacion;//long
-  String tituloEvaluacion;
-  String formaEvaluacion;
-  int tipoRubroEvalId;
-  int cargaCursoId;
-  int silaboEventoId;
-  int anioAcademicoId;
-  int programaAcadId;
-  String rubroEvalProcesoId;
-  int alumnoId;
-  int gradoId;
-  String grado;
-  int seccionId;
-  String seccion;
-  int calendarioPeriodoId;
-  int parametroDesenioId;
-  String iconoNivelLogro;
-  String tituloNivelLogro;
-  String descripcionNivelLogro;
-  int tipoIdNivelLogro;
-  double notaEvalaucion;
-  String desempenioEvalaucion;
-  int desempenioIcdTipoId;
-  String evaluacionProcesoId;
+  String? nombreCurso;
+  int? fechaEvaluacion;//long
+  String? tituloEvaluacion;
+  String? formaEvaluacion;
+  int? tipoRubroEvalId;
+  int? cargaCursoId;
+  int? silaboEventoId;
+  int? anioAcademicoId;
+  int? programaAcadId;
+  String? rubroEvalProcesoId;
+  int? alumnoId;
+  int? gradoId;
+  String? grado;
+  int? seccionId;
+  String? seccion;
+  int? calendarioPeriodoId;
+  int? parametroDesenioId;
+  String? iconoNivelLogro;
+  String? tituloNivelLogro;
+  String? descripcionNivelLogro;
+  int? tipoIdNivelLogro;
+  double? notaEvalaucion;
+  String? desempenioEvalaucion;
+  int? desempenioIcdTipoId;
+  String? evaluacionProcesoId;
 
 
   RubroEvalDesempeniosSerial(
@@ -576,8 +579,8 @@ class RubroEvalDesempeniosSerial{
 
 @JsonSerializable()
 class WebConfigsSerial {
-  String nombre;
-  String content;
+  String? nombre;
+  String? content;
 
   WebConfigsSerial(this.nombre, this.content);
 
@@ -588,42 +591,42 @@ class WebConfigsSerial {
 
 @JsonSerializable()
 class TareaCursoSerializable{
-  String tareaId;
-  String tareaTitulo;
-  String tareaInstrucciones;
-  int tareafechaCreacion;
-  String tareaEstadoId;
-  int unidadAprendizajeId;
-  int sesionAprendizajeId;
-  String tareaFechaEntrega;
-  String tareaHoraEntrega;
-  int gradoId;
-  String grado;
-  int seccionId;
-  String seccion;
-  int fechaEvaluacion; //long
-  String tituloEvaluacion;
-  String formaEvaluacion;
-  int tipoRubroEvalId;
-  int cargaCursoId;
-  int silaboEventoId;
-  int anioAcademicoId;
-  int programaAcadId;
-  String rubroEvalProcesoId;
-  int alumnoId;
-  int calendarioPeriodoId;
-  int parametroDesenioId;
-  String iconoNivelLogro;
-  String tituloNivelLogro;
-  String descripcionNivelLogro;
-  int tipoIdNivelLogro;
-  double notaEvalaucion;
-  String evaluacionProcesoId;
-  String nombreCurso;
+  String? tareaId;
+  String? tareaTitulo;
+  String? tareaInstrucciones;
+  int? tareafechaCreacion;
+  String? tareaEstadoId;
+  int? unidadAprendizajeId;
+  int? sesionAprendizajeId;
+  String? tareaFechaEntrega;
+  String? tareaHoraEntrega;
+  int? gradoId;
+  String? grado;
+  int? seccionId;
+  String? seccion;
+  int? fechaEvaluacion; //long
+  String? tituloEvaluacion;
+  String? formaEvaluacion;
+  int? tipoRubroEvalId;
+  int? cargaCursoId;
+  int? silaboEventoId;
+  int? anioAcademicoId;
+  int? programaAcadId;
+  String? rubroEvalProcesoId;
+  int? alumnoId;
+  int? calendarioPeriodoId;
+  int? parametroDesenioId;
+  String? iconoNivelLogro;
+  String? tituloNivelLogro;
+  String? descripcionNivelLogro;
+  int? tipoIdNivelLogro;
+  double? notaEvalaucion;
+  String? evaluacionProcesoId;
+  String? nombreCurso;
 
-  String docenteApellMat;
-  String docenteApellPat;
-  String docenteNombre;
+  String? docenteApellMat;
+  String? docenteApellPat;
+  String? docenteNombre;
 
   TareaCursoSerializable(
       {this.tareaId,
@@ -669,25 +672,25 @@ class TareaCursoSerializable{
 
 @JsonSerializable()
 class EventoSerializable {
-  String eventoId;
-  String titulo;
-  String descripcion;
-  String calendarioId;
-  int tipoEventoId;
-  int estadoId;
-  bool estadoPublicacion;
-  int entidadId;
-  int georeferenciaId;
-  String fechaEvento_;
-  String horaEvento;
-  String pathImagen;
-  bool envioPersonalizado;
-  String tipoEventoNombre;
-  int usuarioReceptorId;
-  int eventoHijoId;
-  String nombreEntidad;
-  String fotoEntidad;
-  String nombreEntidadSiglas;
+  String? eventoId;
+  String? titulo;
+  String? descripcion;
+  String? calendarioId;
+  int? tipoEventoId;
+  int? estadoId;
+  bool?  estadoPublicacion;
+  int? entidadId;
+  int? georeferenciaId;
+  String? fechaEvento_;
+  String? horaEvento;
+  String? pathImagen;
+  bool?  envioPersonalizado;
+  String? tipoEventoNombre;
+  int? usuarioReceptorId;
+  int? eventoHijoId;
+  String? nombreEntidad;
+  String? fotoEntidad;
+  String? nombreEntidadSiglas;
   EventoSerializable(
       {this.eventoId,
         this.titulo,
@@ -717,26 +720,26 @@ class EventoSerializable {
 
 @JsonSerializable()
 class CalendarioSerializable{
-  String calendarioId;
-  String nombre;
-  String descripcion;
-  int estado;
-// int usuarioId;
-  int entidadId;
-  int georeferenciaId;
-//string fechaAccion;
-//string fechaCrecion;
-  String nUsuario;
-  String cargo;
-  int usuarioId;
+  String? calendarioId;
+  String? nombre;
+  String? descripcion;
+  int? estado;
+// int? usuarioId;
+  int? entidadId;
+  int? georeferenciaId;
+//String? fechaAccion;
+//String? fechaCrecion;
+  String? nUsuario;
+  String? cargo;
+  int? usuarioId;
 
-  int cargaAcademicaId;
-  int cargaCursoId;
-  int estadoPublicacion;
-  int rolId;
-  int fechaCreacion;
-  int usuarioAccionId;
-  int fechaAccion;
+  int? cargaAcademicaId;
+  int? cargaCursoId;
+  int? estadoPublicacion;
+  int? rolId;
+  int? fechaCreacion;
+  int? usuarioAccionId;
+  int? fechaAccion;
 
   CalendarioSerializable(
       {this.calendarioId,
@@ -763,26 +766,26 @@ class CalendarioSerializable{
 
 @JsonSerializable()
 class ContactoSerializable {
-  int personaId;
-  String nombres;
-  String apellidoPaterno;
-  String apellidoMaterno;
-  String ocupacion;
-  int estadoId;
-  String telefono;
-  String celular;
-  String fechaNac;
-  String correo;
-  String genero;
-  String estadoCivil;
-  String numDoc;
-  String foto;
-  String nombreTipo;
-  int tipo;
-  int companieroId;
-  int hijoRelacionId;
-  String relacion;
-  int cargaCursoId;
+  int? personaId;
+  String? nombres;
+  String? apellidoPaterno;
+  String? apellidoMaterno;
+  String? ocupacion;
+  int? estadoId;
+  String? telefono;
+  String? celular;
+  String? fechaNac;
+  String? correo;
+  String? genero;
+  String? estadoCivil;
+  String? numDoc;
+  String? foto;
+  String? nombreTipo;
+  int? tipo;
+  int? companieroId;
+  int? hijoRelacionId;
+  String? relacion;
+  int? cargaCursoId;
 
   ContactoSerializable(
       {this.personaId,
@@ -813,15 +816,15 @@ class ContactoSerializable {
 
 @JsonSerializable()
 class AdminServiceSerializable {
-  int UsuarioId;
-  bool Estado;
-  int EntidadId;
-  int UsuarioExternoId;
-  int UsuarioCreadorId;
-  int UsuarioAccionId;
-  int Opcion;
-  int Cantidad;
-  String UrlServiceMovil;
+  int? UsuarioId;
+  bool?  Estado;
+  int? EntidadId;
+  int? UsuarioExternoId;
+  int? UsuarioCreadorId;
+  int? UsuarioAccionId;
+  int? Opcion;
+  int? Cantidad;
+  String? UrlServiceMovil;
 
   AdminServiceSerializable(
       {this.UsuarioId,
@@ -842,16 +845,16 @@ class AdminServiceSerializable {
 @JsonSerializable()
 class EntidadSerializable {
 
-  int entidadId;
-  int tipoId;
-  int parentId;
-  String nombre;
-  String ruc;
-  String site;
-  String telefono;
-  String correo;
-  String foto;
-  int estadoId;
+  int? entidadId;
+  int? tipoId;
+  int? parentId;
+  String? nombre;
+  String? ruc;
+  String? site;
+  String? telefono;
+  String? correo;
+  String? foto;
+  int? estadoId;
 
   EntidadSerializable(
       {this.entidadId,
@@ -872,11 +875,11 @@ class EntidadSerializable {
 @JsonSerializable()
 class GeoreferenciaSerializable {
 
-  int georeferenciaId ;
-  String nombre ;
-  int entidadId ;
-  String alias;
-  int estadoId;
+  int? georeferenciaId ;
+  String? nombre ;
+  int? entidadId ;
+  String? alias;
+  int? estadoId;
 
   GeoreferenciaSerializable({this.georeferenciaId, this.nombre, this.entidadId, this.alias,
     this.estadoId});
@@ -888,10 +891,10 @@ class GeoreferenciaSerializable {
 
 @JsonSerializable()
 class RolSerializable{
-  int rolId;
-  String nombre;
-  int parentId;
-  bool estado;
+  int? rolId;
+  String? nombre;
+  int? parentId;
+  bool?  estado;
 
   RolSerializable({this.rolId, this.nombre, this.parentId, this.estado});
 
@@ -903,11 +906,11 @@ class RolSerializable{
 
 @JsonSerializable()
 class UsuarioRolGeoreferenciaSerializable{
-  int usuarioRolGeoreferenciaId;
-  int usuarioId;
-  int rolId;
-  int geoReferenciaId;
-  int entidadId;
+  int? usuarioRolGeoreferenciaId;
+  int? usuarioId;
+  int? rolId;
+  int? geoReferenciaId;
+  int? entidadId;
 
 
   UsuarioRolGeoreferenciaSerializable({this.usuarioRolGeoreferenciaId,
@@ -921,27 +924,27 @@ class UsuarioRolGeoreferenciaSerializable{
 @JsonSerializable()
 class CursosSerializable {
 
-  int cursoId;
-  String nombre;
-  int estadoId;
-  String descripcion;
-  String alias;
-  int entidadId;
-  int nivelAcadId;
-  int tipoCursoId;
-  int tipoConceptoId;
-  String color;
-  String creditos;
-  String totalHP;
-  String totalHT;
-  String notaAprobatoria;
-  String sumilla;
-  int superId;
-  int idServicioLaboratorio;
-  int horasLaboratorio;
-  bool tipoSubcurso;
-  String foto;
-  String codigo;
+  int? cursoId;
+  String? nombre;
+  int? estadoId;
+  String? descripcion;
+  String? alias;
+  int? entidadId;
+  int? nivelAcadId;
+  int? tipoCursoId;
+  int? tipoConceptoId;
+  String? color;
+  String? creditos;
+  String? totalHP;
+  String? totalHT;
+  String? notaAprobatoria;
+  String? sumilla;
+  int? superId;
+  int? idServicioLaboratorio;
+  int? horasLaboratorio;
+  bool?  tipoSubcurso;
+  String? foto;
+  String? codigo;
 
   CursosSerializable(
       {this.cursoId,
@@ -973,11 +976,11 @@ class CursosSerializable {
 
 @JsonSerializable()
 class SeccionSeraializable {
-  int seccionId;
-  String nombre;
-  String descripcion;
-  bool estado;
-  int georeferenciaId;
+  int? seccionId;
+  String? nombre;
+  String? descripcion;
+  bool?  estado;
+  int? georeferenciaId;
 
   SeccionSeraializable(this.seccionId, this.nombre, this.descripcion,
       this.estado, this.georeferenciaId);
@@ -989,11 +992,11 @@ class SeccionSeraializable {
 
 @JsonSerializable()
 class AulaSeraializable {
-  int aulaId;
-  String descripcion;
-  String numero;
-  String capacidad;
-  int estado;
+  int? aulaId;
+  String? descripcion;
+  String? numero;
+  String? capacidad;
+  int? estado;
 
   AulaSeraializable(
       this.aulaId, this.descripcion, this.numero, this.capacidad, this.estado);
@@ -1006,25 +1009,25 @@ class AulaSeraializable {
 @JsonSerializable()
 class PeriodosSeraializable {
 
-  int periodoId;
-  String nombre;
-  int estadoId;
-  String alias;
-  String fecComienzo;
-  String fecTermino;
-  int tipoId;
-  int superId;
-  int geoReferenciaId;
-  int organigramaId;
-  int entidadId;
-  bool activo;
-  int cicloId;
-  int docenteId;
-  String gruponombre;
-  int grupoId;
-  String nivelAcademico;
-  int nivelAcademicoId;
-  int tutorId;
+  int? periodoId;
+  String? nombre;
+  int? estadoId;
+  String? alias;
+  String? fecComienzo;
+  String? fecTermino;
+  int? tipoId;
+  int? superId;
+  int? geoReferenciaId;
+  int? organigramaId;
+  int? entidadId;
+  bool?  activo;
+  int? cicloId;
+  int? docenteId;
+  String? gruponombre;
+  int? grupoId;
+  String? nivelAcademico;
+  int? nivelAcademicoId;
+  int? tutorId;
 
   PeriodosSeraializable(
       {this.periodoId,
@@ -1054,19 +1057,19 @@ class PeriodosSeraializable {
 
 @JsonSerializable()
 class CargaAcademicaSeraializable {
-  int cargaAcademicaId;
-  int estadoId;
-  int idAnioAcademico;
-  int idPeriodoAcad;
-  int aulaId;
-  int idGrupo;
-  int idPlanEstudio;
-  int idPlanEstudioVersion;
-  int capacidadVacante;
-  int capacidadVacanteD;
-  int idEmpleadoTutor;
-  int seccionId;
-  int periodoId;
+  int? cargaAcademicaId;
+  int? estadoId;
+  int? idAnioAcademico;
+  int? idPeriodoAcad;
+  int? aulaId;
+  int? idGrupo;
+  int? idPlanEstudio;
+  int? idPlanEstudioVersion;
+  int? capacidadVacante;
+  int? capacidadVacanteD;
+  int? idEmpleadoTutor;
+  int? seccionId;
+  int? periodoId;
 
   CargaAcademicaSeraializable(
       {this.cargaAcademicaId,
@@ -1089,10 +1092,10 @@ class CargaAcademicaSeraializable {
 }
 @JsonSerializable()
 class NivelAcademicoSeraializable{
-  int nivelAcadId;
-  String nombre;
-  bool activo;
-  int entidadId;
+  int? nivelAcadId;
+  String? nombre;
+  bool?  activo;
+  int? entidadId;
 
   NivelAcademicoSeraializable(
       {this.nivelAcadId, this.nombre, this.activo, this.entidadId});
@@ -1103,35 +1106,35 @@ class NivelAcademicoSeraializable{
 }
 @JsonSerializable()
 class AsistenciaAlumnosSerializable{
-  String asistenciaSesionId;
-  String fechaAsistenciaN;
-  String hora;
-  int georeferenciaId;
-  int alumnoId;
-  int sesionAprendizajeId;
-  int calendarioPeriodoId;
-  int cargaCursoId;
-  String valorTipoNotaId;
-  int asistenciaSesionIdAndroid;
-  int periodoId;
-  int docenteId;
-  int grupoId;
-  String fechaAsistenciaS;
-  String nombreCurso;
-  int gradoId;
-  String grado;
-  int seccionId;
-  String seccion;
-  int silaboEventoId;
-  int parametroDesenioId;
-  String correoDocente;
-  String celularDocente;
-  String telefonoDocente;
-  String fotoDocente;
-  String nombreDocente;
-  int personaIdDocente;
-  int anioAcademicoId;
-  int programaAcadId;
+  String? asistenciaSesionId;
+  String? fechaAsistenciaN;
+  String? hora;
+  int? georeferenciaId;
+  int? alumnoId;
+  int? sesionAprendizajeId;
+  int? calendarioPeriodoId;
+  int? cargaCursoId;
+  String? valorTipoNotaId;
+  int? asistenciaSesionIdAndroid;
+  int? periodoId;
+  int? docenteId;
+  int? grupoId;
+  String? fechaAsistenciaS;
+  String? nombreCurso;
+  int? gradoId;
+  String? grado;
+  int? seccionId;
+  String? seccion;
+  int? silaboEventoId;
+  int? parametroDesenioId;
+  String? correoDocente;
+  String? celularDocente;
+  String? telefonoDocente;
+  String? fotoDocente;
+  String? nombreDocente;
+  int? personaIdDocente;
+  int? anioAcademicoId;
+  int? programaAcadId;
   AsistenciaAlumnosSerializable(
       {this.asistenciaSesionId,
         this.fechaAsistenciaN,
@@ -1169,13 +1172,13 @@ class AsistenciaAlumnosSerializable{
 }
 @JsonSerializable()
 class AsistenciaJustificacionSerializable{
-  String justificacionId;
-  String asistenciaId;
-  String descripcion;
-  int tipoJustificacionId;
-  int tipoIngresoId;
-  String asistenciaSesionId;
-  String asistenciaDocenteId;
+  String? justificacionId;
+  String? asistenciaId;
+  String? descripcion;
+  int? tipoJustificacionId;
+  int? tipoIngresoId;
+  String? asistenciaSesionId;
+  String? asistenciaDocenteId;
 
 
   AsistenciaJustificacionSerializable(
@@ -1193,12 +1196,12 @@ class AsistenciaJustificacionSerializable{
 }
 @JsonSerializable()
 class AsistecniaArchivoSerializable{
-  String archivoAsistenciaId;
-  String path;
-  String nombre;
-  int tipoId;
-  String justificacionId;
-  String pathLectura;
+  String? archivoAsistenciaId;
+  String? path;
+  String? nombre;
+  int? tipoId;
+  String? justificacionId;
+  String? pathLectura;
 
 
   AsistecniaArchivoSerializable({this.archivoAsistenciaId, this.path,
@@ -1210,21 +1213,21 @@ class AsistecniaArchivoSerializable{
 }
 @JsonSerializable()
 class AsistenciaTipoNotaSerializable{
-  String tipoNotaId;
-  String nombre;
-  int tipoId;
-  String valorDefecto;
-  int valorMaximo;
-  int valorMinino;
-  double longitudPaso;
-  bool intervalo;
-  bool estatico;
-  int entidadId;
-  int georeferenciaId;
-  int organigramaId;
-  int estadoId;
-  int tipoFuenteId;
-  int escalaEvaluacionId;
+  String? tipoNotaId;
+  String? nombre;
+  int? tipoId;
+  String? valorDefecto;
+  int? valorMaximo;
+  int? valorMinino;
+  double? longitudPaso;
+  bool?  intervalo;
+  bool?  estatico;
+  int? entidadId;
+  int? georeferenciaId;
+  int? organigramaId;
+  int? estadoId;
+  int? tipoFuenteId;
+  int? escalaEvaluacionId;
 
 
   AsistenciaTipoNotaSerializable(
@@ -1251,18 +1254,18 @@ class AsistenciaTipoNotaSerializable{
 
 @JsonSerializable()
 class AsistenciaValorTipoNotaSerializable{
-  String valorTipoNotaId;
-  String tipoNotaId;
-  String titulo;
-  String alias;
-  double limiteInferior;
-  double limiteSuperior;
-  double valorNumerico;
-  String icono;
-  int estadoId;
-  bool incluidoLInferior;
-  bool incluidoLSuperior;
-  int tipoId;
+  String? valorTipoNotaId;
+  String? tipoNotaId;
+  String? titulo;
+  String? alias;
+  double? limiteInferior;
+  double? limiteSuperior;
+  double? valorNumerico;
+  String? icono;
+  int? estadoId;
+  bool?  incluidoLInferior;
+  bool?  incluidoLSuperior;
+  int? tipoId;
 
 
   AsistenciaValorTipoNotaSerializable(
@@ -1286,9 +1289,9 @@ class AsistenciaValorTipoNotaSerializable{
 
 @JsonSerializable()
 class AsistenciaRelProgramaTipoNotaSerializable{
-  int programaEducativoId;
-  String tipoNotaId;
-  bool estado;
+  int? programaEducativoId;
+  String? tipoNotaId;
+  bool?  estado;
 
 
   AsistenciaRelProgramaTipoNotaSerializable(
@@ -1302,22 +1305,22 @@ class AsistenciaRelProgramaTipoNotaSerializable{
 @JsonSerializable()
 class AsistenciaGeneralSerializable{
  
-  int controlAsistenciaId;
-  int alumnoId;
-  int calendarioPeriodoId;
-  int grupoId;
-  int periodoId;
-  int programaEducativoId;
-  int docenteId ;
-  int georeferenciaId;
-  String fechaAsistencia;
-  String horaIngreso;
-  String horaSalida;
-  int estadoIngresoId;
-  String estadosIngresoNombre;
-  int estadoSalidaId;
-  String estadosSalidaNombre;
-  String observaciones;
+  int? controlAsistenciaId;
+  int? alumnoId;
+  int? calendarioPeriodoId;
+  int? grupoId;
+  int? periodoId;
+  int? programaEducativoId;
+  int? docenteId ;
+  int? georeferenciaId;
+  String? fechaAsistencia;
+  String? horaIngreso;
+  String? horaSalida;
+  int? estadoIngresoId;
+  String? estadosIngresoNombre;
+  int? estadoSalidaId;
+  String? estadosSalidaNombre;
+  String? observaciones;
 
   AsistenciaGeneralSerializable(
       this.controlAsistenciaId,

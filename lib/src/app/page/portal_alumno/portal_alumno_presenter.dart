@@ -9,17 +9,17 @@ import 'package:padre_mentor/src/domain/usecases/update_session_usuario.dart';
 
 class PortalAlumnoPresenter extends Presenter{
   GetSessionUsuarioCase getSessionUsuarioCase;
-  Function getSesionUsuarioOnNext;
-  Function getSesionUsuarioOnComplete;
-  Function getSesionUsuarioOnError;
+  late Function getSesionUsuarioOnNext;
+  late Function getSesionUsuarioOnComplete;
+  late Function getSesionUsuarioOnError;
   UpdateSession updateSession;
   GetPrematicula getPrematicula;
-  Function getPrematiculaOnNext, getPrematiculaOnComplete, getPrematiculaOnError;
+  late Function getPrematiculaOnNext, getPrematiculaOnComplete, getPrematiculaOnError;
 
   GetEventoActuales _getEventoActuales;
-  Function getEventoActualesOnNext, getEventoActualesOnComplete, getEventoActualesOnError;
+  late Function getEventoActualesOnNext, getEventoActualesOnComplete, getEventoActualesOnError;
   final IsHabilitado _isHabilitado;
-  Function isHabilitadoOnError, isHabilitadoOnComplete;
+  late Function isHabilitadoOnError, isHabilitadoOnComplete;
 
   PortalAlumnoPresenter(checkConexRepo, httpRepository, usuarioConfiRepo ):getSessionUsuarioCase = GetSessionUsuarioCase(usuarioConfiRepo), updateSession = UpdateSession(usuarioConfiRepo), _getEventoActuales = GetEventoActuales(checkConexRepo, usuarioConfiRepo, httpRepository), getPrematicula = GetPrematicula(usuarioConfiRepo), _isHabilitado = IsHabilitado(usuarioConfiRepo, httpRepository);
 
@@ -38,7 +38,7 @@ class PortalAlumnoPresenter extends Presenter{
     getSessionUsuarioCase.execute(_GetSessionUsuarioCase(this), GetSessionUsuarioCaseParams());
   }
 
-  void getEventoActuales(int usuarioId, int tipoEventoId, List<int> hijoIdList){
+  void getEventoActuales(int? usuarioId, int tipoEventoId, List<int> hijoIdList){
     //if(_getEventoActuales!=null)_getEventoActuales.dispose();
     _getEventoActuales.execute(_GetEventoActualesCase(this), GetEventoActualesParams(usuarioId, tipoEventoId, hijoIdList));
   }
@@ -48,20 +48,20 @@ class PortalAlumnoPresenter extends Presenter{
     getDatosGenerales();
   }
 
-  void onSaveProgramaUsuario(ProgramaEducativoUi programaEducativoSelected) {
+  void onSaveProgramaUsuario(ProgramaEducativoUi? programaEducativoSelected) {
     if(programaEducativoSelected!=null){
       updateSession.execute(_UpdateSessionCase(this), UpdateSessionParams(programaAcademicoId: programaEducativoSelected.programaId, anioAcademicoId: programaEducativoSelected.anioAcademicoId, hijoSelectedId: programaEducativoSelected.hijoId));
     }
   }
 
-  void isHabilitado(int hijoPersonaId){
+  void isHabilitado(int? hijoPersonaId){
     _isHabilitado.execute(_IsHabilitadoUseCase(this), IsHabilitadoParams(hijoPersonaId));
   }
 
-  void onChangeUsuario(UsuarioUi usuarioUi, selectedTipoEventoUi) {
+  void onChangeUsuario(UsuarioUi? usuarioUi, selectedTipoEventoUi) {
     if(usuarioUi==null)return;
     List<int> hijosIdList = [];
-    for(var hijo in usuarioUi.hijos){
+    for(var hijo in usuarioUi.hijos??[]){
       hijosIdList.add(hijo.personaId);
     }
     /*if(usuarioUi.hijoSelected!=null){
@@ -90,9 +90,9 @@ class _GetEventoActualesCase extends Observer<GetEventoActualesResponse>{
   }
 
   @override
-  void onNext(GetEventoActualesResponse response) {
+  void onNext(GetEventoActualesResponse? response) {
     assert(presenter.getEventoActualesOnNext != null);
-    presenter.getEventoActualesOnNext(response.eventoUiList, response.errorServidor);
+    presenter.getEventoActualesOnNext(response?.eventoUiList, response?.errorServidor);
   }
 
 }
@@ -114,9 +114,9 @@ class _GetSessionUsuarioCase extends Observer<GetSessionUsuarioCaseResponse>{
   }
 
   @override
-  void onNext(GetSessionUsuarioCaseResponse response) {
+  void onNext(GetSessionUsuarioCaseResponse? response) {
     assert(presenter.getSesionUsuarioOnNext != null);
-    presenter.getSesionUsuarioOnNext(response.usurio);
+    presenter.getSesionUsuarioOnNext(response?.usurio);
   }
 
 }
@@ -136,7 +136,7 @@ class _UpdateSessionCase extends Observer<UpdateSessionResponse>{
   }
 
   @override
-  void onNext(UpdateSessionResponse response) {
+  void onNext(UpdateSessionResponse? response) {
 
   }
 
@@ -159,9 +159,9 @@ class _GetPrematriculaCase extends Observer<GetPrematriculaResponse>{
   }
 
   @override
-  void onNext(GetPrematriculaResponse response) {
+  void onNext(GetPrematriculaResponse? response) {
     assert(presenter.getPrematiculaOnNext != null);
-    presenter.getPrematiculaOnNext(response.titulo);
+    presenter.getPrematiculaOnNext(response?.titulo);
   }
 
 }
@@ -183,9 +183,9 @@ class _IsHabilitadoUseCase extends Observer<IsHabilitadoResponse>{
   }
 
   @override
-  void onNext(IsHabilitadoResponse response) {
+  void onNext(IsHabilitadoResponse? response) {
     assert(presenter.isHabilitadoOnComplete != null);
-    presenter.isHabilitadoOnComplete(response.habilitarAcceso);
+    presenter.isHabilitadoOnComplete(response?.habilitarAcceso);
   }
 
 }

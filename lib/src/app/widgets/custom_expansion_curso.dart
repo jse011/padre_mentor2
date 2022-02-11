@@ -6,15 +6,15 @@ const Duration _kExpand = Duration(milliseconds: 200);
 class CustomExpansionCurso extends StatefulWidget {
 
   const CustomExpansionCurso({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.backgroundColor,
     this.trailing,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.lineaColor = AppTheme.colorAccent,
-    @required this.expandedItem,
-    @required this.findChildIndexCallback,
-    @required this.length = 0
+    required this.expandedItem,
+    required this.findChildIndexCallback,
+    required this.length
   }) :  super(key: key);
 
   final CrossAxisAlignment crossAxisAlignment;
@@ -23,12 +23,12 @@ class CustomExpansionCurso extends StatefulWidget {
   final Widget title;
 
   /// The color to display behind the sublist when expanded.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// A widget to display instead of a rotating arrow icon.
-  final Widget trailing;
+  final Widget? trailing;
 
-  final ValueNotifier<Key> expandedItem;
+  final ValueNotifier<Key?> expandedItem;
 
   /// A widget to display instead of a rotating arrow icon.
   final Color lineaColor;
@@ -49,13 +49,13 @@ class _CustomExpansionCursoState extends State<CustomExpansionCurso> with Single
   final ColorTween _iconColorTween = ColorTween();
   final ColorTween _backgroundColorTween = ColorTween();
 
-  AnimationController _controller;
-  Animation<double> _iconTurns;
-  Animation<double> _heightFactor;
-  Animation<Color> _borderColor;
-  Animation<Color> _headerColor;
-  Animation<Color> _iconColor;
-  Animation<Color> _backgroundColor;
+  late AnimationController _controller;
+  late Animation<double> _iconTurns;
+  late Animation<double> _heightFactor;
+  late Animation<Color?> _borderColor;
+  late Animation<Color?> _headerColor;
+  late Animation<Color?> _iconColor;
+  late Animation<Color?> _backgroundColor;
 
   bool _isExpanded = false;
 
@@ -113,7 +113,7 @@ class _CustomExpansionCursoState extends State<CustomExpansionCurso> with Single
     widget.expandedItem.value = _isExpanded ? widget.key : null;
   }
 
-  Widget _buildChildren(BuildContext context, Widget child) {
+  Widget _buildChildren(BuildContext context, Widget? child) {
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
 
     return Container(
@@ -171,11 +171,11 @@ class _CustomExpansionCursoState extends State<CustomExpansionCurso> with Single
     _borderColorTween
       ..end = theme.dividerColor;
     _headerColorTween
-      ..begin = theme.textTheme.subhead.color
-      ..end = theme.accentColor;
+      ..begin = theme.textTheme.bodyText2?.color
+      ..end = theme.colorScheme.secondary;
     _iconColorTween
       ..begin = theme.unselectedWidgetColor
-      ..end = theme.accentColor;
+      ..end = theme.colorScheme.secondary;
     _backgroundColorTween
       ..end = widget.backgroundColor;
     super.didChangeDependencies();
@@ -186,7 +186,7 @@ class _CustomExpansionCursoState extends State<CustomExpansionCurso> with Single
     final bool closed = !_isExpanded && _controller.isDismissed;
     return AnimatedBuilder(
       animation: _controller.view,
-      builder: _buildChildren,
+      builder:(context, child) => _buildChildren(context, child),
       child: (){
         if(false){
             return widget.length > 0 ? widget.findChildIndexCallback(context, 0) :

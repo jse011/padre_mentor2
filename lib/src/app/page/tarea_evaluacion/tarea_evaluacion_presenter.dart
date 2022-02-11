@@ -5,13 +5,13 @@ import 'package:padre_mentor/src/domain/usecases/get_tarea_evaluacion.dart';
 
 class TareaEvaluacionPresenter extends Presenter{
   GetCalendarioPerido _getCalendarioPerido;
-  Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
+  late Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
   final int alumnoId;
   final int programaAcademicoId;
   final int anioAcademicoId;
   final String fotoAlumno;
   GetTareaEvaluacion _getTareaEvaluacion;
-  Function getEvaluacionOnNext, getEvaluacionOnComplete, getEvaluacionOnError;
+  late Function getEvaluacionOnNext, getEvaluacionOnComplete, getEvaluacionOnError;
 
   TareaEvaluacionPresenter(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno,usuarioConfigRepo ,cursoRepo, httpDatosRepo): _getCalendarioPerido = GetCalendarioPerido(cursoRepo), _getTareaEvaluacion = GetTareaEvaluacion(httpDatosRepo, cursoRepo, usuarioConfigRepo), super();
 
@@ -24,7 +24,7 @@ class TareaEvaluacionPresenter extends Presenter{
     _getCalendarioPerido.execute(_GetCalendarioPeridoCase(this),GetCalendarioPeridoParams(alumnoId: alumnoId, anioAcademico: anioAcademicoId, programaAcademicoId: programaAcademicoId));
   }
 
-  void getEvaluacion(CalendarioPeriodoUI calendarioPeriodoUi){
+  void getEvaluacion(CalendarioPeriodoUI? calendarioPeriodoUi){
     _getTareaEvaluacion.execute(_GetTareaEvaluacionCase(this), GetTareaEvaluacionCaseParams(anioAcademicoId, programaAcademicoId, calendarioPeriodoUi==null?0:calendarioPeriodoUi.id, alumnoId));
   }
 
@@ -48,9 +48,9 @@ class _GetCalendarioPeridoCase extends Observer<GetCalendarioPeridoResponse>{
   }
 
   @override
-  void onNext(GetCalendarioPeridoResponse response) {
+  void onNext(GetCalendarioPeridoResponse? response) {
     assert(presenter.getCalendarioPeridoOnNext != null);
-    presenter.getCalendarioPeridoOnNext(response.calendarioPeriodoList, response.calendarioPeriodoUI);
+    presenter.getCalendarioPeridoOnNext(response?.calendarioPeriodoList, response?.calendarioPeriodoUI);
   }
 
 }
@@ -73,9 +73,9 @@ class _GetTareaEvaluacionCase extends Observer<GetTareaEvaluacionCaseResponse>{
   }
 
   @override
-  void onNext(GetTareaEvaluacionCaseResponse response) {
+  void onNext(GetTareaEvaluacionCaseResponse? response) {
     assert(presenter.getEvaluacionOnNext != null);
-    presenter.getEvaluacionOnNext(response.rubroEvaluacionList, response.cantCalificado, response.cantSinCalifacar, response.offlineServidor, response.errorServidor);
+    presenter.getEvaluacionOnNext(response?.rubroEvaluacionList, response?.cantCalificado, response?.cantSinCalifacar, response?.offlineServidor, response?.errorServidor);
   }
 
 }

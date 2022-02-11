@@ -4,12 +4,12 @@ import 'home_drawer.dart';
 
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
-    Key key,
+    Key? key,
     this.drawerWidth = 250,
     this.onDrawerCall,
     this.screenView,
     this.animatedIconData = AnimatedIcons.arrow_menu,
-    this.menuView,
+     this.menuView,
     this.drawerIsOpen,
     this.screenIndex,
     this.nameUser,
@@ -19,24 +19,24 @@ class DrawerUserController extends StatefulWidget {
   }) : super(key: key);
 
   final double drawerWidth;
-  final Function(DrawerIndex) onDrawerCall;
-  final Widget screenView;
-  final Function(bool) drawerIsOpen;
+  final Function(DrawerIndex)? onDrawerCall;
+  final Widget? screenView;
+  final Function(bool)? drawerIsOpen;
   final AnimatedIconData animatedIconData;
-  final Widget menuView;
-  final DrawerIndex screenIndex;
-  final String nameUser;
-  final String photoUser;
-  final String correo;
-  final Function onClickCerrarCession;
+  final Widget? menuView;
+  final DrawerIndex? screenIndex;
+  final String? nameUser;
+  final String? photoUser;
+  final String? correo;
+  final Function? onClickCerrarCession;
   @override
   _DrawerUserControllerState createState() => _DrawerUserControllerState();
 }
 
 class _DrawerUserControllerState extends State<DrawerUserController> with TickerProviderStateMixin {
-  ScrollController scrollController;
-  AnimationController iconAnimationController;
-  AnimationController animationController;
+  late ScrollController scrollController;
+  late AnimationController iconAnimationController;
+  late AnimationController animationController;
 
   double scrolloffset = 0.0;
 
@@ -53,7 +53,7 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
             setState(() {
               scrolloffset = 1.0;
               try {
-                widget.drawerIsOpen(true);
+                widget.drawerIsOpen?.call(true);
               } catch (_) {}
             });
           }
@@ -66,14 +66,14 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
             setState(() {
               scrolloffset = 0.0;
               try {
-                widget.drawerIsOpen(false);
+                widget.drawerIsOpen?.call(false);
               } catch (_) {}
             });
           }
           iconAnimationController.animateTo(1.0, duration: const Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
         }
       });
-    WidgetsBinding.instance.addPostFrameCallback((_) => getInitState());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => getInitState());
     super.initState();
   }
 
@@ -104,12 +104,12 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
                 height: MediaQuery.of(context).size.height,
                 child: AnimatedBuilder(
                   animation: iconAnimationController,
-                  builder: (BuildContext context, Widget child) {
+                  builder: (BuildContext context, Widget? child) {
                     return Transform(
                       //transform we use for the stable drawer  we, not need to move with scroll view
                       transform: Matrix4.translationValues(scrollController.offset, 0.0, 0.0),
                       child: HomeDrawer(
-                        screenIndex: widget.screenIndex == null ? DrawerIndex.HOME : widget.screenIndex,
+                        screenIndex: widget.screenIndex == null ? DrawerIndex.HOME : widget.screenIndex!,
                         iconAnimationController: iconAnimationController,
                         nameUser: widget.nameUser,
                         photoUser: widget.photoUser,
@@ -117,7 +117,7 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
                         callBackIndex: (DrawerIndex indexType) {
                           onDrawerClick();
                           try {
-                            widget.onDrawerCall(indexType);
+                            widget.onDrawerCall?.call(indexType);
                           } catch (e) {}
                         },
                         onClickCerrarCession: widget.onClickCerrarCession,

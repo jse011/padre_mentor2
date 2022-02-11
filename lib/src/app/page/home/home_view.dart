@@ -22,7 +22,6 @@ import 'package:padre_mentor/src/app/widgets/splash.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
 import 'package:padre_mentor/utils/new_version.dart';
-import 'package:sqlite_viewer/sqlite_viewer.dart';
 
 import 'home_controller.dart';
 
@@ -35,8 +34,8 @@ class HomePage extends View{
 
 }
 class _HomePageState extends ViewState<HomePage, HomeController> {
-  DrawerIndex _drawerIndex;
-  Widget _screenView;
+  DrawerIndex? _drawerIndex;
+  Widget? _screenView;
   _HomePageState() : super(HomeController(DataUsuarioAndRepository(), DeviceHttpDatosRepositorio()));
 
   @override
@@ -91,20 +90,20 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
                     color: ChangeAppTheme.colorEspera(),
                   );
                 }else if(controller.showLoggin == 1){
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                  SchedulerBinding.instance?.addPostFrameCallback((_) {
                     // fetch data
                     LoginRouter.createRouteLogin(context);
                   });
 
                   return Container();
                 }else{
-                  changeIndex(controller.vistaActual, controller.logo);
+                  changeIndex(controller.vistaActual, controller.logo??"");
                   return Stack(
                     children: [
                       DrawerUserController(
-                        photoUser: controller.usuario == null ? '' : '${controller.usuario.foto}',
-                        nameUser: controller.usuario == null ? '' : '${controller.usuario.nombreSimple}',
-                        correo: controller.usuario == null ? '' : '${controller.usuario.correo}',
+                        photoUser: controller.usuario == null ? '' : '${controller.usuario?.foto}',
+                        nameUser: controller.usuario == null ? '' : '${controller.usuario?.nombreSimple}',
+                        correo: controller.usuario == null ? '' : '${controller.usuario?.correo}',
                         screenIndex: _drawerIndex,
                         screenView: _screenView,
                         drawerWidth: MediaQuery
@@ -155,7 +154,7 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
                                           alignment: Alignment.center,
                                           child: CachedNetworkImage(
                                               placeholder: (context, url) => CircularProgressIndicator(),
-                                              imageUrl: controller.usuario.hijoSelected == null ? '' : '${controller.usuario.hijoSelected.foto}',
+                                              imageUrl: controller.usuario?.hijoSelected == null ? '' : '${controller.usuario?.hijoSelected?.foto}',
                                               imageBuilder: (context, imageProvider) => Container(
                                                   height: 170,
                                                   width: 170,
@@ -232,7 +231,7 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
                                                                    side: BorderSide(color: HexColor("#8bc34a"))),
                                                                onPressed: () {
                                                                  controller.onClicSalirDialodDeuda();
-                                                                 Navigator.of(context).push(EstadoCuentaRouter.createRouteEstadoCuenta(fotoAlumno: controller.usuario.hijoSelected.foto , alumnoId: controller.usuario.hijoSelected.personaId));
+                                                                 Navigator.of(context).push(EstadoCuentaRouter.createRouteEstadoCuenta(fotoAlumno: controller.usuario?.hijoSelected?.foto , alumnoId: controller.usuario?.hijoSelected?.personaId));
 
                                                                },
                                                                padding: EdgeInsets.all(10.0),
@@ -263,7 +262,7 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
 
                           ),
                       ),
-                      if(controller.splash)SplashView(),
+                      if(controller.splash??false)SplashView(),
 
                     ],
                   );

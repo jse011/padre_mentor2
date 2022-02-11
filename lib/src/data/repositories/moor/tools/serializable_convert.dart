@@ -14,7 +14,7 @@ class SerializableConvert{
 
   static UsuarioData converSerializeUsuario(Map<String,dynamic> model){
     UsuarioSerial usuarioSerial = UsuarioSerial.fromJson(model);
-    return UsuarioData(usuarioId: usuarioSerial.usuarioId, personaId: usuarioSerial.personaId, usuario: usuarioSerial.usuario, password: usuarioSerial.password, estado: usuarioSerial.estado, habilitarAcceso: usuarioSerial.habilitarAcceso);
+    return UsuarioData(usuarioId: usuarioSerial.usuarioId??0, personaId: usuarioSerial.personaId, usuario: usuarioSerial.usuario, password: usuarioSerial.password, estado: usuarioSerial.estado, habilitarAcceso: usuarioSerial.habilitarAcceso);
   }
 
   static List<UsuarioData> converListSerializeUsuario(dynamic model){
@@ -29,7 +29,7 @@ class SerializableConvert{
   static PersonaData converSerializePersona(Map<String,dynamic> model){
     PersonaSerial personaSerial = PersonaSerial.fromJson(model);
     return PersonaData(
-        personaId: personaSerial.personaId,
+        personaId: personaSerial.personaId??0,
         nombres: personaSerial.nombres,
         apellidoPaterno: personaSerial.apellidoPaterno,
         apellidoMaterno: personaSerial.apellidoMaterno,
@@ -60,7 +60,7 @@ class SerializableConvert{
   static Relacione converSerializeRelaciones(Map<String,dynamic> model){
     RelacionesSerial personaSerial = RelacionesSerial.fromJson(model);
 
-    return Relacione(idRelacion: personaSerial.idRelacion, personaPrincipalId: personaSerial.personaPrincipalId, personaVinculadaId: personaSerial.personaVinculadaId,
+    return Relacione(idRelacion: personaSerial.idRelacion??0, personaPrincipalId: personaSerial.personaPrincipalId, personaVinculadaId: personaSerial.personaVinculadaId,
         tipoId: personaSerial.tipoId, activo: personaSerial.activo);
   }
 
@@ -76,7 +76,7 @@ class SerializableConvert{
   static AnioAcademicoAlumnoData converSerializeAnioAcademicoAlumno(Map<String,dynamic> model){
     AnioAcademicoAlumnoSerial academicoAlumnoSerial = AnioAcademicoAlumnoSerial.fromJson(model);
 
-    return AnioAcademicoAlumnoData(idAnioAcademico: academicoAlumnoSerial.idAnioAcademico,
+    return AnioAcademicoAlumnoData(idAnioAcademico: academicoAlumnoSerial.idAnioAcademico??0,
       nombre: academicoAlumnoSerial.nombre,
       fechaInicio: academicoAlumnoSerial.fechaFin,
       fechaFin: academicoAlumnoSerial.fechaFin,
@@ -101,7 +101,7 @@ class SerializableConvert{
   static CargaCursoData converSerializeCargaCurso(Map<String,dynamic> model){
     CargaCursosSerial serial = CargaCursosSerial.fromJson(model);
 
-    return CargaCursoData(cargaCursoId: serial.cargaCursoId,
+    return CargaCursoData(cargaCursoId: serial.cargaCursoId??0,
         planCursoId: serial.planCursoId,
         empleadoId: serial.empleadoId,
         cargaAcademicaId: serial.cargaAcademicaId,
@@ -110,8 +110,8 @@ class SerializableConvert{
         idempleado: serial.idempleado,
         idTipoHora: serial.idTipoHora,
         descripcion: serial.descripcion,
-        fechaInicio: DateTime.fromMillisecondsSinceEpoch(serial.fechaInicio),
-        fechafin: DateTime.fromMillisecondsSinceEpoch(serial.fechafin),
+        fechaInicio: DateTime.fromMillisecondsSinceEpoch(serial.fechaInicio??0),
+        fechafin: DateTime.fromMillisecondsSinceEpoch(serial.fechafin??0),
         modo: serial.modo,
         estado: serial.estado,
         anioAcademicoId: serial.anioAcademicoId,
@@ -139,7 +139,7 @@ class SerializableConvert{
   static ContratoData converSerializeContrato(Map<String,dynamic> model){
     ContratoSerial serial = ContratoSerial.fromJson(model);
 
-    return ContratoData(idContrato: serial.idContrato,
+    return ContratoData(idContrato: serial.idContrato??0,
         personaId: serial.personaId,
         idAnioAcademico: serial.idAnioAcademico,
         nroHno: serial.nroHno,
@@ -163,7 +163,7 @@ class SerializableConvert{
   static DetalleContratoAcadData converSerializeDetalleContratoAcad(Map<String,dynamic> model){
     DetalleContratoAcadSerial serial = DetalleContratoAcadSerial.fromJson(model);
 
-    return DetalleContratoAcadData(idContratoDetAcad: serial.idContratoDetAcad,
+    return DetalleContratoAcadData(idContratoDetAcad: serial.idContratoDetAcad??0,
         idContrato: serial.idContrato,
         cargaCursoId: serial.cargaCursoId,
         cargaAcademicaId: serial.cargaAcademicaId,
@@ -188,7 +188,7 @@ class SerializableConvert{
   static PlanCurso converSerializePlanCurso(Map<String,dynamic> model){
     PlanCursosSerial serial = PlanCursosSerial.fromJson(model);
 
-    return PlanCurso(planCursoId: serial.planCursoId,
+    return PlanCurso(planCursoId: serial.planCursoId??0,
         cursoId: serial.cursoId,
         periodoId: serial.periodoId,
         planEstudiosId: serial.planEstudiosId);
@@ -206,7 +206,7 @@ class SerializableConvert{
   static PlanEstudioData converSerializePlanEstudio(Map<String,dynamic> model){
     PlanEstudiosSerial serial = PlanEstudiosSerial.fromJson(model);
 
-    return PlanEstudioData( planEstudiosId: serial.planEstudiosId,
+    return PlanEstudioData( planEstudiosId: serial.planEstudiosId??0,
         programaEduId: serial.programaEduId,
         nombrePlan: serial.nombrePlan,
         aliasPlan: serial.alias,
@@ -227,7 +227,7 @@ class SerializableConvert{
   static ProgramasEducativoData converSerializeProgramasEducativo(Map<String,dynamic> model){
     ProgramasEducativoSerial serial = ProgramasEducativoSerial.fromJson(model);
 
-    return ProgramasEducativoData( programaEduId: serial.programaEduId,
+    return ProgramasEducativoData( programaEduId: serial.programaEduId??0,
         nombre: serial.nombre,
         nroCiclos: serial.nroCiclos,
         nivelAcadId: serial.nivelAcadId,
@@ -253,7 +253,7 @@ class SerializableConvert{
     CalendarioAcademicoSerial serial = CalendarioAcademicoSerial.fromJson(model);
 
     return CalendarioAcademicoData(
-        calendarioAcademicoId: serial.calendarioAcademicoId,
+        calendarioAcademicoId: serial.calendarioAcademicoId??0,
         programaEduId: serial.programaEduId,
         idAnioAcademico: serial.idAnioAcademico,
         estadoId: serial.estadoId);
@@ -272,9 +272,9 @@ class SerializableConvert{
     CalendarioPeriodoSerial serial = CalendarioPeriodoSerial.fromJson(model);
 
     return CalendarioPeriodoData(
-        calendarioPeriodoId: serial.calendarioPeriodoId,
-        fechaInicio:  DateTime.fromMillisecondsSinceEpoch(serial.fechaInicio),
-        fechaFin:  DateTime.fromMillisecondsSinceEpoch(serial.fechaFin),
+        calendarioPeriodoId: serial.calendarioPeriodoId??0,
+        fechaInicio:  DateTime.fromMillisecondsSinceEpoch(serial.fechaInicio??0),
+        fechaFin:  DateTime.fromMillisecondsSinceEpoch(serial.fechaFin??0),
         calendarioAcademicoId: serial.calendarioAcademicoId,
         tipoId: serial.tipoId,
         estadoId: serial.estadoId,
@@ -294,7 +294,7 @@ class SerializableConvert{
     TiposSerial serial = TiposSerial.fromJson(model);
 
     return Tipo(
-        tipoId: serial.tipoId,
+        tipoId: serial.tipoId??0,
         objeto: serial.objeto,
         concepto: serial.concepto,
         nombre: serial.nombre,
@@ -315,7 +315,7 @@ class SerializableConvert{
     AreasBoletaSerial serial = AreasBoletaSerial.fromJson(model);
 
     return AreasBoletaData(
-        rubroEvalResultadoId: serial.rubroEvalResultadoId,
+        rubroEvalResultadoId: serial.rubroEvalResultadoId??0,
         nombre: serial.nombre,
         tipoConceptoId: serial.tipoConceptoId,
         totalHt: serial.totalHt,
@@ -350,7 +350,7 @@ class SerializableConvert{
     NotasCalendarioBoletaSerial serial = NotasCalendarioBoletaSerial.fromJson(model);
 
     return NotasCalendarioBoletaData(
-        evaluacionResultadoId: serial.evaluacionResultadoId,
+        evaluacionResultadoId: serial.evaluacionResultadoId??0,
         rubroEvalResultadoId: serial.rubroEvalResultadoId,
         alumnoId: serial.alumnoId,
         silaboEventoId: serial.silaboEventoId,
@@ -376,7 +376,7 @@ class SerializableConvert{
   static ParametrosDisenioData converSerializeParametrosDisenio(Map<String,dynamic> model){
     ParametrosDisenioSerial serial = ParametrosDisenioSerial.fromJson(model);
     return ParametrosDisenioData(
-        parametroDisenioId: serial.parametroDisenioId,
+        parametroDisenioId: serial.parametroDisenioId??0,
         objeto: serial.objeto,
         concepto: serial.concepto,
         nombre: serial.nombre,
@@ -400,7 +400,7 @@ class SerializableConvert{
   static SilaboEventoData converSerializeSilaboEvento(Map<String,dynamic> model){
     SilaboEventoSerial serial = SilaboEventoSerial.fromJson(model);
     return SilaboEventoData(
-        silaboEventoId: serial.silaboEventoId,
+        silaboEventoId: serial.silaboEventoId??0,
         titulo: serial.titulo,
         descripcionGeneral: serial.descripcionGeneral,
         planCursoId: serial.planCursoId,
@@ -432,7 +432,7 @@ class SerializableConvert{
     RubroEvalDesempeniosSerial serial = RubroEvalDesempeniosSerial.fromJson(model);
     return RubroEvalDesempenioData(
         nombreCurso: serial.nombreCurso,
-        fechaEvaluacion: DateTime.fromMillisecondsSinceEpoch(serial.fechaEvaluacion),
+        fechaEvaluacion: DateTime.fromMillisecondsSinceEpoch(serial.fechaEvaluacion??0),
         tituloEvaluacion: serial.tituloEvaluacion,
         formaEvaluacion: serial.formaEvaluacion,
         tipoRubroEvalId: serial.tipoRubroEvalId,
@@ -455,7 +455,7 @@ class SerializableConvert{
         notaEvalaucion: serial.notaEvalaucion,
         desempenioEvalaucion: serial.desempenioEvalaucion,
         desempenioIcdTipoId: serial.desempenioIcdTipoId,
-        evaluacionProcesoId: serial.evaluacionProcesoId
+        evaluacionProcesoId: serial.evaluacionProcesoId??""
     );
   }
 
@@ -489,10 +489,10 @@ class SerializableConvert{
   static TareaCursoData converSerializeTareaCurso(Map<String,dynamic> model){
     TareaCursoSerializable serial = TareaCursoSerializable.fromJson(model);
     return TareaCursoData(
-        tareaId: serial.tareaId,
+        tareaId: serial.tareaId??"",
         tareaTitulo: serial.tareaTitulo,
         tareaInstrucciones: serial.tareaInstrucciones,
-        tareafechaCreacion: DateTime.fromMillisecondsSinceEpoch(serial.tareafechaCreacion),
+        tareafechaCreacion: DateTime.fromMillisecondsSinceEpoch(serial.tareafechaCreacion??0),
         tareaEstadoId: serial.tareaEstadoId,
         unidadAprendizajeId: serial.unidadAprendizajeId,
         sesionAprendizajeId: serial.sesionAprendizajeId,
@@ -502,7 +502,7 @@ class SerializableConvert{
         grado: serial.grado,
         seccionId: serial.seccionId,
         seccion: serial.seccion,
-        fechaEvaluacion: DateTime.fromMillisecondsSinceEpoch(serial.fechaEvaluacion),
+        fechaEvaluacion: DateTime.fromMillisecondsSinceEpoch(serial.fechaEvaluacion??0),
         tituloEvaluacion: serial.tituloEvaluacion,
         formaEvaluacion: serial.formaEvaluacion,
         tipoRubroEvalId: serial.tipoRubroEvalId,
@@ -540,7 +540,7 @@ class SerializableConvert{
   static EventoData converSerializeEvento(Map<String,dynamic> model){
     EventoSerializable serial = EventoSerializable.fromJson(model);
     return EventoData(
-        eventoId: serial.eventoId,
+        eventoId: serial.eventoId??"",
         titulo: serial.titulo,
         descripcion: serial.descripcion,
         calendarioId: serial.calendarioId,
@@ -575,7 +575,7 @@ class SerializableConvert{
   static CalendarioData converSerializeCalendario(Map<String,dynamic> model){
     CalendarioSerializable serial = CalendarioSerializable.fromJson(model);
     return CalendarioData(
-      calendarioId: serial.calendarioId,
+      calendarioId: serial.calendarioId??"",
       nombre: serial.nombre,
       descripcion: serial.descripcion,
       estado: serial.estado,
@@ -588,9 +588,9 @@ class SerializableConvert{
       cargaCursoId: serial.cargaCursoId,
       estadoPublicacionCal: serial.estadoPublicacion,
       rolId: serial.rolId,
-      fechaCreacion:  DateTime.fromMillisecondsSinceEpoch(serial.fechaCreacion),
+      fechaCreacion:  DateTime.fromMillisecondsSinceEpoch(serial.fechaCreacion??0),
       usuarioAccionId: serial.usuarioAccionId,
-      fechaAccion:  DateTime.fromMillisecondsSinceEpoch(serial.fechaAccion),
+      fechaAccion:  DateTime.fromMillisecondsSinceEpoch(serial.fechaAccion??0),
     );
   }
 
@@ -606,7 +606,7 @@ class SerializableConvert{
   static ContactoData converSerializeContacto(Map<String,dynamic> model){
     ContactoSerializable serial = ContactoSerializable.fromJson(model);
     return ContactoData(
-        personaId: serial.personaId,
+        personaId: serial.personaId??0,
         nombres: serial.nombres,
         apellidoPaterno: serial.apellidoPaterno,
         apellidoMaterno: serial.apellidoMaterno,
@@ -621,11 +621,11 @@ class SerializableConvert{
         numDoc: serial.numDoc,
         foto: serial.foto,
         nombreTipo: serial.nombreTipo,
-        tipo: serial.tipo,
-        companieroId: serial.companieroId,
+        tipo: serial.tipo??0,
+        companieroId: serial.companieroId??0,
         hijoRelacionId: serial.hijoRelacionId,
         relacion: serial.relacion,
-        cargaCursoId: serial.cargaCursoId
+        cargaCursoId: serial.cargaCursoId??0
     );
   }
 
@@ -642,7 +642,7 @@ class SerializableConvert{
   static EntidadData converSerializeEntidad(Map<String,dynamic> model){
     EntidadSerializable serial = EntidadSerializable.fromJson(model);
     return EntidadData(
-        entidadId: serial.entidadId,
+        entidadId: serial.entidadId??0,
         tipoId: serial.tipoId,
         parentId: serial.parentId,
         nombre: serial.nombre,
@@ -667,7 +667,7 @@ class SerializableConvert{
   static GeoreferenciaData converSerializeGeoreferencia(Map<String,dynamic> model){
     GeoreferenciaSerializable serial = GeoreferenciaSerializable.fromJson(model);
     return GeoreferenciaData(
-        georeferenciaId: serial.georeferenciaId,
+        georeferenciaId: serial.georeferenciaId??0,
         nombre: serial.nombre,
         entidadId: serial.entidadId,
         geoAlias: serial.alias,
@@ -687,7 +687,7 @@ class SerializableConvert{
   static RolData converSerializeRol(Map<String,dynamic> model){
     RolSerializable serial = RolSerializable.fromJson(model);
     return RolData(
-        rolId: serial.rolId,
+        rolId: serial.rolId??0,
         nombre: serial.nombre,
         parentId: serial.parentId,
         estado: serial.estado
@@ -706,7 +706,7 @@ class SerializableConvert{
   static UsuarioRolGeoreferenciaData converSerializeUsuarioRolGeoreferencia(Map<String,dynamic> model){
     UsuarioRolGeoreferenciaSerializable serial = UsuarioRolGeoreferenciaSerializable.fromJson(model);
     return UsuarioRolGeoreferenciaData(
-        usuarioRolGeoreferenciaId: serial.usuarioRolGeoreferenciaId,
+        usuarioRolGeoreferenciaId: serial.usuarioRolGeoreferenciaId??0,
         usuarioId: serial.usuarioId,
         rolId: serial.rolId,
         geoReferenciaId: serial.geoReferenciaId,
@@ -735,7 +735,7 @@ class SerializableConvert{
   static Curso converSerializeCursos(Map<String,dynamic> model){
     CursosSerializable serial = CursosSerializable.fromJson(model);
     return Curso(
-        cursoId: serial.cursoId,
+        cursoId: serial.cursoId??0,
         nombre: serial.nombre,
         estadoId: serial.estadoId,
         descripcion: serial.descripcion,
@@ -771,7 +771,7 @@ class SerializableConvert{
   static AulaData converSerializeAula(Map<String,dynamic> model){
     AulaSeraializable serial = AulaSeraializable.fromJson(model);
     return AulaData(
-        aulaId: serial.aulaId,
+        aulaId: serial.aulaId??0,
         descripcion: serial.descripcion,
         numero: serial.numero,
         capacidad: serial.capacidad,
@@ -790,7 +790,7 @@ class SerializableConvert{
   static Periodo converSerializePeriodos(Map<String,dynamic> model){
     PeriodosSeraializable serial = PeriodosSeraializable.fromJson(model);
     return Periodo(
-        periodoId: serial.periodoId,
+        periodoId: serial.periodoId??0,
         nombre: serial.nombre,
         estadoId: serial.estadoId,
         aliasPeriodo: serial.alias,
@@ -823,7 +823,7 @@ class SerializableConvert{
   static SeccionData converSerializeSeccion(Map<String,dynamic> model){
     SeccionSeraializable serial = SeccionSeraializable.fromJson(model);
     return SeccionData(
-        seccionId: serial.seccionId,
+        seccionId: serial.seccionId??0,
         nombre: serial.nombre,
         descripcion: serial.descripcion,
         estado: serial.estado,
@@ -842,7 +842,7 @@ class SerializableConvert{
   static CargaAcademicaData converSerializeCargaAcademica(Map<String,dynamic> model){
     CargaAcademicaSeraializable serial = CargaAcademicaSeraializable.fromJson(model);
     return CargaAcademicaData(
-        cargaAcademicaId: serial.cargaAcademicaId,
+        cargaAcademicaId: serial.cargaAcademicaId??0,
         estadoId: serial.estadoId,
         idAnioAcademico: serial.idAnioAcademico,
         idPeriodoAcad: serial.idPeriodoAcad,
@@ -869,7 +869,7 @@ class SerializableConvert{
   static NivelAcademicoData converSerializeNivelAcademico(Map<String,dynamic> model){
     NivelAcademicoSeraializable serial = NivelAcademicoSeraializable.fromJson(model);
     return NivelAcademicoData(
-        nivelAcadId: serial.nivelAcadId,
+        nivelAcadId: serial.nivelAcadId??0,
         nombre: serial.nombre,
         activo: serial.activo,
         entidadId: serial.entidadId);
@@ -887,7 +887,7 @@ class SerializableConvert{
   static AsistenciaAlumno converSerializeAsistenciaAlumnos(Map<String,dynamic> model){
     AsistenciaAlumnosSerializable serial = AsistenciaAlumnosSerializable.fromJson(model);
     return AsistenciaAlumno(
-        asistenciaSesionId: serial.asistenciaSesionId,
+        asistenciaSesionId: serial.asistenciaSesionId??"",
         fechaAsistenciaN: serial.fechaAsistenciaN,
         hora: serial.hora,
         georeferenciaId: serial.georeferenciaId,
@@ -931,7 +931,7 @@ class SerializableConvert{
   static AsistenciaJustificacionData converSerializeAsistenciaJustificacion(Map<String,dynamic> model){
     AsistenciaJustificacionSerializable serial = AsistenciaJustificacionSerializable.fromJson(model);
     return AsistenciaJustificacionData(
-        justificacionId: serial.justificacionId,
+        justificacionId: serial.justificacionId??"",
         asistenciaId: serial.asistenciaId,
         descripcion: serial.descripcion,
         tipoJustificacionId: serial.tipoJustificacionId,
@@ -952,7 +952,7 @@ class SerializableConvert{
   static AsistecniaArchivoData converSerializeAsistecniaArchivo(Map<String,dynamic> model){
     AsistecniaArchivoSerializable serial = AsistecniaArchivoSerializable.fromJson(model);
     return AsistecniaArchivoData(
-        archivoAsistenciaId: serial.archivoAsistenciaId,
+        archivoAsistenciaId: serial.archivoAsistenciaId??"",
         path: serial.path,
         nombre: serial.nombre,
         tipoId: serial.tipoId,
@@ -972,7 +972,7 @@ class SerializableConvert{
   static AsistenciaTipoNotaData converSerializeAsistecniaAsistenciaTipoNota(Map<String,dynamic> model){
     AsistenciaTipoNotaSerializable serial = AsistenciaTipoNotaSerializable.fromJson(model);
     return AsistenciaTipoNotaData(
-        tipoNotaId: serial.tipoNotaId,
+        tipoNotaId: serial.tipoNotaId??"",
         nombre: serial.nombre,
         tipoId: serial.tipoId,
         valorDefecto: serial.valorDefecto,
@@ -1001,7 +1001,7 @@ class SerializableConvert{
   static AsistenciaValorTipoNotaData converSerializeAsistenciaValorTipoNota(Map<String,dynamic> model){
     AsistenciaValorTipoNotaSerializable serial = AsistenciaValorTipoNotaSerializable.fromJson(model);
     return AsistenciaValorTipoNotaData(
-        valorTipoNotaId: serial.valorTipoNotaId,
+        valorTipoNotaId: serial.valorTipoNotaId??"",
         tipoNotaId: serial.tipoNotaId,
         titulo: serial.titulo,
         tipoNotaAlias: serial.alias,
@@ -1027,7 +1027,7 @@ class SerializableConvert{
   static AsistenciaRelProgramaTipoNotaData converSerializeAsisteciaRelProgramaTipoNota(Map<String,dynamic> model){
     AsistenciaRelProgramaTipoNotaSerializable serial = AsistenciaRelProgramaTipoNotaSerializable.fromJson(model);
     return AsistenciaRelProgramaTipoNotaData(
-        programaEducativoId: serial.programaEducativoId,
+        programaEducativoId: serial.programaEducativoId??0,
         tipoNotaId: serial.tipoNotaId,
         estado: serial.estado);
   }
@@ -1044,7 +1044,7 @@ class SerializableConvert{
   static AsistenciaGeneralData converSerializeAsistenciaGeneral(Map<String,dynamic> model){
     AsistenciaGeneralSerializable serial = AsistenciaGeneralSerializable.fromJson(model);
     return AsistenciaGeneralData(
-        controlAsistenciaId: serial.controlAsistenciaId,
+        controlAsistenciaId: serial.controlAsistenciaId??0,
         alumnoId: serial.alumnoId,
         calendarioPeriodoId: serial.calendarioPeriodoId,
         grupoId: serial.grupoId,

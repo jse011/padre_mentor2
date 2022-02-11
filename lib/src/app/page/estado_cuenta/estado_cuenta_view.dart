@@ -11,8 +11,8 @@ import 'package:padre_mentor/src/app/widgets/animation_view.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuracion_respository.dart';
 
 class EstadoCuentaView extends View{
-  final String fotoAlumno;
-  final int alumnoId;
+  final String? fotoAlumno;
+  final int? alumnoId;
 
   EstadoCuentaView({this.fotoAlumno, this.alumnoId});
 

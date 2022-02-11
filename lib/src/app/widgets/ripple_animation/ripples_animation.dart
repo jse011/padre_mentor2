@@ -6,18 +6,18 @@ import 'cuve_wave.dart';
 
 
 class RipplesAnimation extends StatefulWidget {
-  const RipplesAnimation({Key key, this.size = 80.0, this.color = Colors.red,
-    this.onPressed, @required this.child,}) : super(key: key);
+  const RipplesAnimation({Key? key, this.size = 80.0, this.color = Colors.red,
+    this.onPressed, required this.child,}) : super(key: key);
   final double size;
   final Color color;
   final Widget child;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   @override
   _RipplesAnimationState createState() => _RipplesAnimationState();
 }
 
 class _RipplesAnimationState extends State<RipplesAnimation> with TickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,7 @@ class _RipplesAnimationState extends State<RipplesAnimation> with TickerProvider
             gradient: RadialGradient(
               colors: <Color>[
                 widget.color,
-                Color.lerp(widget.color, Colors.black, .05)
+                Color.lerp(widget.color, Colors.black, .05)??Colors.black
               ],
             ),
           ),

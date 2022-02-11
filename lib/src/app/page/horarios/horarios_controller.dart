@@ -14,19 +14,20 @@ class HorariosController extends Controller{
   final String fotoAlumno;
   List<CalendarioPeriodoUI> _calendarioPeriodoList = [];
   List<CalendarioPeriodoUI> get calendarioPeriodoList => _calendarioPeriodoList;
-  CalendarioPeriodoUI _calendarioPeriodoUI = null;
-  CalendarioPeriodoUI get calendarioPeriodoUI => _calendarioPeriodoUI;
+  CalendarioPeriodoUI? _calendarioPeriodoUI = null;
+  CalendarioPeriodoUI? get calendarioPeriodoUI => _calendarioPeriodoUI;
   bool _isLoading = false;
   get isLoading => _isLoading;
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
 
-  HorariosController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, UsuarioAndConfiguracionRepository usuarioConfigRepo, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo): presenter = HorariosPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo), super();
+  HorariosController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, UsuarioAndConfiguracionRepository usuarioConfigRepo, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo):
+        presenter = HorariosPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo), super();
 
   @override
   void initListeners() {
-    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI> items, CalendarioPeriodoUI calendarioPeriodoUI){
-      _calendarioPeriodoList = items;
+    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI>? items, CalendarioPeriodoUI? calendarioPeriodoUI){
+      _calendarioPeriodoList = items??[];
       _calendarioPeriodoUI = calendarioPeriodoUI;
       refreshUI();
     };
@@ -52,7 +53,7 @@ class HorariosController extends Controller{
     for(var item in  _calendarioPeriodoList){
       item.selected = false;
     }
-    calendarioPeriodoUI.selected = true;
+    calendarioPeriodoUI?.selected = true;
     //showProgress();
 
     refreshUI();

@@ -11,11 +11,11 @@ class TareaEvaluacionController extends Controller{
   final String fotoAlumno;
   List<CalendarioPeriodoUI> _calendarioPeriodoList = [];
 
-  String _msgConexion = null;
-  String get msgConexion => _msgConexion;
+  String? _msgConexion = null;
+  String? get msgConexion => _msgConexion;
   List<CalendarioPeriodoUI> get calendarioPeriodoList => _calendarioPeriodoList;
-  CalendarioPeriodoUI _calendarioPeriodoUI = null;
-  CalendarioPeriodoUI get calendarioPeriodoUI => _calendarioPeriodoUI;
+  CalendarioPeriodoUI? _calendarioPeriodoUI = null;
+  CalendarioPeriodoUI? get calendarioPeriodoUI => _calendarioPeriodoUI;
   List<dynamic> _rubroEvaluacionList = [];
   List<dynamic> get rubroEvaluacionList => _rubroEvaluacionList;
   bool _isLoading = false;
@@ -30,8 +30,8 @@ class TareaEvaluacionController extends Controller{
 
   @override
   void initListeners() {
-    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI> items, CalendarioPeriodoUI calendarioPeriodoUI){
-      _calendarioPeriodoList = items;
+    presenter.getCalendarioPeridoOnNext = (List<CalendarioPeriodoUI>? items, CalendarioPeriodoUI? calendarioPeriodoUI){
+      _calendarioPeriodoList = items??[];
       _calendarioPeriodoUI = calendarioPeriodoUI;
       refreshUI();
     };
@@ -50,12 +50,12 @@ class TareaEvaluacionController extends Controller{
       refreshUI();
     };
 
-    presenter.getEvaluacionOnNext = (List<dynamic> items, int cantCalificado, int cantSinCalificar, bool offlineServidor, bool errorServidor){
-      _rubroEvaluacionList = items;
-      _cantCalificado = cantCalificado;
-      _cantSinCalificar = cantSinCalificar;
-      _msgConexion = errorServidor? "!Oops! Al parecer ocurrió un error involuntario.":null;
-      _msgConexion = offlineServidor? "No hay Conexión a Internet...":null;
+    presenter.getEvaluacionOnNext = (List<dynamic>? items, int? cantCalificado, int? cantSinCalificar, bool? offlineServidor, bool? errorServidor){
+      _rubroEvaluacionList = items??[];
+      _cantCalificado = cantCalificado??0;
+      _cantSinCalificar = cantSinCalificar??0;
+      _msgConexion = (errorServidor??false)? "!Oops! Al parecer ocurrió un error involuntario.":null;
+      _msgConexion = (offlineServidor??false)? "No hay Conexión a Internet...":null;
       hideProgress();
       refreshUI();
     };
@@ -77,7 +77,7 @@ class TareaEvaluacionController extends Controller{
     for(var item in  _calendarioPeriodoList){
       item.selected = false;
     }
-    calendarioPeriodoUI.selected = true;
+    calendarioPeriodoUI?.selected = true;
     showProgress();
     presenter.getEvaluacion(calendarioPeriodoUi);
     refreshUI();

@@ -17,8 +17,8 @@ import 'package:padre_mentor/src/domain/entities/hijos_ui.dart';
 class FamiliaView extends View{
 
   final AnimationController animationController;
-  ValueNotifier<Key> _expanded = ValueNotifier(null);
-  FamiliaView({this.animationController});
+  ValueNotifier<Key?> _expanded = ValueNotifier(null);
+  FamiliaView({required this.animationController});
 
   @override
   _FamiliaViewState createState() => _FamiliaViewState();
@@ -26,7 +26,7 @@ class FamiliaView extends View{
 }
 
 class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
@@ -96,7 +96,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
       children: <Widget>[
         AnimatedBuilder(
           animation: widget.animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -337,14 +337,14 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                                   child: CustomExpansionTile(
                                     expandedItem: widget._expanded,
-                                    key: Key(hijoUi?.personaId.toString()??''),
+                                    key: Key(hijoUi.personaId.toString()??''),
                                     title: Container(
                                         margin: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                                         padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(hijoUi?.nombre??'', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 16, color: AppTheme.darkerText, fontWeight: FontWeight.w400),),
+                                            Text(hijoUi.nombre??'', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 16, color: AppTheme.darkerText, fontWeight: FontWeight.w400),),
                                             Text("Hijo", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle( fontSize: 12, color: AppTheme.lightText.withOpacity(0.9), fontWeight: FontWeight.w400),),
                                           ],
                                         )
@@ -359,7 +359,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                         height: 50,
                                         width: 50,
                                         placeholder: (context, url) => CircularProgressIndicator(),
-                                        imageUrl: hijoUi?.foto??'',
+                                        imageUrl: hijoUi.foto??'',
                                         imageBuilder: (context, imageProvider) =>
                                             Container(
                                                 decoration: BoxDecoration(
@@ -383,7 +383,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 14, top: 8, right: 24),
-                                        child: Text(hijoUi?.fechaNacimiento??'', style: TextStyle(fontSize: 16)),
+                                        child: Text(hijoUi.fechaNacimiento??'', style: TextStyle(fontSize: 16)),
                                       ),
 
                                       Container(
@@ -402,7 +402,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only( top: 8),
-                                                      child: Text(hijoUi?.celular != null && hijoUi?.celular.isNotEmpty ? hijoUi?.celular: 'Sin teléfono', style: TextStyle(fontSize: 16)),
+                                                      child: Text(hijoUi.celular != null && (hijoUi.celular??"").isNotEmpty ? hijoUi.celular??"": 'Sin teléfono', style: TextStyle(fontSize: 16)),
                                                     ),
                                                   ],
                                                 )
@@ -418,7 +418,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only( top: 8),
-                                                      child: Text(hijoUi?.correo != null && hijoUi?.correo.isNotEmpty? hijoUi?.correo : 'Sin correo', style: TextStyle(fontSize: 16)),
+                                                      child: Text(hijoUi.correo != null && (hijoUi.correo??"").isNotEmpty? hijoUi.correo??"" : 'Sin correo', style: TextStyle(fontSize: 16)),
                                                     ),
                                                   ],
                                                 )
@@ -515,7 +515,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only( top: 8),
-                                                      child: Text(familiaUi?.celular != null && familiaUi?.celular.isNotEmpty ? familiaUi?.celular: 'Sin teléfono', style: TextStyle(fontSize: 16)),
+                                                      child: Text(familiaUi.celular != null && (familiaUi.celular??"").isNotEmpty ? familiaUi.celular??"": 'Sin teléfono', style: TextStyle(fontSize: 16)),
                                                     ),
                                                   ],
                                                 )
@@ -531,7 +531,7 @@ class _FamiliaViewState extends ViewState<FamiliaView, FamiliaController>{
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only( top: 8),
-                                                      child: Text(familiaUi?.correo != null && familiaUi?.correo.isNotEmpty? familiaUi?.correo : 'Sin correo', style: TextStyle(fontSize: 16)),
+                                                      child: Text(familiaUi.correo != null && (familiaUi.correo??"").isNotEmpty? familiaUi.correo??"" : 'Sin correo', style: TextStyle(fontSize: 16)),
                                                     ),
                                                   ],
                                                 )

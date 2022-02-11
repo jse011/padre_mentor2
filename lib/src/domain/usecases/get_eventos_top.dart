@@ -77,9 +77,9 @@ class GetEventoActuales extends UseCase<GetEventoActualesResponse, GetEventoActu
 }
 
 class GetEventoActualesParams {
-  int usuarioId;
-  int tipoEventoId;
-  List<int> hijoIdList;
+  int? usuarioId;
+  int? tipoEventoId;
+  List<int>? hijoIdList;
 
   GetEventoActualesParams(this.usuarioId, this.tipoEventoId, this.hijoIdList);
 

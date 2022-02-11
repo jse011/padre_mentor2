@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 class ArsProgressWidget extends StatelessWidget {
   /// Main widget of dialog,
-  Widget loadingWidget;
+  Widget? loadingWidget;
 
   /// This function will trigger when user dismisses dialog
-  final Function onDismiss;
+  final Function? onDismiss;
 
   /// Amount of background blur
   final double blur;
@@ -48,7 +48,7 @@ class ArsProgressWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return _DialogBackground(
       blur: blur,
-      dismissable: dismissable ?? true,
+      dismissable: dismissable,
       onDismiss: onDismiss,
       color: backgroundColor,
       animationDuration: animationDuration,
@@ -66,17 +66,17 @@ class ArsProgressWidget extends StatelessWidget {
 // ignore: must_be_immutable
 class _DialogBackground extends StatelessWidget {
   /// Widget of dialog, you can use NDialog, Dialog, AlertDialog or Custom your own Dialog
-  final Widget dialog;
+  final Widget? dialog;
 
   /// Because blur dialog cover the barrier, you have to declare here
-  final bool dismissable;
+  final bool? dismissable;
 
   /// Action before dialog dismissed
-  final Function onDismiss;
+  final Function? onDismiss;
 
   /// Creates an background filter that applies a Gaussian blur.
   /// Default = 0
-  final double blur;
+  final double? blur;
 
   /// Background color
   final Color color;
@@ -85,7 +85,7 @@ class _DialogBackground extends StatelessWidget {
   final Duration animationDuration;
 
   /// Color Opacity
-  double _colorOpacity;
+  double? _colorOpacity;
 
   _DialogBackground(
       {this.dialog,
@@ -93,7 +93,7 @@ class _DialogBackground extends StatelessWidget {
         this.blur,
         this.onDismiss,
         this.animationDuration: const Duration(milliseconds: 300),
-        this.color}) {
+        this.color: Colors.red}) {
     _colorOpacity = color.opacity;
   }
 
@@ -105,14 +105,13 @@ class _DialogBackground extends StatelessWidget {
         builder: (context, val, child) {
           return Material(
             type: MaterialType.canvas,
-            color: color.withOpacity(val * _colorOpacity),
+            color: color.withOpacity(((val??0.0) as double)  * (_colorOpacity??0.0)),
             child: WillPopScope(
               onWillPop: () async {
                 if (dismissable ?? true) {
-                  if (onDismiss != null) onDismiss();
-
+                  if (onDismiss != null)onDismiss!();
                 }
-                return;
+                return false;
               },
               child: Stack(
                 clipBehavior: Clip.antiAlias,
@@ -122,21 +121,21 @@ class _DialogBackground extends StatelessWidget {
                       onTap: dismissable ?? true
                           ? () {
                         if (onDismiss != null) {
-                          onDismiss();
+                          onDismiss!();
                         }
 
                       }
                           : () {},
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
-                          sigmaX: val * blur,
-                          sigmaY: val * blur,
+                          sigmaX: (val as double) * (blur??0.0),
+                          sigmaY: (val as double) * (blur??0.0),
                         ),
                         child: Container(
                           color: Colors.transparent,
                         ),
                       )),
-                  dialog
+                  dialog??Container()
                 ],
               ),
             ),

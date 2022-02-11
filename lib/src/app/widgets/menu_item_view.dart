@@ -4,19 +4,19 @@ import 'package:flutter_svg/svg.dart';
 import '../utils/app_theme.dart';
 
 class MenuItemView extends StatelessWidget {
-  final String titulo;
-  final String imagepath;
+  final String? titulo;
+  final String? imagepath;
   final AnimationController animationController;
-  final Animation animation;
-  final Function onTap;
-  const MenuItemView({Key key, this.animationController, this.animation, this.titulo, this.imagepath, this.onTap})
+  final Animation<double> animation;
+  final Function? onTap;
+  const MenuItemView({Key? key, required this.animationController, required this.animation, this.titulo, this.imagepath, this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animationController,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return FadeTransition(
           opacity: animation,
           child: new Transform(
@@ -47,8 +47,8 @@ class MenuItemView extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                   splashColor: AppTheme.nearlyDarkBlue.withOpacity(0.2),
                   onTap: () {
-                    if(onTap!=null)
-                      onTap();
+
+                      onTap?.call();
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -57,13 +57,13 @@ class MenuItemView extends StatelessWidget {
                         padding:
                         const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
                         child: SvgPicture.asset(
-                          imagepath,
+                          imagepath??"",
                           semanticsLabel:"Eventos",
                         ),
                       )),
                       Container(
                         margin: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 16),
-                        child: Text(titulo, textAlign: TextAlign.center, style: TextStyle(fontSize: 12),),
+                        child: Text(titulo??"", textAlign: TextAlign.center, style: TextStyle(fontSize: 12),),
                       ),
                     ],
                   ),

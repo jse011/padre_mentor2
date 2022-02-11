@@ -2,15 +2,16 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
+//import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
+import 'package:padre_mentor/src/app/widgets/smart_text_view.dart';
 import 'package:padre_mentor/src/domain/entities/evento_ui.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:smart_text_view/smart_text_view.dart';
+//import 'package:smart_text_view/smart_text_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InformacionEventoAgendaView extends StatefulWidget {
@@ -55,7 +56,7 @@ class _InformacionEventoAgendaViewState extends State<InformacionEventoAgendaVie
             child: Stack(
               alignment: AlignmentDirectional.center,
               children: [
-                if(widget.eventoUi.foto!=null&&widget.eventoUi.foto.isNotEmpty)
+                if(widget.eventoUi.foto!=null&&(widget.eventoUi.foto??"").isNotEmpty)
                   PhotoView(
                   imageProvider: CachedNetworkImageProvider(widget.eventoUi.foto??''),
                   loadingBuilder: (context, event) => Center(
@@ -65,7 +66,7 @@ class _InformacionEventoAgendaViewState extends State<InformacionEventoAgendaVie
                       child: CircularProgressIndicator(
                         value: event == null
                             ? 0
-                            : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                            : event.cumulativeBytesLoaded / (event.expectedTotalBytes??1),
                       ),
                     ),
                   ),
@@ -165,7 +166,7 @@ class _InformacionEventoAgendaViewState extends State<InformacionEventoAgendaVie
                               String megusta = "me gusta";
                               if(widget.eventoUi.cantLike!=null && widget.eventoUi.cantLike!=0){
                                 megusta =  widget.eventoUi.cantLike.toString() + " me gusta";
-                              }else if(widget.eventoUi.cantLike!=null && widget.eventoUi.cantLike>1000){
+                              }else if(widget.eventoUi.cantLike!=null && (widget.eventoUi.cantLike??0)>1000){
                                 megusta += "1k me gusta" ;
                               }
                               return Text(megusta, style: TextStyle( fontSize: 12, color: AppTheme.white),);
@@ -230,7 +231,7 @@ class _InformacionEventoAgendaViewState extends State<InformacionEventoAgendaVie
                                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                                   splashColor: AppTheme.nearlyDarkBlue.withOpacity(0.2),
                                   onTap: () {
-                                    if(widget.eventoUi.fotoEntidad!=null && widget.eventoUi.fotoEntidad.isNotEmpty){
+                                    if(widget.eventoUi.fotoEntidad!=null && (widget.eventoUi.fotoEntidad??"").isNotEmpty){
                                       _shareImageFromUrl(widget.eventoUi);
                                     }else{
                                       _shareText(widget.eventoUi);
@@ -307,18 +308,18 @@ class _InformacionEventoAgendaViewState extends State<InformacionEventoAgendaVie
       var response = await request.close();
       Uint8List bytes = await consolidateHttpClientResponseBytes(response);*/
 
-      var file = await DefaultCacheManager().getSingleFile(eventoUi.foto);
+      var file = await DefaultCacheManager().getSingleFile(eventoUi.foto??"");
       List<int> bytes = await file.readAsBytes();
       Uint8List ubytes = Uint8List.fromList(bytes);
 
-      await Share.file(eventoUi.titulo, 'amlog.jpg', ubytes, 'image/jpg', text: eventoUi.titulo +"\n"+eventoUi.descripcion,);
+      //await Share.file(eventoUi.titulo, 'amlog.jpg', ubytes, 'image/jpg', text:  "${eventoUi.titulo}\n${eventoUi.descripcion}");
     } catch (e) {}
   }
 
   Future<void> _shareText(EventoUi eventoUi) async {
     try {
-      Share.text(eventoUi.titulo,
-          eventoUi.titulo +"\n"+eventoUi.descripcion, 'text/plain');
+      //Share.text(eventoUi.titulo,
+        //  eventoUi.titulo +"\n"+eventoUi.descripcion, 'text/plain');
     } catch (e) {
 
     }

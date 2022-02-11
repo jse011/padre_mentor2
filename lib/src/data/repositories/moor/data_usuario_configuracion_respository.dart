@@ -17,6 +17,7 @@ import 'package:padre_mentor/src/domain/entities/usuario_ui.dart';
 import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_repository.dart';
 import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
 
 class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
@@ -50,21 +51,21 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       var rowRelaciones = await queryRelaciones.get();
       List<HijosUi> hijos = [];
       List<int> hijosIdList = [];
-      await Future.forEach(rowRelaciones, (hijo) async{
+     for(var hijo in rowRelaciones){
         PersonaData personaData = hijo.readTable(SQL.persona);
         hijosIdList.add(personaData.personaId);
         String fechaNacimientoHijo = "";
-        if(personaData.fechaNac!=null&&personaData.fechaNac.isNotEmpty){
-          DateTime fecPad = AppTools.convertDateTimePtBR(personaData?.fechaNac, null);
+        if((personaData.fechaNac??"").isNotEmpty){
+          DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
           fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
         }
 
         UsuarioData usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(personaData.personaId))).getSingle();
-        hijos.add(HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres)} ${AppTools.capitalize(personaData.apellidoPaterno)} ${AppTools.capitalize(personaData.apellidoMaterno)}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto)}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, fechaNacimiento2:  personaData.fechaNac));
-      });
+        hijos.add(HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, fechaNacimiento2:  personaData.fechaNac));
+      }
       String fechaNacimientoPadre = "";
-      if(personaData.fechaNac!=null&&personaData.fechaNac.isNotEmpty){
-        DateTime fecPad = AppTools.convertDateTimePtBR(personaData?.fechaNac, null);
+      if((personaData.fechaNac??"").isNotEmpty){
+        DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
         fechaNacimientoPadre = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
 
       }
@@ -80,24 +81,24 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       queryFamiliare.where(SQL.persona.personaId.isNotIn([personaData.personaId]));
       queryFamiliare.groupBy([SQL.persona.personaId]);
       var rowFamiliares = await queryFamiliare.get();
-      await Future.forEach(rowFamiliares, (familia) async{
+      for(var familia in rowFamiliares){
         PersonaData personaData = familia.readTable(SQL.persona);
         //Tipo relacion = familia.readTable(SQL.relaciones);
 
         hijosIdList.add(personaData.personaId);
         String fechaNacimientoHijo = "";
-        if(personaData.fechaNac!=null&&personaData.fechaNac.isNotEmpty){
-          DateTime fecPad = AppTools.convertDateTimePtBR(personaData?.fechaNac, null);
+        if((personaData.fechaNac??"").isNotEmpty){
+          DateTime fecPad = AppTools.convertDateTimePtBR(personaData.fechaNac, null);
           fechaNacimientoHijo = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
         }
 
-        familiaUiList.add(FamiliaUi(personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres)} ${AppTools.capitalize(personaData.apellidoPaterno)} ${AppTools.capitalize(personaData.apellidoMaterno)}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto)}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, relacion: "Familiar", fechaNacimiento2: personaData.fechaNac));
-      });
+        familiaUiList.add(FamiliaUi(personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, relacion: "Familiar", fechaNacimiento2: personaData.fechaNac));
+      }
 
       UsuarioUi usuarioUi = UsuarioUi(personaId: personaData == null ? 0 : personaData.personaId ,
-          nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres)} ${AppTools.capitalize(personaData.apellidoPaterno)} ${AppTools.capitalize(personaData.apellidoMaterno)}',
-          foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto)}',
-          hijos: hijos, correo: personaData.correo, celular: personaData.celular??personaData.telefono??"", fechaNacimiento: fechaNacimientoPadre, familiaUiList: familiaUiList, nombreSimple: AppTools.capitalize(personaData.nombres), fechaNacimiento2: personaData.fechaNac);
+          nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}',
+          foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',
+          hijos: hijos, correo: personaData.correo, celular: personaData.celular??personaData.telefono??"", fechaNacimiento: fechaNacimientoPadre, familiaUiList: familiaUiList, nombreSimple: AppTools.capitalize(personaData.nombres??""), fechaNacimiento2: personaData.fechaNac);
 
 
 
@@ -128,7 +129,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
       rowPrograma.sort((a, b) => AppTools.convertDateTimePtBR(b.readTable(SQL.anioAcademicoAlumno).fechaInicio, null).compareTo(AppTools.convertDateTimePtBR(a.readTable(SQL.anioAcademicoAlumno).fechaInicio, null)));
       List<ProgramaEducativoUi> programaEducativoUiList = [];
-      await Future.forEach(rowPrograma, (programa) async{
+     for(var programa in rowPrograma){
         ProgramasEducativoData programasEducativoData = programa.readTable(SQL.programasEducativo);
         PlanEstudioData planEstudioData = programa.readTable(SQL.planEstudio);
         AnioAcademicoAlumnoData academicoAlumnoData = programa.readTable(SQL.anioAcademicoAlumno);
@@ -140,40 +141,45 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
           programaId: programasEducativoData.programaEduId,
           nombrePrograma: programasEducativoData.nombre,
           hijoId: personaData.personaId,
-          nombreHijo: '${AppTools.capitalize(personaData.nombres)} ${AppTools.capitalize(personaData.apellidoPaterno)} ${AppTools.capitalize(personaData.apellidoMaterno)}',
-          fotoHijo: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto)}',
+          nombreHijo: '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}',
+          fotoHijo: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',
           anioAcademicoId: academicoAlumnoData.idAnioAcademico,
           nombreAnioAcademico: academicoAlumnoData.nombre,
           alumnoId: usuarioData==null ? 0 : usuarioData.usuarioId,
           cerrado: academicoAlumnoData.estadoId == 194 ||academicoAlumnoData.estadoId == 196
         ));
 
-      });
+      }
       usuarioUi.programaEducativoUiList = programaEducativoUiList;
 
-      SessionUserData sessionUserData = await (SQL.selectSingle(SQL.sessionUser)).getSingle();
-      int hijoIdSelected = sessionUserData != null?sessionUserData.hijoIdSelect : 0;
+      SessionUserData? sessionUserData = await (SQL.selectSingle(SQL.sessionUser)).getSingleOrNull();
+      int hijoIdSelected = sessionUserData?.hijoIdSelect??0;
 
-      if(hijoIdSelected==null || hijoIdSelected == 0){
-        if(usuarioUi.hijos!=null&&usuarioUi.hijos.isNotEmpty){
-          hijoIdSelected = usuarioUi.hijos.first.personaId;
-          await SQL.update(SQL.sessionUser).replace(sessionUserData.copyWith(hijoIdSelect: hijoIdSelected));
+      if(hijoIdSelected==null || hijoIdSelected == 0 && sessionUserData != null){
+        if((usuarioUi.hijos??[]).isNotEmpty){
+          hijoIdSelected = usuarioUi.hijos![0].personaId??0;
+          await SQL.update(SQL.sessionUser).replace(sessionUserData!.copyWith(hijoIdSelect: hijoIdSelected));
         }
       }
 
       if(hijoIdSelected!=null && hijoIdSelected > 0){
-        if(usuarioUi.hijos!=null&&usuarioUi.hijos.isNotEmpty){
+        if((usuarioUi.hijos??[]).isNotEmpty){
 
-          usuarioUi.hijoSelected = usuarioUi.hijos.firstWhere((element) => element.personaId == hijoIdSelected, orElse: () => usuarioUi.hijos.first);
+          usuarioUi.hijoSelected = usuarioUi.hijos?.firstWhereOrNull((element) => element.personaId == hijoIdSelected);
+          if(usuarioUi.hijoSelected==null){
+            usuarioUi.hijoSelected = usuarioUi.hijos![0];
+          }
           var rowSessionUsuarioPrograma = SQL.selectSingle(SQL.sessionUserHijoPrograma)..where((tbl) => tbl.hijoId.equals(hijoIdSelected));
           rowSessionUsuarioPrograma.where((tbl) => tbl.selected.equals(true));
           SessionUserHijoProgramaData sessionUserHijoData = await rowSessionUsuarioPrograma.getSingle();
           int programaIdSelected = sessionUserHijoData != null?sessionUserHijoData.prograAcademicoId : 0;
           int anioAcademicoIdSelected = sessionUserHijoData != null?sessionUserHijoData.anioAcademicoId : 0;
           print(TAG+ " programaEduSelectedId:" + programaIdSelected.toString() + ", hijoSelectedId:" + hijoIdSelected.toString() +", anioAcademicoId: "+anioAcademicoIdSelected.toString());
-          usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList.firstWhere((element) =>
-          element.programaId == programaIdSelected && element.anioAcademicoId == anioAcademicoIdSelected && element.hijoId == hijoIdSelected,
-              orElse: () => usuarioUi.programaEducativoUiList.firstWhere((element) => element.hijoId==hijoIdSelected, orElse: () => null));
+          usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) =>
+          element.programaId == programaIdSelected && element.anioAcademicoId == anioAcademicoIdSelected && element.hijoId == hijoIdSelected);
+          if(usuarioUi.programaEducativoUiSelected==null){
+            usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) => element.hijoId==hijoIdSelected);
+          }
           print(TAG+ "programaEducativoUiSelected " +(usuarioUi.programaEducativoUiSelected!=null?"true":"false"));
 
           }
@@ -189,7 +195,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   }
 
   @override
-  Future<void> saveDatosGlobales(Map<String, dynamic> datosInicioPadre) async{
+  Future<void> saveDatosGlobales(Map<String, dynamic>? datosInicioPadre) async{
    AppDataBase SQL = AppDataBase();
    try{
      await SQL.batch((batch) async {
@@ -197,115 +203,115 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
        // await the whole batch afterwards.
 
        print("saveDatosGlobales");
-       if(datosInicioPadre.containsKey("usuariosrelacionados")){
+       if(datosInicioPadre?.containsKey("usuariosrelacionados")??false){
          batch.deleteWhere(SQL.usuario, (row) => const Constant(true));
-         batch.insertAll(SQL.usuario, SerializableConvert.converListSerializeUsuario(datosInicioPadre["usuariosrelacionados"]), mode: InsertMode.insertOrReplace );
+         batch.insertAll(SQL.usuario, SerializableConvert.converListSerializeUsuario(datosInicioPadre!["usuariosrelacionados"]), mode: InsertMode.insertOrReplace );
        }
 
-       if(datosInicioPadre.containsKey("personas")){
+       if(datosInicioPadre?.containsKey("personas")??false){
          //personaSerelizable.addAll(datosInicioPadre["usuariosrelacionados"]);
          //database.personaDao.insertAllTodo(SerializableConvert.converListSerializePersona(datosInicioPadre["personas"]));
          batch.deleteWhere(SQL.persona, (row) => const Constant(true));
-         batch.insertAll(SQL.persona, SerializableConvert.converListSerializePersona(datosInicioPadre["personas"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.persona, SerializableConvert.converListSerializePersona(datosInicioPadre!["personas"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("relaciones")){
+       if(datosInicioPadre?.containsKey("relaciones")??false){
          //personaSerelizable.addAll(datosInicioPadre["usuariosrelacionados"]);
          batch.deleteWhere(SQL.relaciones, (row) => const Constant(true));
-         batch.insertAll(SQL.relaciones, SerializableConvert.converListSerializeRelaciones(datosInicioPadre["relaciones"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.relaciones, SerializableConvert.converListSerializeRelaciones(datosInicioPadre!["relaciones"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("anioAcademicosAlumno")){
+       if(datosInicioPadre?.containsKey("anioAcademicosAlumno")??false){
          batch.deleteWhere(SQL.anioAcademicoAlumno, (row) => const Constant(true));
-         batch.insertAll(SQL.anioAcademicoAlumno, SerializableConvert.converListSerializeAnioAcademicoAlumno(datosInicioPadre["anioAcademicosAlumno"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.anioAcademicoAlumno, SerializableConvert.converListSerializeAnioAcademicoAlumno(datosInicioPadre!["anioAcademicosAlumno"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("cargaCursos")){
+       if(datosInicioPadre?.containsKey("cargaCursos")??false){
          batch.deleteWhere(SQL.cargaCurso, (row) => const Constant(true));
-         batch.insertAll(SQL.cargaCurso, SerializableConvert.converListSerializeCargaCurso(datosInicioPadre["cargaCursos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.cargaCurso, SerializableConvert.converListSerializeCargaCurso(datosInicioPadre!["cargaCursos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("contratos")){
+       if(datosInicioPadre?.containsKey("contratos")??false){
          batch.deleteWhere(SQL.contrato, (row) => const Constant(true));
-         batch.insertAll(SQL.contrato, SerializableConvert.converListSerializeContrato(datosInicioPadre["contratos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.contrato, SerializableConvert.converListSerializeContrato(datosInicioPadre!["contratos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("detalleContratoAcad")){
+       if(datosInicioPadre?.containsKey("detalleContratoAcad")??false){
          batch.deleteWhere(SQL.detalleContratoAcad, (row) => const Constant(true));
-         batch.insertAll(SQL.detalleContratoAcad, SerializableConvert.converListSerializeDetalleContratoAcad(datosInicioPadre["detalleContratoAcad"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.detalleContratoAcad, SerializableConvert.converListSerializeDetalleContratoAcad(datosInicioPadre!["detalleContratoAcad"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("planCursos")){
+       if(datosInicioPadre?.containsKey("planCursos")??false){
          batch.deleteWhere(SQL.planCursos, (row) => const Constant(true));
-         batch.insertAll(SQL.planCursos, SerializableConvert.converListSerializePlanCurso(datosInicioPadre["planCursos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.planCursos, SerializableConvert.converListSerializePlanCurso(datosInicioPadre!["planCursos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("planEstudios")){
+       if(datosInicioPadre?.containsKey("planEstudios")??false){
          batch.deleteWhere(SQL.planEstudio, (row) => const Constant(true));
-         batch.insertAll(SQL.planEstudio, SerializableConvert.converListSerializePlanEstudio(datosInicioPadre["planEstudios"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.planEstudio, SerializableConvert.converListSerializePlanEstudio(datosInicioPadre!["planEstudios"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("programasEducativos")){
+       if(datosInicioPadre?.containsKey("programasEducativos")??false){
          batch.deleteWhere(SQL.programasEducativo, (row) => const Constant(true));
-         batch.insertAll(SQL.programasEducativo, SerializableConvert.converListSerializeProgramasEducativo(datosInicioPadre["programasEducativos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.programasEducativo, SerializableConvert.converListSerializeProgramasEducativo(datosInicioPadre!["programasEducativos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("calendarioPeriodos")){
+       if(datosInicioPadre?.containsKey("calendarioPeriodos")??false){
          batch.deleteWhere(SQL.calendarioPeriodo, (row) => const Constant(true));
-         batch.insertAll(SQL.calendarioPeriodo, SerializableConvert.converListSerializeCalendarioPeriodo(datosInicioPadre["calendarioPeriodos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.calendarioPeriodo, SerializableConvert.converListSerializeCalendarioPeriodo(datosInicioPadre!["calendarioPeriodos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("calendarioAcademicos")){
+       if(datosInicioPadre?.containsKey("calendarioAcademicos")??false){
          batch.deleteWhere(SQL.calendarioAcademico, (row) => const Constant(true));
-         batch.insertAll(SQL.calendarioAcademico, SerializableConvert.converListSerializeCalendarioAcademico(datosInicioPadre["calendarioAcademicos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.calendarioAcademico, SerializableConvert.converListSerializeCalendarioAcademico(datosInicioPadre!["calendarioAcademicos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("tipos")){
+       if(datosInicioPadre?.containsKey("tipos")??false){
 
-         batch.insertAll(SQL.tipos, SerializableConvert.converListSerializeTipos(datosInicioPadre["tipos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.tipos, SerializableConvert.converListSerializeTipos(datosInicioPadre!["tipos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("obtener_parametros_disenio")){
+       if(datosInicioPadre?.containsKey("obtener_parametros_disenio")??false){
          batch.deleteWhere(SQL.parametrosDisenio, (row) => const Constant(true));
-         batch.insertAll(SQL.parametrosDisenio, SerializableConvert.converListSerializeParametrosDisenio(datosInicioPadre["obtener_parametros_disenio"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.parametrosDisenio, SerializableConvert.converListSerializeParametrosDisenio(datosInicioPadre!["obtener_parametros_disenio"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("silaboEvento")){
+       if(datosInicioPadre?.containsKey("silaboEvento")??false){
          batch.deleteWhere(SQL.silaboEvento, (row) => const Constant(true));
-         batch.insertAll(SQL.silaboEvento, SerializableConvert.converListSerializeSilaboEvento(datosInicioPadre["silaboEvento"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.silaboEvento, SerializableConvert.converListSerializeSilaboEvento(datosInicioPadre!["silaboEvento"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("cursos")){
+       if(datosInicioPadre?.containsKey("cursos")??false){
          batch.deleteWhere(SQL.cursos, (row) => const Constant(true));
-         batch.insertAll(SQL.cursos, SerializableConvert.converListSerializeCursos(datosInicioPadre["cursos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.cursos, SerializableConvert.converListSerializeCursos(datosInicioPadre!["cursos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("secciones")){
+       if(datosInicioPadre?.containsKey("secciones")??false){
          batch.deleteWhere(SQL.seccion, (row) => const Constant(true));
-         batch.insertAll(SQL.seccion, SerializableConvert.converListSerializeSeccion(datosInicioPadre["secciones"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.seccion, SerializableConvert.converListSerializeSeccion(datosInicioPadre!["secciones"]), mode: InsertMode.insertOrReplace);
        }
-       if(datosInicioPadre.containsKey("aulas")){
+       if(datosInicioPadre?.containsKey("aulas")??false){
          batch.deleteWhere(SQL.aula, (row) => const Constant(true));
-         batch.insertAll(SQL.aula, SerializableConvert.converListSerializeAula(datosInicioPadre["aulas"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.aula, SerializableConvert.converListSerializeAula(datosInicioPadre!["aulas"]), mode: InsertMode.insertOrReplace);
        }
-       if(datosInicioPadre.containsKey("periodos")){
+       if(datosInicioPadre?.containsKey("periodos")??false){
          batch.deleteWhere(SQL.periodos, (row) => const Constant(true));
-         batch.insertAll(SQL.periodos, SerializableConvert.converListSerializePeriodos(datosInicioPadre["periodos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.periodos, SerializableConvert.converListSerializePeriodos(datosInicioPadre!["periodos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("cargasAcademicas")){
+       if(datosInicioPadre?.containsKey("cargasAcademicas")??false){
          batch.deleteWhere(SQL.cargaAcademica, (row) => const Constant(true));
-         batch.insertAll(SQL.cargaAcademica, SerializableConvert.converListSerializeCargaAcademica(datosInicioPadre["cargasAcademicas"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.cargaAcademica, SerializableConvert.converListSerializeCargaAcademica(datosInicioPadre!["cargasAcademicas"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("nivelesAcademicos")){
+       if(datosInicioPadre?.containsKey("nivelesAcademicos")??false){
          batch.deleteWhere(SQL.nivelAcademico, (row) => const Constant(true));
-         batch.insertAll(SQL.nivelAcademico, SerializableConvert.converListSerializeNivelAcademico(datosInicioPadre["nivelesAcademicos"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.nivelAcademico, SerializableConvert.converListSerializeNivelAcademico(datosInicioPadre!["nivelesAcademicos"]), mode: InsertMode.insertOrReplace);
        }
 
-       if(datosInicioPadre.containsKey("bEWebConfigs")){
+       if(datosInicioPadre?.containsKey("bEWebConfigs")??false){
          batch.deleteWhere(SQL.webConfigs, (row) => const Constant(true));
-         batch.insertAll(SQL.webConfigs, SerializableConvert.converListSerializeWebConfigs(datosInicioPadre["bEWebConfigs"]), mode: InsertMode.insertOrReplace);
+         batch.insertAll(SQL.webConfigs, SerializableConvert.converListSerializeWebConfigs(datosInicioPadre!["bEWebConfigs"]), mode: InsertMode.insertOrReplace);
        }
 
      });
@@ -322,7 +328,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
       PersonaData personaData = await (SQL.selectSingle(SQL.persona)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingle();
       UsuarioData usuarioData = await (SQL.select(SQL.usuario)..where((tbl) => tbl.personaId.equals(alumnoId))).getSingle();
-      return HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres)} ${AppTools.capitalize(personaData.apellidoPaterno)} ${AppTools.capitalize(personaData.apellidoMaterno)}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto)}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: "", fechaNacimiento2: personaData.fechaNac);
+      return HijosUi(usuarioId: usuarioData==null ? 0 : usuarioData.usuarioId, personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: "", fechaNacimiento2: personaData.fechaNac);
 
     }catch(e){
       throw Exception(e);
@@ -354,12 +360,12 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         for (var row in rows) {
           CalendarioData calendarioData = row.readTable(SQL.calendario);
           EventoData eventoData = row.readTable(SQL.evento);
-          if(hijoIdList != null && hijoIdList.isNotEmpty && eventoData.eventoHijoId > 0){
+          if(hijoIdList != null && hijoIdList.isNotEmpty && (eventoData.eventoHijoId??0)> 0){
             int id = hijoIdList.firstWhere((hijoId) => hijoId == eventoData.eventoHijoId, orElse:()=> -1);
             if(id!=-1)continue;
           }
           await (SQL.delete(SQL.evento).delete(eventoData));
-          if(calendarioDataList.firstWhere((element) => element.calendarioId == calendarioData.calendarioId, orElse: () => null) == null){
+          if(calendarioDataList.firstWhereOrNull((element) => element.calendarioId == calendarioData.calendarioId) == null){
             calendarioDataList.add(calendarioData);
           }
         }
@@ -488,7 +494,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       for(var item in  rows){
         EventoData eventoData = item.readTable(SQL.evento);
         CalendarioData calendarioData = item.readTable(SQL.calendario);
-        if(hijos != null && hijos.isNotEmpty && eventoData.eventoHijoId > 0){
+        if(hijos != null && hijos.isNotEmpty && (eventoData.eventoHijoId??0) > 0){
             int id = hijos.firstWhere((hijoId) => hijoId == eventoData.eventoHijoId, orElse:()=> -1);
             if(id!=-1)continue;
         }
@@ -502,32 +508,32 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         eventoUi.fecha =  eventoData.fechaEvento!=null?AppTools.convertDateTimePtBR(eventoData.fechaEvento, eventoData.horaEvento):null;
         eventoUi.foto = eventoData.pathImagen;
         eventoUi.tipoEventoUi = TipoEventoUi();
-        eventoUi.tipoEventoUi.id = eventoData.tipoEventoId;
-        eventoUi.tipoEventoUi.nombre = eventoData.tipoEventoNombre;
+        eventoUi.tipoEventoUi?.id = eventoData.tipoEventoId;
+        eventoUi.tipoEventoUi?.nombre = eventoData.tipoEventoNombre;
         eventoUi.rolEmisor = calendarioData.cargo;
         eventoUi.nombreEmisor = calendarioData.nUsuario;
 
-        switch(eventoUi.tipoEventoUi.id){
+        switch(eventoUi.tipoEventoUi?.id){
           case 526:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.EVENTO;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.EVENTO;
             break;
           case 528:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.ACTIVIDAD;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.ACTIVIDAD;
             break;
           case 530:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.CITA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.CITA;
             break;
           case 529:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.TAREA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.TAREA;
             break;
           case 527:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.NOTICIA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.NOTICIA;
             break;
           case 620:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.AGENDA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.AGENDA;
             break;
           default:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.DEFAULT;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.DEFAULT;
             break;
         }
         eventoUiList.add(eventoUi);
@@ -544,7 +550,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<void> updateSessionHijoSelected(int hijoSelectedId) async{
     AppDataBase SQL = AppDataBase();
     try{
-      SessionUserData sessionUserData = await(SQL.selectSingle(SQL.sessionUser).getSingle());
+      SessionUserData? sessionUserData = await(SQL.selectSingle(SQL.sessionUser).getSingleOrNull());
       if(sessionUserData!=null){
         await SQL.update(SQL.sessionUser).replace(sessionUserData.copyWith(hijoIdSelect: hijoSelectedId));
       }
@@ -561,7 +567,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       List<SessionUserHijoProgramaData> sessionUserDataList = await(SQL.select(SQL.sessionUserHijoPrograma)..where((tbl) => tbl.hijoId.equals(hijoSelectedId))).get();
       await SQL.transaction(() async {
 
-        SessionUserHijoProgramaData sessionUserHijoData = null;
+        SessionUserHijoProgramaData? sessionUserHijoData = null;
 
         for (var entity in sessionUserDataList) {
 
@@ -608,7 +614,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       for(var item in  rows){
         EventoData eventoData = item.readTable(SQL.evento);
         CalendarioData calendarioData = item.readTable(SQL.calendario);
-        if(hijos != null && hijos.isNotEmpty && eventoData.eventoHijoId > 0){
+        if(hijos != null && hijos.isNotEmpty && (eventoData.eventoHijoId??0) > 0){
           int id = hijos.firstWhere((element) => hijos == eventoData.eventoHijoId, orElse:()=> -1);
           if(id!=-1)continue;
         }
@@ -622,32 +628,32 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         eventoUi.fecha =  eventoData.fechaEvento!=null?AppTools.convertDateTimePtBR(eventoData.fechaEvento, eventoData.horaEvento):null;
         eventoUi.foto = eventoData.pathImagen;
         eventoUi.tipoEventoUi = TipoEventoUi();
-        eventoUi.tipoEventoUi.id = eventoData.tipoEventoId;
-        eventoUi.tipoEventoUi.nombre = eventoData.tipoEventoNombre;
+        eventoUi.tipoEventoUi?.id = eventoData.tipoEventoId;
+        eventoUi.tipoEventoUi?.nombre = eventoData.tipoEventoNombre;
         eventoUi.rolEmisor = calendarioData.cargo;
         eventoUi.nombreEmisor = calendarioData.nUsuario;
 
-        switch(eventoUi.tipoEventoUi.id){
+        switch(eventoUi.tipoEventoUi?.id){
           case 526:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.EVENTO;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.EVENTO;
             break;
           case 528:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.ACTIVIDAD;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.ACTIVIDAD;
             break;
           case 530:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.CITA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.CITA;
             break;
           case 529:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.TAREA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.TAREA;
             break;
           case 527:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.NOTICIA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.NOTICIA;
             break;
           case 620:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.AGENDA;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.AGENDA;
             break;
           default:
-            eventoUi.tipoEventoUi.tipo = EventoIconoEnumUI.DEFAULT;
+            eventoUi.tipoEventoUi?.tipo = EventoIconoEnumUI.DEFAULT;
             break;
         }
         eventoUiList.add(eventoUi);
@@ -673,9 +679,9 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      SessionUserData sessionUserData = await (SQL.select(SQL.sessionUser)).getSingle();//El ORM genera error si hay dos registros
+      SessionUserData? sessionUserData = await (SQL.select(SQL.sessionUser)).getSingleOrNull();//El ORM genera error si hay dos registros
       //Solo deve haber una registro de session user data
-      return sessionUserData!=null&&sessionUserData.complete;
+      return sessionUserData?.complete??false;
     }catch(e){
       throw Exception(e);
     }
@@ -691,9 +697,9 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       if(serviceSerializable.UsuarioId==-1){
         loginUi = LoginUi.INVALIDO;
       }else{
-        if(serviceSerializable.UsuarioExternoId>0){
+        if((serviceSerializable.UsuarioExternoId??0)>0){
           loginUi = LoginUi.SUCCESS;
-          SessionUserData sessionUserData = SessionUserData(userId: serviceSerializable.UsuarioExternoId, urlServerLocal: serviceSerializable.UrlServiceMovil);
+          SessionUserData sessionUserData = SessionUserData(userId: serviceSerializable.UsuarioExternoId??0, urlServerLocal: serviceSerializable.UrlServiceMovil);
           await SQL.into(SQL.sessionUser).insert(sessionUserData, mode: InsertMode.insertOrReplace);
         }else{
           loginUi = LoginUi.DUPLICADO;
@@ -816,10 +822,10 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   }
 
   @override
-  List<dynamic> getJsonUpdatePersonas(UsuarioUi usuarioUi, List<HijosUi> hijosUiList, List<FamiliaUi> familiaUiList) {
+  List<dynamic> getJsonUpdatePersonas(UsuarioUi? usuarioUi, List<HijosUi>? hijosUiList, List<FamiliaUi>? familiaUiList) {
    List<dynamic> personaSerialList = [];
-   if(usuarioUi.change??false){
-     PersonaSerial personaSerial = PersonaSerial(personaId: usuarioUi.personaId, correo: usuarioUi.correo, celular: usuarioUi.celular, image64: usuarioUi.image64);
+   if(usuarioUi?.change??false){
+     PersonaSerial personaSerial = PersonaSerial(personaId: usuarioUi?.personaId, correo: usuarioUi?.correo, celular: usuarioUi?.celular, image64: usuarioUi?.image64);
      personaSerialList.add(personaSerial.toJson());
    }
 
@@ -843,7 +849,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   }
 
   @override
-  Future<void> updatePersona(List<dynamic> listaPersonas) async {
+  Future<void> updatePersona(List<dynamic>? listaPersonas) async {
     AppDataBase SQL = AppDataBase();
     try{
       if(listaPersonas!=null){
@@ -864,14 +870,14 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
 
   @override
-  Future<String> gePrematricula() async{
+  Future<String?> gePrematricula() async{
 
     try{
       AppDataBase SQL = AppDataBase();
       WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_Nombre_Pre_Matricula"))).getSingle();
       if(webConfig!=null&&
-          webConfig.content!=null && webConfig.content.isNotEmpty&&
-          webConfig.content.toUpperCase() != "NULL"){
+          webConfig.content!=null && (webConfig.content??"").isNotEmpty&&
+          webConfig.content?.toUpperCase() != "NULL"){
         return webConfig.content;
       }
       return null;
@@ -884,8 +890,8 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
   Future<String> getIconoPadre() async {
     try{
       AppDataBase SQL = AppDataBase();
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_icono_padre"))).getSingle();
-      return  webConfig!=null?webConfig.content:"";
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_icono_padre"))).getSingleOrNull();
+      return webConfig?.content??"";
     }catch(e){
       return "";
     }

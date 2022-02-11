@@ -4,17 +4,17 @@ import '../utils/app_theme.dart';
 
 class AnimationView extends StatelessWidget {
   final AnimationController animationController;
-  final Animation animation;
+  final Animation<double> animation;
   final Widget child;
 
-  const AnimationView({Key key, this.animationController, this.animation, this.child})
+  const AnimationView({Key? key, required this.animationController, required this.animation, required this.child})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animationController,
-      builder: (BuildContext context, Widget widget) {
+      builder: (BuildContext context, Widget? widget) {
         return FadeTransition(
           opacity: animation,
           child: new Transform(

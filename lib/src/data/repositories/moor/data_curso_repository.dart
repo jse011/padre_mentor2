@@ -17,7 +17,7 @@ import 'package:padre_mentor/src/domain/entities/tipo_nota_enum_ui.dart';
 import 'package:padre_mentor/src/domain/repositories/curso_repository.dart';
 import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 import 'package:intl/intl.dart';
-
+import 'package:collection/collection.dart';
 import 'database/app_database.dart';
 
 class DataCursoRepository extends CursoRepository{
@@ -44,7 +44,7 @@ class DataCursoRepository extends CursoRepository{
       var rows = await query.get();
       List<CalendarioPeriodoUI> calendarioPeriodoList = [];
 
-      CalendarioPeriodoUI calendarioPeriodoUI;
+      CalendarioPeriodoUI? calendarioPeriodoUI;
 
       for(var data in rows){
         CalendarioPeriodoData calendarioPeriodoData = data.readTable(SQL.calendarioPeriodo);
@@ -57,13 +57,13 @@ class DataCursoRepository extends CursoRepository{
       if (!calendarioPeriodoList.isEmpty && calendarioPeriodoUI == null){
         final List<CalendarioPeriodoUI> orderList = [];
         orderList.addAll(calendarioPeriodoList);
-        orderList.sort((a, b) => b.fechaFin.compareTo(a.fechaFin));
+        orderList.sort((a, b) => (b.fechaFin??DateTime(1960)).compareTo(a.fechaFin??DateTime(1960)));
 
         //#region Buscar el calendario en el estado creado proximo a estar vigente
         int count = 0;
         calendarioPeriodoUI =  orderList[0];
         for(var item in orderList){
-          if (calendarioPeriodoUI.estadoId == 214)
+          if (calendarioPeriodoUI?.estadoId == 214)
           {
             calendarioPeriodoUI =  item;
             if (count != 0 &&
@@ -77,7 +77,7 @@ class DataCursoRepository extends CursoRepository{
           count++;
         }
 
-        calendarioPeriodoUI.selected = true;
+        calendarioPeriodoUI?.selected = true;
         //#endregion
       }
       print("getCalendarioPerios count:" + calendarioPeriodoList.length.toString() );
@@ -179,7 +179,7 @@ class DataCursoRepository extends CursoRepository{
 
       ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
       await SQL.transaction(() async {
-        await Future.forEach(areasBoletaList, (boleta) async{
+        await Future.forEach(areasBoletaList, (AreasBoletaData  boleta) async{
 
 
           CursoBoletaUi cursoBoletaUi = CursoBoletaUi(
@@ -205,9 +205,9 @@ class DataCursoRepository extends CursoRepository{
             cursoBoletaUi.color = notasCalendarioBoleta.color;
 
             if((cursoBoletaUi.tipoNotaEnum == TipoNotaEnumUi.VALOR_NUMERICO||
-                cursoBoletaUi.tipoNotaEnum == TipoNotaEnumUi.SELECTOR_NUMERICO) && cursoBoletaUi.nota!=null && !cursoBoletaUi.nota.isEmpty){
+                cursoBoletaUi.tipoNotaEnum == TipoNotaEnumUi.SELECTOR_NUMERICO) && cursoBoletaUi.nota!=null && !(cursoBoletaUi.nota??"").isEmpty){
               try{
-                int notaformat = double.parse(cursoBoletaUi.nota).toInt();
+                int notaformat = double.parse(cursoBoletaUi.nota??"0").toInt();
                 if (notaformat < 11) {
                   cursoBoletaUi.color = "#f44336";
                 }
@@ -265,20 +265,20 @@ class DataCursoRepository extends CursoRepository{
 
       for (CursoBoletaUi cursoBoletaUi in cursoBoletaUiList){
         cursoBoletaUi.tranversal = true;
-        cursoBoletaUi.cursoBoletaUiList.add(cursoBoletaUi);
+        cursoBoletaUi.cursoBoletaUiList?.add(cursoBoletaUi);
       }
 
       finales.addAll(cursoBoletaUiList);
 
       //Collections.sort(finales,new CursoBoletaUiComprador());
       finales.sort((o1, o2){
-        int value1 = o2.totalHt.compareTo(o1.totalHt);
+        int value1 = (o2.totalHt??0).compareTo(o1.totalHt??0);
         if (value1 == 0) {
-          int value2 = o1.tipoConceptoId.compareTo(o2.tipoConceptoId);
+          int value2 = ( o1.tipoConceptoId??0).compareTo(o2.tipoConceptoId??0);
           if (value2 == 0) {
-            int value3 = (o1.nombre!=null&&o1.nombre.isNotEmpty?o1.nombre:"").compareTo(o2.nombre);
+            int value3 = (o1.nombre??"").compareTo(o2.nombre??"");
             if(value3==0){
-              return o1.competenciaId.compareTo(o2.competenciaId);
+              return (o1.competenciaId??0).compareTo(o2.competenciaId??0);
             }else {
               return value3;
             }
@@ -298,7 +298,7 @@ class DataCursoRepository extends CursoRepository{
 
   }
 
-  TipoNotaEnumUi getTipoNotaEnumUi(int tipoNotaId){
+  TipoNotaEnumUi getTipoNotaEnumUi(int? tipoNotaId){
     TipoNotaEnumUi tipoNotaEnumUi = TipoNotaEnumUi.VALOR_NUMERICO;
     if(tipoNotaId == 410){
       tipoNotaEnumUi = TipoNotaEnumUi.VALOR_NUMERICO;
@@ -323,11 +323,11 @@ class DataCursoRepository extends CursoRepository{
       var queryContrato =  await SQL.selectSingle(SQL.contrato)..where((tbl) => tbl.personaId.equals(alumnoId));
       queryContrato.where((tbl) => tbl.estadoId.equals(190));
       queryContrato.where((tbl) => tbl.idAnioAcademico.equals(anioAcademicoId));
-      ContratoData contratoData = await queryContrato.getSingle();
+      ContratoData? contratoData = await queryContrato.getSingleOrNull();
 
-      int contratoId = contratoData!=null?contratoData.idContrato:0;
-      int periodoId = contratoData!=null?contratoData.periodoId:0;
-      int seccionId = contratoData!=null?contratoData.seccionId:0;
+      int contratoId = contratoData?.idContrato??0;
+      int periodoId = contratoData?.periodoId??0;
+      int seccionId = contratoData?.seccionId??0;
 
       return ContratoUi(id: contratoId, periodoId: periodoId, seccionId: seccionId);
     }catch(e){
@@ -370,8 +370,8 @@ class DataCursoRepository extends CursoRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingle();
-      String urlExpresiones = webConfig?.content == null ? "" : webConfig.content;
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+      String urlExpresiones =  webConfig?.content??"";
       /*
       * Obtner evaluaciones por cursos
       * */
@@ -390,7 +390,8 @@ class DataCursoRepository extends CursoRepository{
 
       ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
 
-      Future.forEach(rows, (item) {
+
+      for(var item in rows){
         RubroEvalDesempenioData rubroEvalDesempenioData = item.readTable(SQL.rubroEvalDesempenio);
         ParametrosDisenioData parametrosDisenioData = item.readTable(SQL.parametrosDisenio);
         RubroEvaluacionUi rubroEvaluacionUi = RubroEvaluacionUi();
@@ -399,28 +400,27 @@ class DataCursoRepository extends CursoRepository{
         rubroEvaluacionUi.tipo = rubroEvalDesempenioData.formaEvaluacion;
         rubroEvaluacionUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
         rubroEvaluacionUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalDesempenioData.tipoIdNivelLogro);
-        rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion != null ? rubroEvalDesempenioData.notaEvalaucion.toStringAsFixed(1): "";
-        rubroEvaluacionUi.iconoNota = rubroEvalDesempenioData.iconoNivelLogro != null && rubroEvalDesempenioData.iconoNivelLogro.length > 0 ? urlExpresiones + rubroEvalDesempenioData.iconoNivelLogro: null;
+        rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion != null ? rubroEvalDesempenioData.notaEvalaucion?.toStringAsFixed(1): "";
+        rubroEvaluacionUi.iconoNota = rubroEvalDesempenioData.iconoNivelLogro != null && (rubroEvalDesempenioData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (rubroEvalDesempenioData.iconoNivelLogro??""): null;
         rubroEvaluacionUi.descNota = rubroEvalDesempenioData.descripcionNivelLogro;
         rubroEvaluacionUi.tituloNota = rubroEvalDesempenioData.tituloNivelLogro;
         rubroEvaluacionUi.cursoUi = CursoUi();
-        rubroEvaluacionUi.cursoUi.silaboEventoId = rubroEvalDesempenioData.silaboEventoId;
-        rubroEvaluacionUi.cursoUi.cargaCursoId = rubroEvalDesempenioData.cargaCursoId;
-        rubroEvaluacionUi.cursoUi.nombre = rubroEvalDesempenioData.nombreCurso;
+        rubroEvaluacionUi.cursoUi?.silaboEventoId = rubroEvalDesempenioData.silaboEventoId;
+        rubroEvaluacionUi.cursoUi?.cargaCursoId = rubroEvalDesempenioData.cargaCursoId;
+        rubroEvaluacionUi.cursoUi?.nombre = rubroEvalDesempenioData.nombreCurso;
         if(parametrosDisenioData!=null){
-          rubroEvaluacionUi.cursoUi.colorCurso = parametrosDisenioData.color1;
-          rubroEvaluacionUi.cursoUi.colorCurso2 = parametrosDisenioData.color2;
-          rubroEvaluacionUi.cursoUi.colorCurso3 = parametrosDisenioData.color3;
+          rubroEvaluacionUi.cursoUi?.colorCurso = parametrosDisenioData.color1;
+          rubroEvaluacionUi.cursoUi?.colorCurso2 = parametrosDisenioData.color2;
+          rubroEvaluacionUi.cursoUi?.colorCurso3 = parametrosDisenioData.color3;
         }else{
           if(defaultParametrosDisenioData!=null){
-            rubroEvaluacionUi.cursoUi.colorCurso = defaultParametrosDisenioData.color1;
-            rubroEvaluacionUi.cursoUi.colorCurso2 = defaultParametrosDisenioData.color2;
-            rubroEvaluacionUi.cursoUi.colorCurso3 = defaultParametrosDisenioData.color3;
+            rubroEvaluacionUi.cursoUi?.colorCurso = defaultParametrosDisenioData.color1;
+            rubroEvaluacionUi.cursoUi?.colorCurso2 = defaultParametrosDisenioData.color2;
+            rubroEvaluacionUi.cursoUi?.colorCurso3 = defaultParametrosDisenioData.color3;
           }
         }
         rubroEvaluacionList.add(rubroEvaluacionUi);
-      });
-
+      }
 
       return rubroEvaluacionList;
     }catch(e){
@@ -464,8 +464,8 @@ class DataCursoRepository extends CursoRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingle();
-      String urlExpresiones = webConfig?.content == null ? "" : webConfig.content;
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+      String urlExpresiones = webConfig?.content??"";
       /*
       * Obtner tareas por cursos
       * */
@@ -485,13 +485,13 @@ class DataCursoRepository extends CursoRepository{
 
       ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
 
-      Future.forEach(rows, (item) {
+      for(var item in rows) {
         TareaCursoData tareaCursoData = item.readTable(SQL.tareaCurso);
         ParametrosDisenioData parametrosDisenioData = item.readTable(SQL.parametrosDisenio);
         TareaEvaluacionCursoUi tareaEvaluacionCursoUi = TareaEvaluacionCursoUi();
         tareaEvaluacionCursoUi.tareaId = tareaCursoData.tareaId;
         tareaEvaluacionCursoUi.tituloTarea = tareaCursoData.tareaTitulo;
-        tareaEvaluacionCursoUi.nombreDocente = AppTools.capitalize(tareaCursoData.docenteNombre) + " " + AppTools.capitalize(tareaCursoData.docenteApellPat) + " " + AppTools.capitalize(tareaCursoData.docenteApellMat);
+        tareaEvaluacionCursoUi.nombreDocente = AppTools.capitalize(tareaCursoData.docenteNombre??"") + " " + AppTools.capitalize(tareaCursoData.docenteApellPat??"") + " " + AppTools.capitalize(tareaCursoData.docenteApellMat??"");
         tareaEvaluacionCursoUi.fechaInicio = tareaCursoData.tareafechaCreacion;
         tareaEvaluacionCursoUi.fechaEntrega =  tareaCursoData.tareaFechaEntrega!=null?AppTools.convertDateTimePtBR(tareaCursoData.tareaFechaEntrega, tareaCursoData.tareaHoraEntrega):null; //tareaCursoData.tareaFechaEntrega;
         //tareaEvaluacionCursoUi.rubroEvalId = rubroEvalDesempenioData.rubroEvalProcesoId;
@@ -499,32 +499,32 @@ class DataCursoRepository extends CursoRepository{
 
         //tareaEvaluacionCursoUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
         tareaEvaluacionCursoUi.tipoNotaEnum = getTipoNotaEnumUi(tareaCursoData.tipoIdNivelLogro);
-        tareaEvaluacionCursoUi.nota = tareaCursoData.notaEvalaucion != null ? tareaCursoData.notaEvalaucion.toStringAsFixed(1): "";
-        tareaEvaluacionCursoUi.iconoNota = tareaCursoData.iconoNivelLogro != null && tareaCursoData.iconoNivelLogro.length > 0 ? urlExpresiones + tareaCursoData.iconoNivelLogro: null;
+        tareaEvaluacionCursoUi.nota = tareaCursoData.notaEvalaucion != null ? tareaCursoData.notaEvalaucion?.toStringAsFixed(1): "";
+        tareaEvaluacionCursoUi.iconoNota = tareaCursoData.iconoNivelLogro != null && (tareaCursoData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (tareaCursoData.iconoNivelLogro??""): null;
         tareaEvaluacionCursoUi.descNota = tareaCursoData.descripcionNivelLogro;
         tareaEvaluacionCursoUi.tituloNota = tareaCursoData.tituloNivelLogro;
         tareaEvaluacionCursoUi.cursoUi = CursoUi();
-        tareaEvaluacionCursoUi.cursoUi.silaboEventoId = tareaCursoData.silaboEventoId;
-        tareaEvaluacionCursoUi.cursoUi.cargaCursoId = tareaCursoData.cargaCursoId;
-        tareaEvaluacionCursoUi.cursoUi.nombre = tareaCursoData.nombreCurso;
-        tareaEvaluacionCursoUi.cursoUi.seccion = tareaCursoData.seccion;
-        tareaEvaluacionCursoUi.cursoUi.grado = tareaCursoData.grado;
+        tareaEvaluacionCursoUi.cursoUi?.silaboEventoId = tareaCursoData.silaboEventoId;
+        tareaEvaluacionCursoUi.cursoUi?.cargaCursoId = tareaCursoData.cargaCursoId;
+        tareaEvaluacionCursoUi.cursoUi?.nombre = tareaCursoData.nombreCurso;
+        tareaEvaluacionCursoUi.cursoUi?.seccion = tareaCursoData.seccion;
+        tareaEvaluacionCursoUi.cursoUi?.grado = tareaCursoData.grado;
 
         tareaEvaluacionCursoUi.rubroEvaluacionId = tareaCursoData.rubroEvalProcesoId;
 
         if(parametrosDisenioData!=null){
-          tareaEvaluacionCursoUi.cursoUi.colorCurso = parametrosDisenioData.color1;
-          tareaEvaluacionCursoUi.cursoUi.colorCurso2 = parametrosDisenioData.color2;
-          tareaEvaluacionCursoUi.cursoUi.colorCurso3 = parametrosDisenioData.color3;
+          tareaEvaluacionCursoUi.cursoUi?.colorCurso = parametrosDisenioData.color1;
+          tareaEvaluacionCursoUi.cursoUi?.colorCurso2 = parametrosDisenioData.color2;
+          tareaEvaluacionCursoUi.cursoUi?.colorCurso3 = parametrosDisenioData.color3;
         }else{
           if(defaultParametrosDisenioData!=null){
-            tareaEvaluacionCursoUi.cursoUi.colorCurso = defaultParametrosDisenioData.color1;
-            tareaEvaluacionCursoUi.cursoUi.colorCurso2 = defaultParametrosDisenioData.color2;
-            tareaEvaluacionCursoUi.cursoUi.colorCurso3 = defaultParametrosDisenioData.color3;
+            tareaEvaluacionCursoUi.cursoUi?.colorCurso = defaultParametrosDisenioData.color1;
+            tareaEvaluacionCursoUi.cursoUi?.colorCurso2 = defaultParametrosDisenioData.color2;
+            tareaEvaluacionCursoUi.cursoUi?.colorCurso3 = defaultParametrosDisenioData.color3;
           }
         }
         tareaCursoUiList.add(tareaEvaluacionCursoUi);
-      });
+      }
 
 
       return tareaCursoUiList;
@@ -556,13 +556,13 @@ class DataCursoRepository extends CursoRepository{
         ContactoData contactoData = row.readTable(SQL.contacto);
         ContactoData padreData = row.readTable(padre);
         ContactoData apoderadoData = row.readTable(padre);
-        ContactoUi contactoUi = contactoUiList.firstWhere((element) => element.personaId == contactoData.personaId && element.tipo == contactoData.tipo, orElse: () => null);
+        ContactoUi? contactoUi = contactoUiList.firstWhereOrNull((element) => element.personaId == contactoData.personaId && element.tipo == contactoData.tipo);
         if(contactoUi == null){
           contactoUi = new ContactoUi();
           contactoUi.personaId = contactoData.personaId;
           contactoUi.relacionList = [];
           contactoUi.foto = contactoData.foto;
-          contactoUi.nombre = '${AppTools.capitalize(contactoData.nombres)} ${AppTools.capitalize(contactoData.apellidoPaterno)} ${AppTools.capitalize(contactoData.apellidoMaterno)}';
+          contactoUi.nombre = '${AppTools.capitalize(contactoData.nombres??"")} ${AppTools.capitalize(contactoData.apellidoPaterno??"")} ${AppTools.capitalize(contactoData.apellidoMaterno??"")}';
           contactoUi.relacion = contactoData.relacion;
           contactoUi.telfono = contactoData.celular!=null?contactoData.celular: contactoData.telefono??"";
 
@@ -572,7 +572,7 @@ class DataCursoRepository extends CursoRepository{
           ContactoUi padreUi = new ContactoUi();
           padreUi.personaId = padreData.personaId;
           padreUi.relacion = padreData.relacion;
-          contactoUi.relacionList.add(padreUi);
+          contactoUi.relacionList?.add(padreUi);
         }
 
         if(apoderadoData!=null){
@@ -652,13 +652,13 @@ class DataCursoRepository extends CursoRepository{
         AulaData aulaData = data.readTable(SQL.aula);
         NivelAcademicoData nivelAcademicoData = data.readTable(SQL.nivelAcademico);
 
-        cursoUi.nombre = curso?.nombre;
-        cursoUi.nombreDocente = AppTools.capitalize(cargaCursoData.nombreDocente);
+        cursoUi.nombre = curso.nombre;
+        cursoUi.nombreDocente = AppTools.capitalize(cargaCursoData.nombreDocente??"");
         cursoUi.fotoDocente = cargaCursoData.fotoDocente;
         cursoUi.seccion = seccionData.nombre;
         cursoUi.grado = periodoData.aliasPeriodo;
         cursoUi.nivelAcademico = nivelAcademicoData.nombre;
-        cursoUi.salon = aulaData.descripcion+ ": " + aulaData.numero;
+        cursoUi.salon = (aulaData.descripcion??"")+ ": " + (aulaData.numero??"");
 
         if(parametrosDisenioData!=null){
           cursoUi.colorCurso = parametrosDisenioData.color1;
@@ -766,8 +766,8 @@ class DataCursoRepository extends CursoRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingle();
-      String urlExpresiones = webConfig?.content == null ? "" : webConfig.content;
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+      String urlExpresiones = webConfig?.content??"";
       /*
       * Obtner asistencia por cursos
       * */
@@ -789,7 +789,7 @@ class DataCursoRepository extends CursoRepository{
 
       ParametrosDisenioData defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingle();
 
-      await Future.forEach(rows, (item) async{
+      for(var item in rows){
         AsistenciaAlumno asistenciaAlumnoData = item.readTable(SQL.asistenciaAlumnos);
         ParametrosDisenioData parametrosDisenioData = item.readTable(SQL.parametrosDisenio);
         AsistenciaValorTipoNotaData asistenciaValorTipoNotaData = item.readTable(SQL.asistenciaValorTipoNota);
@@ -829,22 +829,22 @@ class DataCursoRepository extends CursoRepository{
 
 
         asistenciaUi.cursoUi = CursoUi();
-        asistenciaUi.cursoUi.silaboEventoId = asistenciaAlumnoData.silaboEventoId;
-        asistenciaUi.cursoUi.cargaCursoId = asistenciaAlumnoData.cargaCursoId;
-        asistenciaUi.cursoUi.nombre = asistenciaAlumnoData.nombreCurso;
+        asistenciaUi.cursoUi?.silaboEventoId = asistenciaAlumnoData.silaboEventoId;
+        asistenciaUi.cursoUi?.cargaCursoId = asistenciaAlumnoData.cargaCursoId;
+        asistenciaUi.cursoUi?.nombre = asistenciaAlumnoData.nombreCurso;
         if(parametrosDisenioData!=null){
-          asistenciaUi.cursoUi.colorCurso = parametrosDisenioData.color1;
-          asistenciaUi.cursoUi.colorCurso2 = parametrosDisenioData.color2;
-          asistenciaUi.cursoUi.colorCurso3 = parametrosDisenioData.color3;
+          asistenciaUi.cursoUi?.colorCurso = parametrosDisenioData.color1;
+          asistenciaUi.cursoUi?.colorCurso2 = parametrosDisenioData.color2;
+          asistenciaUi.cursoUi?.colorCurso3 = parametrosDisenioData.color3;
         }else{
           if(defaultParametrosDisenioData!=null){
-            asistenciaUi.cursoUi.colorCurso = defaultParametrosDisenioData.color1;
-            asistenciaUi.cursoUi.colorCurso2 = defaultParametrosDisenioData.color2;
-            asistenciaUi.cursoUi.colorCurso3 = defaultParametrosDisenioData.color3;
+            asistenciaUi.cursoUi?.colorCurso = defaultParametrosDisenioData.color1;
+            asistenciaUi.cursoUi?.colorCurso2 = defaultParametrosDisenioData.color2;
+            asistenciaUi.cursoUi?.colorCurso3 = defaultParametrosDisenioData.color3;
           }
         }
         asistenciaUiList.add(asistenciaUi);
-      });
+      }
 
 
       return asistenciaUiList;
@@ -1017,8 +1017,8 @@ class DataCursoRepository extends CursoRepository{
     AppDataBase SQL = AppDataBase();
     try{
 
-      WebConfig webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingle();
-      String urlExpresiones = webConfig?.content == null ? "" : webConfig.content;
+      WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+      String? urlExpresiones = webConfig?.content??"";
       /*
       * Obtner asistencia por cursos
       * */
@@ -1032,7 +1032,7 @@ class DataCursoRepository extends CursoRepository{
       await Future.forEach(rows, (AsistenciaGeneralData asistenciaGeneralData) async{
 
         AsistenciaUi asistenciaUi = AsistenciaUi();
-        asistenciaUi.asistenciaId = asistenciaGeneralData.controlAsistenciaId?.toString();
+        asistenciaUi.asistenciaId = asistenciaGeneralData.controlAsistenciaId.toString();
         DateTime dateTime = AppTools.convertDateTimePtBR(asistenciaGeneralData.fechaAsistencia, asistenciaGeneralData.horaIngreso);
         asistenciaUi.fecha = AppTools.f_fecha_letras(dateTime);
         asistenciaUi.timeStamp = dateTime;
@@ -1066,7 +1066,7 @@ class DataCursoRepository extends CursoRepository{
         asistenciaUiList.add(asistenciaUi);
       });
 
-      asistenciaUiList.sort((o2, o1) => o2?.timeStamp?.compareTo(o1?.timeStamp));
+      asistenciaUiList.sort((o2, o1) => (o2.timeStamp??DateTime(1960)).compareTo(o1.timeStamp??DateTime(1960)));
 
       return asistenciaUiList;
     }catch(e){

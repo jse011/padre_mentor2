@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
 
 class ProgramaEducativoView extends StatelessWidget {
-  final String titulo;
-  final String subTitulo;
-  final String subTitulo2;
-  final String foto;
-  final bool cerrado;
-  const ProgramaEducativoView({Key key, this.titulo, this.subTitulo, this.subTitulo2, this.foto, this.cerrado = false})
+  final String? titulo;
+  final String? subTitulo;
+  final String? subTitulo2;
+  final String? foto;
+  final bool? cerrado;
+  const ProgramaEducativoView({Key? key, this.titulo, this.subTitulo, this.subTitulo2, this.foto, this.cerrado = false})
       : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class ProgramaEducativoView extends StatelessWidget {
                           child: Stack(
                             alignment: Alignment.topLeft,
                             children: <Widget>[
-                              if(cerrado)
+                              if(cerrado??false)
                                 Positioned(
                                 right: 10,
                                 top: 0,
@@ -100,7 +100,7 @@ class ProgramaEducativoView extends StatelessWidget {
                                         height: 60,
                                         width: 60,
                                         placeholder: (context, url) => CircularProgressIndicator(),
-                                        imageUrl: foto,
+                                        imageUrl: foto??"",
                                         imageBuilder: (context, imageProvider) =>
                                             Container(
 
@@ -126,7 +126,7 @@ class ProgramaEducativoView extends StatelessWidget {
                                                 right: 16,
                                               ),
                                               child: Text(
-                                                titulo,
+                                                titulo??"",
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
                                                   fontFamily:
@@ -148,7 +148,7 @@ class ProgramaEducativoView extends StatelessWidget {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    subTitulo,
+                                                    subTitulo??"",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
                                                       fontFamily: AppTheme.fontName,
@@ -160,7 +160,7 @@ class ProgramaEducativoView extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Text(
-                                                    subTitulo2,
+                                                    subTitulo2??"",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
                                                       fontFamily: AppTheme.fontName,

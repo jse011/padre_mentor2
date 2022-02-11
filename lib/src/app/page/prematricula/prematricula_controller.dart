@@ -6,10 +6,10 @@ class PrematriculaController extends Controller{
   PrematriculaPresenter presenter;
   final String _fotoAlumno;
   String get fotoAlumno => _fotoAlumno;
-  HijosUi _hijosUi = null;
-  HijosUi get hijosUi => _hijosUi;
-  String _urlServidor = null;
-  String get urlServidor => _urlServidor;
+  HijosUi? _hijosUi = null;
+  HijosUi? get hijosUi => _hijosUi;
+  String? _urlServidor = null;
+  String? get urlServidor => _urlServidor;
   PrematriculaController(alumnoId, fotoAlumno, usuarioConfRepo) : presenter = PrematriculaPresenter(alumnoId, usuarioConfRepo), _fotoAlumno = fotoAlumno, super();
 
   @override
@@ -26,7 +26,7 @@ class PrematriculaController extends Controller{
 
     };
 
-    presenter.getUrlServidorOnNext = (String url){
+    presenter.getUrlServidorOnNext = (String? url){
       _urlServidor = url;
       refreshUI();
     };

@@ -106,10 +106,10 @@ class GetTareaEvaluacion extends UseCase<GetTareaEvaluacionCaseResponse, GetTare
 }
 /// Wrapping params inside an object makes it easier to change later
 class GetTareaEvaluacionCaseParams {
-  final int anioAcademicoId;
-  final int programaId;
-  final int calendarioPeridoId;
-  final int alumnoId;
+  final int? anioAcademicoId;
+  final int? programaId;
+  final int? calendarioPeridoId;
+  final int? alumnoId;
 
   GetTareaEvaluacionCaseParams(this.anioAcademicoId, this.programaId,
       this.calendarioPeridoId, this.alumnoId);

@@ -12,10 +12,10 @@ import 'package:padre_mentor/src/data/repositories/moor/data_usuario_configuraci
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
 
 class HorariosView extends View{
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
   HorariosView({this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno});
 
@@ -26,10 +26,10 @@ class HorariosView extends View{
 
 class _HorariosViewState extends ViewState<HorariosView, HorariosController> with TickerProviderStateMixin{
   _HorariosViewState(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno) : super(HorariosController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, DataUsuarioAndRepository(),DataCursoRepository(), DeviceHttpDatosRepositorio()));
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   @override
   void initState() {
@@ -99,7 +99,7 @@ class _HorariosViewState extends ViewState<HorariosView, HorariosController> wit
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -220,9 +220,9 @@ class _HorariosViewState extends ViewState<HorariosView, HorariosController> wit
           animationController: animationController,
           child:  ControlledWidgetBuilder<HorariosController>(
               builder: (context, controller) {
-                if(controller.msgConexion!=null&&controller.msgConexion.isNotEmpty){
+                if(controller.msgConexion!=null&&(controller.msgConexion??"").isNotEmpty){
                   Fluttertoast.showToast(
-                    msg: controller.msgConexion,
+                    msg: controller.msgConexion!,
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 1,

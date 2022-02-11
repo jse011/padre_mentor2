@@ -10,19 +10,19 @@ import 'package:padre_mentor/src/domain/usecases/sync_datos_inicio_padre.dart';
 import 'package:padre_mentor/src/domain/usecases/validar_usuario.dart';
 
 class HomePresenter extends Presenter{
-  Function getUserOnNext;
-  Function getUserOnComplete;
-  Function getUserOnError;
-  Function validarUsuarioOnError, validarUsuarioOnComplete;
+  late Function getUserOnNext;
+  late Function getUserOnComplete;
+  late Function getUserOnError;
+  late Function validarUsuarioOnError, validarUsuarioOnComplete;
   final GetSessionUsuarioCase getUsuarioUseCase;
   final SyncDatosInicioPadre syncDatosInicioPadre;
   ValidarUsuario _validarUsuario;
   CerrarCesion _cerrarCesion;
-  Function cerrarCesionOnError, cerrarCesionOnComplete;
+  late Function cerrarCesionOnError, cerrarCesionOnComplete;
   final IsHabilitado _isHabilitado;
-  Function isHabilitadoOnError, isHabilitadoOnComplete;
+  late Function isHabilitadoOnError, isHabilitadoOnComplete;
   final GetIconoPadre _getIconoPadre;
-  Function getIconoPadreOnError, getIconoPadreOnComplete;
+  late Function getIconoPadreOnError, getIconoPadreOnComplete;
 
   HomePresenter(UsuarioAndConfiguracionRepository usuarioConfigRepo, HttpDatosRepository httpDatosRepo) : getUsuarioUseCase = GetSessionUsuarioCase(usuarioConfigRepo), _validarUsuario = ValidarUsuario(usuarioConfigRepo), _cerrarCesion = CerrarCesion(usuarioConfigRepo), syncDatosInicioPadre = SyncDatosInicioPadre(httpDatosRepo, usuarioConfigRepo), _isHabilitado = IsHabilitado(usuarioConfigRepo, httpDatosRepo), _getIconoPadre = GetIconoPadre(usuarioConfigRepo);
 
@@ -56,7 +56,7 @@ class HomePresenter extends Presenter{
     syncDatosInicioPadre.execute(_SyncDatosInicioPadreCase(this), SyncDatosInicioPadreParams());
   }
 
-  void isHabilitado(int hijoPersonaId){
+  void isHabilitado(int? hijoPersonaId){
     _isHabilitado.execute(_IsHabilitadoUseCase(this), IsHabilitadoParams(hijoPersonaId));
   }
 
@@ -83,9 +83,9 @@ class _GetSessionUsuarioCase extends Observer<GetSessionUsuarioCaseResponse>{
   }
 
   @override
-  void onNext(GetSessionUsuarioCaseResponse response) {
+  void onNext(GetSessionUsuarioCaseResponse? response) {
     assert(presenter.getUserOnNext != null);
-    presenter.getUserOnNext(response.usurio);
+    presenter.getUserOnNext(response?.usurio);
   }
 
 }
@@ -106,7 +106,7 @@ class _SyncDatosInicioPadreCase extends Observer<SyncDatosInicioPadreResponse>{
   }
 
   @override
-  void onNext(SyncDatosInicioPadreResponse response) {
+  void onNext(SyncDatosInicioPadreResponse? response) {
 
   }
 
@@ -130,7 +130,7 @@ class _ValidarUsuarioUseCase extends Observer<ValidarUsuarioCaseResponse>{
   }
 
   @override
-  void onNext(ValidarUsuarioCaseResponse response) {
+  void onNext(ValidarUsuarioCaseResponse? response) {
 
   }
 
@@ -153,9 +153,9 @@ class _CerrarSesionUseCase extends Observer<CerrarCesionCaseResponse>{
   }
 
   @override
-  void onNext(CerrarCesionCaseResponse response) {
+  void onNext(CerrarCesionCaseResponse? response) {
     assert(presenter.cerrarCesionOnComplete != null);
-    presenter.cerrarCesionOnComplete(response.success);
+    presenter.cerrarCesionOnComplete(response?.success);
   }
 
 }
@@ -177,9 +177,9 @@ class _IsHabilitadoUseCase extends Observer<IsHabilitadoResponse>{
   }
 
   @override
-  void onNext(IsHabilitadoResponse response) {
+  void onNext(IsHabilitadoResponse? response) {
     assert(presenter.isHabilitadoOnComplete != null);
-    presenter.isHabilitadoOnComplete(response.habilitarAcceso);
+    presenter.isHabilitadoOnComplete(response?.habilitarAcceso);
   }
 
 }
@@ -201,9 +201,9 @@ class _GetIconoPadreUseCase extends Observer<GetIconoPadreResponse>{
   }
 
   @override
-  void onNext(GetIconoPadreResponse response) {
+  void onNext(GetIconoPadreResponse? response) {
     assert(presenter.getIconoPadreOnComplete != null);
-    presenter.getIconoPadreOnComplete(response.logo);
+    presenter.getIconoPadreOnComplete(response?.logo);
   }
 
 }

@@ -7,7 +7,7 @@ import 'package:padre_mentor/src/domain/usecases/update_familia.dart';
 
 class FamiliaPresenter extends Presenter{
   GetSessionUsuarioCase getSessionUsuarioCase;
-  Function getSesionUsuarioOnNext, getSesionUsuarioOnComplete,  getSesionUsuarioOnError;
+  late Function getSesionUsuarioOnNext, getSesionUsuarioOnComplete,  getSesionUsuarioOnError;
 
   FamiliaPresenter(httpRepo, usuarioConfiRepo ):getSessionUsuarioCase = GetSessionUsuarioCase(usuarioConfiRepo);
 
@@ -44,9 +44,9 @@ class _GetSessionUsuarioCase extends Observer<GetSessionUsuarioCaseResponse>{
   }
 
   @override
-  void onNext(GetSessionUsuarioCaseResponse response) {
+  void onNext(GetSessionUsuarioCaseResponse? response) {
     assert(presenter.getSesionUsuarioOnNext != null);
-    presenter.getSesionUsuarioOnNext(response.usurio);
+    presenter.getSesionUsuarioOnNext(response?.usurio);
   }
 
 }

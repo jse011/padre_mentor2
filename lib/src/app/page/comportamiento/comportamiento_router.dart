@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:padre_mentor/src/app/page/comportamiento/comportamiento_view.dart';
 
 class ComportamientoRouter {
-  static Route createRouteComportamiento({@required programaAcademicoId, @required  alumnoId, @required anioAcademico, @required String fotoAlumno}) {
+  static Route createRouteComportamiento({required programaAcademicoId, required  alumnoId, required anioAcademico, required String? fotoAlumno}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ComportamientoView(alumnoId: alumnoId, programaAcademicoId: programaAcademicoId, anioAcademicoId: anioAcademico, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

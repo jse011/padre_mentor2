@@ -4,21 +4,21 @@ import 'package:padre_mentor/src/app/utils/app_theme.dart';
 
 
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex, this.photoUser, this.nameUser, this.correo, this.onClickCerrarCession}) : super(key: key);
+  const HomeDrawer({Key? key, required this.screenIndex, required  this.iconAnimationController, this.callBackIndex, this.photoUser, this.nameUser, this.correo, this.onClickCerrarCession}) : super(key: key);
 
   final AnimationController iconAnimationController;
   final DrawerIndex screenIndex;
-  final Function(DrawerIndex) callBackIndex;
-  final String nameUser;
-  final String photoUser;
-  final String correo;
-  final Function onClickCerrarCession;
+  final Function(DrawerIndex)? callBackIndex;
+  final String? nameUser;
+  final String? photoUser;
+  final String? correo;
+  final Function? onClickCerrarCession;
   @override
   _HomeDrawerState createState() => _HomeDrawerState();
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
-  List<DrawerList> drawerList;
+  late List<DrawerList> drawerList;
   @override
   void initState() {
     setDrawerListArray();
@@ -80,7 +80,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 children: <Widget>[
                   AnimatedBuilder(
                     animation: widget.iconAnimationController,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return ScaleTransition(
                         scale: AlwaysStoppedAnimation<double>(1.0 - (widget.iconAnimationController.value) * 0.2),
                         child: RotationTransition(
@@ -195,7 +195,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   color: Colors.red,
                 ),
                 onTap: () {
-                  widget.onClickCerrarCession();
+                  widget.onClickCerrarCession?.call();
                 },
               ),
               SizedBox(
@@ -247,7 +247,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           height: 24,
                           child: Image.asset(listData.imageName, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack),
                         )
-                      : Icon(listData.icon.icon, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack),
+                      : Icon(listData.icon?.icon, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack),
                   const Padding(
                     padding: EdgeInsets.all(4.0),
                   ),
@@ -266,7 +266,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             widget.screenIndex == listData.index
                 ? AnimatedBuilder(
                     animation: widget.iconAnimationController,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return Transform(
                         transform: Matrix4.translationValues(
                             (MediaQuery.of(context).size.width * 0.75 - 64) * (1.0 - widget.iconAnimationController.value - 1.0), 0.0, 0.0),
@@ -297,7 +297,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<void> navigationtoScreen(DrawerIndex indexScreen) async {
-    widget.callBackIndex(indexScreen);
+    widget.callBackIndex?.call(indexScreen);
   }
 }
 
@@ -313,12 +313,12 @@ class DrawerList {
     this.isAssetsImage = false,
     this.labelName = '',
     this.icon,
-    this.index,
+    required this.index,
     this.imageName = '',
   });
 
   String labelName;
-  Icon icon;
+  Icon? icon;
   bool isAssetsImage;
   String imageName;
   DrawerIndex index;

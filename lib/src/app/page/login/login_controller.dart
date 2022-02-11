@@ -4,7 +4,7 @@ import 'package:padre_mentor/src/domain/entities/login_ui.dart';
 
 class LoginController extends Controller{
   bool _ocultarContrasenia = true;
-  String _mensaje = null;
+  String? _mensaje = null;
   String _usuario = "";
   bool _correoValidate = false;
   String get usuario => _usuario;
@@ -16,12 +16,12 @@ class LoginController extends Controller{
   String get correo => _correo;
 
 
-  String get mensaje => _mensaje;
+  String? get mensaje => _mensaje;
   bool _dismis = false;
   bool get dismis => _dismis;
   bool _progress = false;
   bool get progress => _progress;
-  LoginUi _loginUi = null;
+  LoginUi? _loginUi = null;
   bool get ocultarContrasenia => _ocultarContrasenia;
 
   bool _progressData = false;
@@ -154,9 +154,9 @@ class LoginController extends Controller{
     return _usuario==null||_usuario.isEmpty;
   }
 
-  String _vailidarPassword(){
+  String? _vailidarPassword(){
     //return _password==null || _password.length < 3;
-    String mensaje = null;
+    String? mensaje = null;
     if(_password==null||_password.isEmpty){
       mensaje = "Ingresar contraseña";
     }else if( _password.length < 3){
@@ -170,8 +170,8 @@ class LoginController extends Controller{
     return _dni==null||_dni.isEmpty;
   }
 
-  String _vailidarCorreo(){
-    String mensaje = null;
+  String? _vailidarCorreo(){
+    String? mensaje = null;
     if(_dni==null||_dni.isEmpty){
       mensaje = "Ingresar su correo electrónico";
     }else if(!_correoValidate){

@@ -7,12 +7,12 @@ import 'home_presenter.dart';
 class HomeController extends Controller{
   final HomePresenter homePresenter;
   VistaIndex _vistaActual;
-  UsuarioUi _userioSession;
-  bool _splash = true;
-  String _logo = null;
-  String get logo => _logo;
-  bool get splash => _splash;
-  UsuarioUi get usuario => _userioSession; // data used by the View
+  UsuarioUi? _userioSession;
+  bool? _splash = true;
+  String? _logo = null;
+  String? get logo => _logo;
+  bool? get splash => _splash;
+  UsuarioUi? get usuario => _userioSession; // data used by the View
   int _showLoggin = 0;// 0 cargando, 1 show Loggin, -1 nada
   int get showLoggin => _showLoggin;
   bool _showDeuda = false;
@@ -29,7 +29,7 @@ class HomeController extends Controller{
   @override
   // this is called automatically by the parent class
   void initListeners() {
-    homePresenter.getUserOnNext = (UsuarioUi user) {
+    homePresenter.getUserOnNext = (UsuarioUi? user) {
       _userioSession = user;
       refreshUI(); // Refreshes the UI manually
     };
@@ -38,8 +38,8 @@ class HomeController extends Controller{
       Future.delayed(const Duration(milliseconds: 3000), () {
         _splash = false;
         refreshUI();
-        if(_userioSession.hijoSelected!=null){
-          homePresenter.isHabilitado(_userioSession.hijoSelected.personaId);
+        if(_userioSession?.hijoSelected!=null){
+          homePresenter.isHabilitado(_userioSession?.hijoSelected?.personaId);
         }
       });
     };
@@ -64,8 +64,8 @@ class HomeController extends Controller{
       refreshUI();
     };
 
-    homePresenter.cerrarCesionOnComplete = (bool success){
-      if(success){
+    homePresenter.cerrarCesionOnComplete = (bool? success){
+      if(success??false){
         _showLoggin = 1;
         refreshUI();
       }
@@ -75,9 +75,9 @@ class HomeController extends Controller{
 
     };
 
-    homePresenter.isHabilitadoOnComplete = (bool habilitar){
+    homePresenter.isHabilitadoOnComplete = (bool? habilitar){
       _sehisolaconsultaDeuda = true;
-      _showDeuda = (!habilitar);
+      _showDeuda = (!(habilitar??false));
       refreshUI();
     };
 
@@ -88,7 +88,7 @@ class HomeController extends Controller{
 
     homePresenter.getIconoPadreOnComplete = (String logo){
       _logo = logo;
-      print("mi logo " + _logo);
+      //print("mi logo " + _logo);
       refreshUI();
     };
 
@@ -107,7 +107,7 @@ class HomeController extends Controller{
 
   @override
   void onResumed() {
-    if(_sehisolaconsultaDeuda) homePresenter.isHabilitado(_userioSession.hijoSelected.personaId);//volver a sol hiso la consulta la primera vez al inciar la aplicacion
+    if(_sehisolaconsultaDeuda) homePresenter.isHabilitado(_userioSession?.hijoSelected?.personaId);//volver a sol hiso la consulta la primera vez al inciar la aplicacion
   }
 
 

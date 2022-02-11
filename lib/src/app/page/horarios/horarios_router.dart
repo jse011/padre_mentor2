@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:padre_mentor/src/app/page/horarios/horarios_view.dart';
 
 class HorariosRouter {
-  static Route createRouteHorarios({@required programaAcademicoId, @required  alumnoId, @required anioAcademico, @required String fotoAlumno}) {
+  static Route createRouteHorarios({int? programaAcademicoId, int? alumnoId, int? anioAcademico, String? fotoAlumno}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => HorariosView(alumnoId: alumnoId, programaAcademicoId: programaAcademicoId, anioAcademicoId: anioAcademico, fotoAlumno: fotoAlumno),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

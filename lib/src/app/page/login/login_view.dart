@@ -28,9 +28,9 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
     child: ControlledWidgetBuilder<LoginController>(
         builder: (context, controller) {
 
-          if(controller.mensaje!=null&&controller.mensaje.isNotEmpty){
+          if((controller.mensaje??"").isNotEmpty){
             Fluttertoast.showToast(
-              msg: controller.mensaje,
+              msg: controller.mensaje!,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -39,7 +39,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
           }
 
           if(controller.dismis){
-            SchedulerBinding.instance.addPostFrameCallback((_) {
+            SchedulerBinding.instance?.addPostFrameCallback((_) {
               // fetch data
               HomeRouter.createRouteHomeRemoveAll(context);
             });
@@ -62,7 +62,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        child: Text("Hi ", style: Theme.of(context).textTheme.caption.copyWith(
+                        child: Text("Hi ", style: Theme.of(context).textTheme.caption?.copyWith(
                             fontSize: 32,
                             fontFamily: AppTheme.fontGotham,
                             color: AppTheme.black
@@ -70,7 +70,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                       ),
                       Column(
                         children: [
-                          Text(ChangeAppTheme.nameApp(), style: Theme.of(context).textTheme.caption.copyWith(
+                          Text(ChangeAppTheme.nameApp(), style: Theme.of(context).textTheme.caption?.copyWith(
                             fontSize: 32,
                             fontFamily: AppTheme.fontGotham,
                               color: AppTheme.black
@@ -81,7 +81,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                             height: 2,
                             color: AppTheme.redAccent3,
                           ),
-                          Text("Perseguimos una experiencia relajada.", style: Theme.of(context).textTheme.caption.copyWith(
+                          Text("Perseguimos una experiencia relajada.", style: Theme.of(context).textTheme.caption?.copyWith(
                               fontSize: 10,
                               color: AppTheme.grey
                           )),
@@ -166,7 +166,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                               autovalidateMode: AutovalidateMode.disabled,
                               validator: (val) => '' ,
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.caption.copyWith(
+                              style: Theme.of(context).textTheme.caption?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: Colors.black,
@@ -186,7 +186,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   Icons.account_circle,
                                   color: AppTheme.colorPrimary,
                                 ),
-                                errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -215,7 +215,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   ),
                                 ),
                                 hintText: "Ingrese su usuario",
-                                hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -245,14 +245,14 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                               autofocus: false,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.caption.copyWith(
+                              style: Theme.of(context).textTheme.caption?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: Colors.black,
                               ),
                               initialValue: controller.password??"",
                               obscureText: controller.ocultarContrasenia,
-                              validator: (val) => val.length < 3 ? 'Contraseña demasiado corta' : null,
+                              validator: (val) => (val?.length??0) < 3 ? 'Contraseña demasiado corta' : null,
                               //controller: accountController,
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
@@ -275,7 +275,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                     controller.onClikMostarContrasenia();
                                   },
                                 ),
-                                errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -304,7 +304,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   ),
                                 ),
                                 hintText: "Ingrese su contraseña",
-                                hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -334,13 +334,13 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                               autofocus: true,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.caption.copyWith(
+                              style: Theme.of(context).textTheme.caption?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: Colors.black,
                               ),
                               initialValue: controller.dni??"",
-                              validator: (val) => val.length < 3 ? 'DNI demasiado corta' : null,
+                              validator: (val) => (val?.length??0) < 3 ? 'DNI demasiado corta' : null,
                               //controller: accountController,
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
@@ -355,7 +355,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   Icons.style,
                                   color: AppTheme.colorPrimary,
                                 ),
-                                errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -384,7 +384,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   ),
                                 ),
                                 hintText: "Ingrese su DNI",
-                                hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -414,7 +414,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                               //autovalidate: true,
                               autofocus: true,
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.caption.copyWith(
+                              style: Theme.of(context).textTheme.caption?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: Colors.black,
@@ -422,8 +422,8 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                               initialValue: controller.correo??"",
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (val) {
-                                controller.onValidatorCorreo(EmailValidator.validate(val));
-                                return EmailValidator.validate(val) ? null : "Correo inválido";
+                                controller.onValidatorCorreo(EmailValidator.validate(val??""));
+                                return EmailValidator.validate(val??"") ? null : "Correo inválido";
                               },
                               //controller: accountController,
                               keyboardType: TextInputType.text,
@@ -439,7 +439,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   Icons.email_outlined,
                                   color: AppTheme.colorPrimary,
                                 ),
-                                errorStyle: Theme.of(context).textTheme.caption.copyWith(
+                                errorStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -468,7 +468,7 @@ class _LoginViewState extends ViewState<LoginView, LoginController>{
                                   ),
                                 ),
                                 hintText: "Ingrese su correo",
-                                hintStyle: Theme.of(context).textTheme.caption.copyWith(
+                                hintStyle: Theme.of(context).textTheme.caption?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                   color: Colors.grey,

@@ -1,18 +1,19 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:padre_mentor/src/data/repositories/moor/data_curso_repository.dart';
 import 'package:padre_mentor/src/device/repositories/http/device_http_datos_repository.dart';
+import 'package:padre_mentor/src/domain/repositories/curso_repository.dart';
 import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_repository.dart';
 import 'package:padre_mentor/src/domain/usecases/get_calendario_periodo.dart';
 
 class HorariosPresenter extends Presenter{
   GetCalendarioPerido _getCalendarioPerido;
-  Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
+  late Function getCalendarioPeridoOnNext, getCalendarioPeridoOnComplete, getCalendarioPeridoOnError;
   final int alumnoId;
   final int programaAcademicoId;
   final int anioAcademicoId;
   final String fotoAlumno;
 
-  HorariosPresenter(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, DataCursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo, UsuarioAndConfiguracionRepository usuarioConfigRepo): _getCalendarioPerido = GetCalendarioPerido(cursoRepo), super();
+  HorariosPresenter(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo, UsuarioAndConfiguracionRepository usuarioConfigRepo): _getCalendarioPerido = GetCalendarioPerido(cursoRepo), super();
 
   @override
   void dispose() {
@@ -43,9 +44,9 @@ class _GetCalendarioPeridoCase extends Observer<GetCalendarioPeridoResponse>{
   }
 
   @override
-  void onNext(GetCalendarioPeridoResponse response) {
+  void onNext(GetCalendarioPeridoResponse? response) {
     assert(presenter.getCalendarioPeridoOnNext != null);
-    presenter.getCalendarioPeridoOnNext(response.calendarioPeriodoList, response.calendarioPeriodoUI);
+    presenter.getCalendarioPeridoOnNext(response?.calendarioPeriodoList, response?.calendarioPeriodoUI);
   }
 
 }

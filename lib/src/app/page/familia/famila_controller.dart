@@ -8,8 +8,8 @@ class FamiliaController extends Controller{
 
   FamiliaPresenter presenter;
 
-  UsuarioUi _usuarioUi = null;
-  UsuarioUi get usuarioUi => _usuarioUi;
+  UsuarioUi? _usuarioUi = null;
+  UsuarioUi? get usuarioUi => _usuarioUi;
   List<HijosUi> _hijosUiList = [];
   List<HijosUi> get hijosUiList => _hijosUiList;
   List<FamiliaUi> _familiaUiList = [];
@@ -29,10 +29,10 @@ class FamiliaController extends Controller{
 
   @override
   void initListeners() {
-    presenter.getSesionUsuarioOnNext = (UsuarioUi usuarioUi) {
+    presenter.getSesionUsuarioOnNext = (UsuarioUi? usuarioUi) {
       _usuarioUi = usuarioUi;
-      _hijosUiList = _usuarioUi?.hijos;
-      _familiaUiList = _usuarioUi?.familiaUiList;
+      _hijosUiList = _usuarioUi?.hijos??[];
+      _familiaUiList = _usuarioUi?.familiaUiList??[];
       refreshUI();
     };
 

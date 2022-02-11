@@ -18,10 +18,10 @@ import 'package:padre_mentor/src/domain/entities/tarea_eval_curso_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_nota_enum_ui.dart';
 
 class TareaEvaluacionView extends View{
-  final int alumnoId;
-  final int programaAcademicoId;
-  final int anioAcademicoId;
-  final String fotoAlumno;
+  final int? alumnoId;
+  final int? programaAcademicoId;
+  final int? anioAcademicoId;
+  final String? fotoAlumno;
 
   TareaEvaluacionView({this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno});
 
@@ -32,10 +32,10 @@ class TareaEvaluacionView extends View{
 
 class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEvaluacionController> with TickerProviderStateMixin{
   _TareaEvaluacionViewState(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno) : super(TareaEvaluacionController(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, DataUsuarioAndRepository(),DataCursoRepository(), DeviceHttpDatosRepositorio()));
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   @override
   void initState() {
@@ -108,7 +108,7 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -232,9 +232,9 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                   animationController: animationController,
                   child:  ControlledWidgetBuilder<TareaEvaluacionController>(
                       builder: (context, controller) {
-                        if(controller.msgConexion!=null&&controller.msgConexion.isNotEmpty){
+                        if((controller.msgConexion??"").isNotEmpty){
                           Fluttertoast.showToast(
-                            msg: controller.msgConexion,
+                            msg: controller.msgConexion!,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -376,7 +376,7 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                                               child:
                                                               Container(
                                                                 margin: const EdgeInsets.only(bottom: 4),
-                                                                color: o.cursoUi.colorCurso2 == null || o.cursoUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(o.cursoUi.colorCurso2),
+                                                                color: HexColor(o.cursoUi?.colorCurso2),
                                                                 width: 3,
                                                               ),
                                                             )
@@ -405,7 +405,7 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                                               child:
                                                               Container(
                                                                 margin: const EdgeInsets.only(top: 4),
-                                                                color:o.cursoUi.colorCurso2 == null || o.cursoUi.colorCurso2.isEmpty ?  Colors.black :  HexColor(o.cursoUi.colorCurso2),
+                                                                color: HexColor(o.cursoUi?.colorCurso2),
                                                                 width: 3,
                                                               ),
                                                             )
@@ -486,30 +486,30 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                                                 width: 50.0,
                                                                 child: (() {
 
-                                                                  if(o.rubroEvaluacionId!=null&&o.rubroEvaluacionId.length>0){
+                                                                  if(o.rubroEvaluacionId!=null&&(o.rubroEvaluacionId?.length??0)>0){
                                                                     switch(o.tipoNotaEnum){
                                                                       case TipoNotaEnumUi.VALOR_NUMERICO:
                                                                         return Center(
-                                                                          child: Text(o.nota, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
+                                                                          child: Text(o.nota??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
                                                                         );
                                                                       case TipoNotaEnumUi.SELECTOR_NUMERICO:
                                                                         return Center(
-                                                                          child: Text(o.nota, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
+                                                                          child: Text(o.nota??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
                                                                         );
                                                                       case TipoNotaEnumUi.SELECTOR_VALORES:
                                                                         return Center(
-                                                                          child: Text(o.tituloNota, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
+                                                                          child: Text(o.tituloNota??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
                                                                         );
                                                                       case TipoNotaEnumUi.SELECTOR_ICONOS:
                                                                         return Column(
                                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                                           crossAxisAlignment: CrossAxisAlignment.center,
                                                                           children: [
-                                                                            o.iconoNota != null && o.iconoNota.length > 0 ? CachedNetworkImage(
+                                                                            o.iconoNota != null && (o.iconoNota??"").length > 0 ? CachedNetworkImage(
                                                                                 height: 30.0,
                                                                                 width: 30.0,
                                                                                 placeholder: (context, url) => CircularProgressIndicator(),
-                                                                                imageUrl: o.iconoNota,
+                                                                                imageUrl: o.iconoNota??"",
                                                                                 imageBuilder: (context, imageProvider) => Container(
                                                                                     decoration: BoxDecoration(
                                                                                       borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -521,12 +521,12 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                                                                 )
                                                                             ) : Container(),
                                                                             SizedBox(height: 4),
-                                                                            Text(o.descNota, textAlign: TextAlign.center, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 9))
+                                                                            Text(o.descNota??"", textAlign: TextAlign.center, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w500, fontSize: 9))
                                                                           ],
                                                                         );
                                                                       case TipoNotaEnumUi.VALOR_ASISTENCIA:
                                                                         return Center(
-                                                                          child: Text(o.nota, style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
+                                                                          child: Text(o.nota??"", style: TextStyle(fontFamily: AppTheme.fontName, fontWeight: FontWeight.w700, fontSize: 20)),
                                                                         );
                                                                     }
                                                                   }
@@ -595,7 +595,7 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                   height: 110,
                                   margin: const EdgeInsets.only(top: 1, left: 1, right: 1, bottom: 1),
                                   decoration: BoxDecoration(
-                                    color:controller.calendarioPeriodoList[index].selected ? AppTheme.white: AppTheme.colorAccent,
+                                    color: (controller.calendarioPeriodoList[index].selected ??false)? AppTheme.white: AppTheme.colorAccent,
                                     borderRadius: new BorderRadius.only(
                                       topLeft: const Radius.circular(10.0),
                                       bottomLeft:const Radius.circular(10.0),
@@ -614,7 +614,7 @@ class _TareaEvaluacionViewState extends ViewState<TareaEvaluacionView, TareaEval
                                       },
                                       child: Center(
                                         child: RotatedBox(quarterTurns: 1,
-                                            child: Text(controller.calendarioPeriodoList[index].nombre?.toUpperCase(), style: TextStyle(color: controller.calendarioPeriodoList[index].selected ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
+                                            child: Text((controller.calendarioPeriodoList[index].nombre??"").toUpperCase(), style: TextStyle(color: (controller.calendarioPeriodoList[index].selected??false) ? AppTheme.colorAccent: AppTheme.white, fontFamily: AppTheme.fontName, fontWeight: FontWeight.w600, fontSize: 9), )
                                         ),
                                       ),
                                     ),

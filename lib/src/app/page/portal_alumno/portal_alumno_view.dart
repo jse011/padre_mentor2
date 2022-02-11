@@ -37,7 +37,7 @@ import 'package:padre_mentor/src/domain/entities/tipo_evento_ui.dart';
 class PortalAlumnoView extends View{
   final AnimationController animationController;
   final CarouselController buttonCarouselController = CarouselController();
-  PortalAlumnoView({this.animationController});
+  PortalAlumnoView({required this.animationController});
   //const PortalAlumnoView({Key key, this.animationController}) : super(key: key);
 
   @override
@@ -48,14 +48,14 @@ class PortalAlumnoView extends View{
 
 class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoController> {
 
-  Animation<double> topBarAnimation;
+  late Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   CarouselController carouselController = CarouselController();
   double topBarOpacity = 0.0;
 
-  int _currentIndex;
+  int _currentIndex = 0;
 
   _PortalAlumnoState(buttonCarouselController) :  super(PortalAlumnoController(DeviceCheckConexRepository(), DeviceHttpDatosRepositorio(), DataUsuarioAndRepository()));
 
@@ -121,7 +121,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
       children: <Widget>[
         AnimatedBuilder(
           animation: widget.animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation,
               child: Transform(
@@ -182,7 +182,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                 }else{
                                   return CachedNetworkImage(
                                       placeholder: (context, url) => CircularProgressIndicator(),
-                                      imageUrl:controller.hijoSelected == null ? '' : '${controller.hijoSelected.foto}',
+                                      imageUrl:controller.hijoSelected == null ? '' : '${controller.hijoSelected?.foto}',
                                       imageBuilder: (context, imageProvider) => Container(
                                           height: 50,
                                           width: 50,
@@ -229,9 +229,9 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
           builder: (context, controller) {
             int pagePosition = 0;
             if(controller.programaEducativoList!=null&&controller.programaEducativoSelected!=null){
-              pagePosition = controller.programaEducativoList.indexWhere((element) => controller.programaEducativoSelected.programaId == element.programaId
-                  && controller.programaEducativoSelected.anioAcademicoId == element.anioAcademicoId && controller.programaEducativoSelected.alumnoId == element.alumnoId);
-              print("pagePosition "+pagePosition?.toString());
+              pagePosition = controller.programaEducativoList.indexWhere((element) => controller.programaEducativoSelected?.programaId == element.programaId
+                  && controller.programaEducativoSelected?.anioAcademicoId == element.anioAcademicoId && controller.programaEducativoSelected?.alumnoId == element.alumnoId);
+              print("pagePosition ");
             }else{
               pagePosition = 0;
               print("pagePosition null");
@@ -264,8 +264,8 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                 ),
                                 items:controller.eventoUiList.map((item){
 
-                                  Color color;
-                                  switch(item.tipoEventoUi.tipo){
+                                  Color? color;
+                                  switch(item.tipoEventoUi?.tipo){
                                     case EventoIconoEnumUI.DEFAULT:
                                       color = Color(0xFF00BCD4);
                                       break;
@@ -292,9 +292,9 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                       break;
                                   }
 
-                                  String foto;
-                                  if (item.tipoEventoUi.tipo == EventoIconoEnumUI.NOTICIA ||
-                                      item.tipoEventoUi.tipo == EventoIconoEnumUI.EVENTO || (item.tipoEventoUi.tipo == EventoIconoEnumUI.AGENDA && item.foto!=null&&item.foto.isNotEmpty)){
+                                  String? foto;
+                                  if (item.tipoEventoUi?.tipo == EventoIconoEnumUI.NOTICIA ||
+                                      item.tipoEventoUi?.tipo == EventoIconoEnumUI.EVENTO || (item.tipoEventoUi?.tipo == EventoIconoEnumUI.AGENDA && item.foto!=null&&(item.foto??"").isNotEmpty)){
                                     foto = item.foto;
                                   }else{
                                     foto = null;
@@ -315,7 +315,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                       subTitulo: item.rolEmisor,
                                       foto: foto,
                                       colors1: Colors.black,
-                                      colors2: color,
+                                      colors2: color??Color(0xFF4CAF50),
                                     ),
                                   );
 
@@ -363,7 +363,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                       controller.onSelectedProgramaSelected(controller.programaEducativoList[index]);
                                     },
                                   ),
-                                  items: controller.programaEducativoList!=null?controller.programaEducativoList.map((item) => ProgramaEducativoView(titulo: item.nombrePrograma, subTitulo: "Año "+item.nombreAnioAcademico, subTitulo2: item.nombreHijo, foto: item.fotoHijo, cerrado: item.cerrado,)).toList():[],
+                                  items: controller.programaEducativoList!=null?controller.programaEducativoList.map((item) => ProgramaEducativoView(titulo: item.nombrePrograma, subTitulo: "Año ${item.nombreAnioAcademico??""}", subTitulo2: item.nombreHijo, foto: item.fotoHijo, cerrado: item.cerrado,)).toList():[],
                                 ),
                               ),
 
@@ -558,7 +558,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                   alignment: Alignment.center,
                                   child: CachedNetworkImage(
                                       placeholder: (context, url) => CircularProgressIndicator(),
-                                      imageUrl: controller.hijoSelected == null ? '' : '${controller.hijoSelected.foto}',
+                                      imageUrl: controller.hijoSelected == null ? '' : '${controller.hijoSelected?.foto}',
                                       imageBuilder: (context, imageProvider) => Container(
                                           height: 170,
                                           width: 170,
@@ -635,7 +635,7 @@ class _PortalAlumnoState extends ViewState<PortalAlumnoView, PortalAlumnoControl
                                                             side: BorderSide(color: HexColor("#8bc34a"))),
                                                         onPressed: () {
                                                           controller.onClicSalirDialodDeuda();
-                                                          Navigator.of(context).push(EstadoCuentaRouter.createRouteEstadoCuenta(fotoAlumno: controller.hijoSelected.foto , alumnoId: controller.hijoSelected.personaId));
+                                                          Navigator.of(context).push(EstadoCuentaRouter.createRouteEstadoCuenta(fotoAlumno: controller.hijoSelected?.foto , alumnoId: controller.hijoSelected?.personaId));
 
                                                         },
                                                         padding: EdgeInsets.all(10.0),
