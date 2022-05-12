@@ -2,11 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:padre_mentor/src/app/page/boleta_notas/boleta_nota_controller.dart';
+import 'package:padre_mentor/src/app/utils/app_column_count.dart';
+import 'package:padre_mentor/src/app/utils/app_icon.dart';
 import 'package:padre_mentor/src/app/utils/app_theme.dart';
 import 'package:padre_mentor/src/app/utils/hex_color.dart';
 import 'package:padre_mentor/src/app/widgets/animation_view.dart';
+import 'package:padre_mentor/src/app/widgets/ars_progress.dart';
 import 'package:padre_mentor/src/app/widgets/menu_item_view.dart';
 import 'package:padre_mentor/src/app/widgets/title_view.dart';
 import 'package:padre_mentor/src/app/widgets/workout_view.dart';
@@ -87,18 +91,29 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
   }
   @override
   Widget get view =>
-      Container(
-        color: AppTheme.background,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Stack(
-            children: <Widget>[
-              getMainTab(),
-              getAppBarUI(),
-            ],
-          ),
+      ControlledWidgetBuilder<BoletaNotaController>(
+  builder: (context, controller) {
+    return Container(
+      color: AppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: <Widget>[
+            getMainTab(),
+            controller.isLoading ?  ArsProgressWidget(
+                blur: 2,
+                dismissable: true,
+                onDismiss: (resp){
+                  Navigator.of(context).pop();
+                },
+                backgroundColor: Color(0x33000000),
+                animationDuration: Duration(milliseconds: 500)): Container(),
+            getAppBarUI(),
+          ],
         ),
-      );
+      ),
+    );
+  });
 
   Widget getAppBarUI() {
     return Column(
@@ -242,6 +257,38 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
 
                         return Stack(
                           children: [
+                            controller.cursoBoletaUiList.isEmpty?
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(
+                                    left: ColumnCountProvider.aspectRatioForWidthEvaluacion(context, 32),
+                                    right: ColumnCountProvider.aspectRatioForWidthEvaluacion(context, 0),
+                                  ),
+                                  child: Center(
+                                    child: SvgPicture.asset(AppIcon.ic_lista_vacia, width: 150, height: 150,),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.all(4)),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                    left: ColumnCountProvider.aspectRatioForWidthEvaluacion(context, 32),
+                                    right: ColumnCountProvider.aspectRatioForWidthEvaluacion(context, 0),
+                                  ),
+                                  child: Center(
+                                    child: Text("Bimestre o trimestre\nsin evaluaciones",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: AppTheme.grey,
+                                          fontFamily: AppTheme.fontTTNorms,
+                                          fontSize: ColumnCountProvider.aspectRatioForWidthEvaluacion(context, 16),
+                                        )
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ):Container(),
                             CustomScrollView(
                               controller: scrollController,
                               slivers: <Widget>[
@@ -399,9 +446,6 @@ class _BoletasNotasViewState extends ViewState<BoletasNotasView, BoletaNotaContr
                                 ),
                               ],
                             ),
-                            controller.isLoading ?  Container(child: Center(
-                              child: CircularProgressIndicator(),
-                            )): Container(),
                           ],
                         );
                       }),

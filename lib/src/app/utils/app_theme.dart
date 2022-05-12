@@ -8,7 +8,7 @@ enum App{
 abstract class ChangeAppTheme{
   ChangeAppTheme._();
 
-  static const App _app = App.ICRM;
+  static const App _app = App.EDUCAR;
 
   static getApp() => _app;
 
@@ -48,10 +48,21 @@ abstract class ChangeAppTheme{
     }
   }
 
+  static String splahLottieLoginBanner({App app = _app}) {
+    switch(app){
+      case App.EDUCAR:
+        return 'assets/lottie/lf30_editor_iiwoldjv.json';
+      case App.ICRM:
+        return 'assets/lottie/lf30_editor_ssenvkko.json';
+    }
+  }
 }
 
 class AppTheme{
   AppTheme._();
+
+  static const Color colorEducarStudent = Color(0XFFBAACA1);
+  static const Color colorEVA = Color(0XFF69BDFD);
 
   static const onTapDelay = 300;// to see at least the start of the ripple
 

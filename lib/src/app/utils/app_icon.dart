@@ -38,4 +38,11 @@ class AppIcon{
   static const String ic_tipo_evento_evento = "assets/images/tipo_agenda/ic_rocket.svg";
   static const String ic_evento_adjunto_download = "assets/images/tipo_agenda/ic_download.svg";
   static const String ic_evento_adjunto_instrumetno = "assets/images/tipo_agenda/ic_check_list.svg";
+
+  static const String ic_login_banner_1 = "assets/images/pic_lg_teacher.svg";
+
+  static final String login_educar = "assets/educar/educar_p_login.png";
+  static final String login_icrm = "assets/educar/icrm_p_login.png";
+
+  static final String logo_ICRM = "assets/educar/logoiCRM2.png";
 }

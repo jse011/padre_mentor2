@@ -188,7 +188,7 @@ class _PortalTareaViewState extends ViewState<PortalTareaView, PortalTareaContro
                                       )
                                     ),
                                     Expanded(child: Container()),
-                                    Text("Sin entregar",
+                                    Text("",//Sin entregar
                                       style: TextStyle(
                                           color: AppTheme.redDarken4,
                                           fontSize: ColumnCountProvider.aspectRatioForWidthPortalTarea(context, 16),
