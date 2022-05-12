@@ -9,6 +9,7 @@ import 'package:padre_mentor/src/domain/repositories/curso_repository.dart';
 import 'package:padre_mentor/src/domain/repositories/http_datos_repository.dart';
 import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_repository.dart';
 
+import '../entities/curso_tarea_evaluacion_ui.dart';
 import 'get_boleta_nota.dart';
 
 class GetTareaEvaluacion extends UseCase<GetTareaEvaluacionCaseResponse, GetTareaEvaluacionCaseParams>{
@@ -37,16 +38,18 @@ class GetTareaEvaluacion extends UseCase<GetTareaEvaluacionCaseResponse, GetTare
     try {
       List<dynamic> lista = [];
       List<TareaEvaluacionCursoUi> tareaEvalList = await repository.getTareaEvaluacionPorCurso(params?.anioAcademicoId??0, params?.programaId??0, params?.calendarioPeridoId??0, params?.alumnoId??0);
-      var vobj_days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      var vobj_days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
       var vobj_Meses = ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."];
       int calificado = 0;
       int sinCalificar = 0;
       for(TareaEvaluacionCursoUi tareaItem in tareaEvalList){
         CursoUi? cursoUi = tareaItem.cursoUi;
-        CursoUi? search = lista.firstWhere((element)=> element is CursoUi? element.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
+        CursoTareaEvaluacionUi? search = lista.firstWhere((element)=> element is CursoTareaEvaluacionUi? element.cursoUi?.silaboEventoId==cursoUi?.silaboEventoId :false, orElse: () => null);
         if(search == null){
-          lista.add(cursoUi);
+          search = CursoTareaEvaluacionUi(cursoUi: cursoUi, tareaEvaluacionUiList: []);
+          lista.add(search);
         }
+        search.tareaEvaluacionUiList?.add(tareaItem);
         lista.add(tareaItem);
 
         DateTime? fechaIncio =  tareaItem.fechaInicio;
@@ -91,13 +94,24 @@ class GetTareaEvaluacion extends UseCase<GetTareaEvaluacionCaseResponse, GetTare
         }
 
       }
+
+      for(var item in lista){
+        if(item is CursoTareaEvaluacionUi){
+          int index = 0;
+          for(TareaEvaluacionCursoUi tareaEvaluacionCursoUi in item.tareaEvaluacionUiList??[]){
+            tareaEvaluacionCursoUi.tareaIncial = (index == 0);
+            tareaEvaluacionCursoUi.tareaFinal = (index == ((item.tareaEvaluacionUiList?.length??0) - 1));
+            index++;
+          }
+        }
+      }
+
       controller.add(GetTareaEvaluacionCaseResponse(lista, calificado, sinCalificar, offlineServidor, errorServidor));
-    logger.finest('GetTareaEvaluacion successful.');
-    controller.close();
+
+      controller.close();
     } catch (e) {
-    logger.severe('GetTareaEvaluacion unsuccessful: '+e.toString());
-    // Trigger .onError
-    controller.addError(e);
+      // Trigger .onError
+      controller.addError(e);
 
     }
     return controller.stream;
@@ -117,12 +131,12 @@ class GetTareaEvaluacionCaseParams {
 
 /// Wrapping response inside an object makes it easier to change later
 class GetTareaEvaluacionCaseResponse {
-    List<dynamic> rubroEvaluacionList;
-    int cantCalificado;
-    int cantSinCalifacar;
-    bool offlineServidor;
-    bool errorServidor;
+  List<dynamic> rubroEvaluacionList;
+  int cantCalificado;
+  int cantSinCalifacar;
+  bool offlineServidor;
+  bool errorServidor;
 
-    GetTareaEvaluacionCaseResponse(
+  GetTareaEvaluacionCaseResponse(
       this.rubroEvaluacionList, this.cantCalificado, this.cantSinCalifacar, this.offlineServidor, this.errorServidor);
 }

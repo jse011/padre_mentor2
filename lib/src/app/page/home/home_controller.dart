@@ -136,10 +136,10 @@ class HomeController extends Controller{
     homePresenter.cerrarCesion();
   }
 
-  @override
-  void onDisposed() {
-    super.onDisposed();
-    homePresenter.dispose();
+ @override
+  void dispose() {
+   homePresenter.dispose();
+    super.dispose();
   }
 
   void onClicSalirDialodDeuda() {

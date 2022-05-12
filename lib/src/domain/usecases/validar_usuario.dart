@@ -19,10 +19,8 @@ class ValidarUsuario extends UseCase<ValidarUsuarioCaseResponse, ValidarUsuarioC
       if(!await this.repository.validarUsuario())throw Exception("Error validar el usuario");
 
         controller.add(ValidarUsuarioCaseResponse());
-      logger.finest('GetUserUseCase successful.');
       controller.close();
     } catch (e) {
-      logger.severe('GetUserUseCase unsuccessful: ' + e.toString());
       // Trigger .onError
       controller.addError(e);
     }

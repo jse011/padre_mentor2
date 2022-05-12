@@ -110,4 +110,26 @@ class ColumnCountProvider{
       return (pixcel) / 1.2;
     }
   }
+
+  static double aspectRatioForWidthEvaluacion(BuildContext? context, double pixcel ) {
+    double widthPx = context?.widthPx??0;
+    if (widthPx >= 1010) {
+      return (pixcel) * 1.5;
+    }else if (widthPx >= 900) {
+      return (pixcel) * 1.25;
+    } else if (widthPx >= 720) {
+      return (pixcel) * 1.25;
+    } else if (widthPx >= 600) {
+      return (pixcel) * 1.05;
+    } else if (widthPx >= 480) {
+      return (pixcel) * 1.05;
+    }  else if (widthPx >= 360) {
+      return (pixcel) / 1.05;
+    }else if (widthPx >= 320) {
+      return (pixcel) / 1.1;
+    } else {
+      return (pixcel) / 1.1;
+    }
+  }
+
 }

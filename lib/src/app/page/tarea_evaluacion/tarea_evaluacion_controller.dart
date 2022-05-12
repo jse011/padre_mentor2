@@ -19,11 +19,11 @@ class TareaEvaluacionController extends Controller{
   List<dynamic> _rubroEvaluacionList = [];
   List<dynamic> get rubroEvaluacionList => _rubroEvaluacionList;
   bool _isLoading = false;
-  get isLoading => _isLoading;
+  bool get isLoading => _isLoading;
   int _cantCalificado = 0;
-  get cantCalificado => _cantCalificado;
+  int get cantCalificado => _cantCalificado;
   int _cantSinCalificar = 0;
-  get cantSinCalificar => _cantSinCalificar;
+  int get cantSinCalificar => _cantSinCalificar;
 
 
   TareaEvaluacionController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno,usuarioConfigRepo, cursoRepo, httpDatosRepo): presenter = TareaEvaluacionPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, usuarioConfigRepo, cursoRepo, httpDatosRepo), super();

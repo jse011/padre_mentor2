@@ -28,11 +28,18 @@ import 'package:padre_mentor/src/data/repositories/moor/model/programas_educativ
 import 'package:padre_mentor/src/data/repositories/moor/model/relaciones.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/rol.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/rubro_eval_desempenio.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/rubro_informacion/rubro_archivo_info_2.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/rubro_informacion/rubro_comentario_Info.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/rubro_informacion/rubro_evaluacion_info.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/rubro_informacion/rubro_valor_tipo_nota_info.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/seccion.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/session_user.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/session_user_hijo_programa.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/silabo_evento.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/tarea_curso.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/tarea_informacion/tarea_alumno.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/tarea_informacion/tarea_alumno_archivo.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/tarea_informacion/tarea_curso_recurso.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/tipos.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/usuario.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/usuario_rol_georeferencia.dart';
@@ -43,11 +50,11 @@ part 'app_database.g.dart';
 @UseMoor(tables: [Persona, Usuario, SessionUser, Relaciones, AnioAcademicoAlumno, ProgramasEducativo, PlanEstudio, PlanCursos, CargaCurso, DetalleContratoAcad, Contrato, CalendarioAcademico, CalendarioPeriodo, Tipos,
                   AreasBoleta, NotasCalendarioBoleta, ParametrosDisenio, SilaboEvento, RubroEvalDesempenio, WebConfigs, TareaCurso, Evento, Calendario, SessionUserHijoPrograma, Contacto, Entidad, Georeferencia, Rol, UsuarioRolGeoreferencia,
                   Cursos, Aula, Periodos, Seccion, CargaAcademica, NivelAcademico, AsistenciaAlumnos, AsistenciaJustificacion, AsistecniaArchivo, AsistenciaTipoNota, AsistenciaValorTipoNota, AsistenciaRelProgramaTipoNota,
-                  AsistenciaGeneral, EventoAdjunto])
+                  AsistenciaGeneral, EventoAdjunto, RubroEvaluacionInfo, RubroArchivoInfo2, RubroComentarioInfo, RubroValorTipoNotaInfo, TareaCursoRecurso, TareaAlumno, TareaAlumnoArchivo ])
 class AppDataBase extends _$AppDataBase{
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 9;
 
   static final AppDataBase _singleton = AppDataBase._internal();
 
@@ -70,17 +77,18 @@ class AppDataBase extends _$AppDataBase{
         return m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 2) {
-          // we added the dueDate property in the change from version 1 to version 2
-          //await m.addColumn(todos, todos.dueDate);
-        }
-        if (from < 3) {
-          // we added the priority property in the change from version 1 or 2 to version 3
-          //await m.addColumn(todos, todos.priority);
-        }
-        if (from < 4) {
+
          await m.createTable(eventoAdjunto);
-        }
+         await m.createTable(rubroEvaluacionInfo);
+         await m.createTable(rubroComentarioInfo);
+         await m.createTable(rubroArchivoInfo2);
+         await m.createTable(rubroValorTipoNotaInfo);
+         await m.createTable(tareaCursoRecurso);
+         await m.createTable(tareaAlumno);
+         await m.createTable(tareaAlumnoArchivo);
+
+
+
       }
   );
 }

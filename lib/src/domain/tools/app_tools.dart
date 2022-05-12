@@ -26,7 +26,7 @@ class AppTools {
   static String f_fecha_letras(DateTime? timesTamp) {
     String mstr_fecha = "";
     if (timesTamp != null) {
-      var vobj_days = ["Dom", "Lun", "Mart", "Mié", "Jue", "Vie", "Sáb"];
+      var vobj_days = ["Lun", "Mart", "Mié", "Jue", "Vie", "Sáb", "Dom"];
       var vobj_Meses = [
         "Ene.",
         "Feb.",
@@ -136,8 +136,17 @@ class AppTools {
       }
   }
 
-  static String changeTime12Hour(int hr , int min){
-    return  "${hr%12}:${min} ${((hr>=12) ? "PM" : "AM")}";
+  static String changeTime12Hour(int hr, int min) {
+    //print("tiempoFechaCreacionTarea: ${hr} ${min}");
+    String format_min = "";
+    if(min<10){
+      format_min = "0${min}";
+    }else {
+      format_min =  "${min}";
+    }
+    String s =  "${hr==12?"12":hr%12}:${format_min} ${((hr>=12) ? "p.m." : "a.m.")}";
+
+    return s;
   }
 
   static String getFechaDiaMesAnho(DateTime? fecha) {
@@ -169,5 +178,41 @@ class AppTools {
     mstr_fecha = dayOfMonth.toString() +" de "+ vobj_Meses[month-1] + " " + timesTamp.year.toString();
     //47 años (19 de noviembre 1970)
     return mstr_fecha;
+  }
+
+  static String f_fecha_hora_anio_mes_dia_letras(DateTime? timesTamp) {
+    DateTime now = DateTime.now();
+    String mstr_fecha = "";
+    timesTamp = timesTamp??DateTime(1900);
+    var vobj_Meses = ["enero", "febrero", "marzo", "abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    var vobj_days = ["Lun", "Mart", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+    int year = timesTamp.year;
+    int month = timesTamp.month; // Jan = 0, dec = 11
+    int dayOfMonth = timesTamp.day;
+    int dayOfWeek = timesTamp.weekday;
+    mstr_fecha =  vobj_days[dayOfWeek - 1] + " "+ dayOfMonth.toString() +" de "+ vobj_Meses[month-1] + "${now.year == timesTamp.year?"":timesTamp.year.toString()}" + "${timesTamp.hour!=0&&timesTamp.minute!=0? " - " + changeTime12Hour(timesTamp.hour,timesTamp.minute):""}";
+    //47 años (19 de noviembre 1970)
+
+
+    return mstr_fecha;
+  }
+
+  /**
+   * a = valor minimo del origen
+   * b = valor maximo del origen
+   * x = valor a transformar
+   * c = valor minimo transformado
+   * d = valor maximo transformado
+   */
+  static double? transformacionInvariante(double a, double b, double? x, double c, double d) {
+    if(x == null)return null;
+    try {
+      double t = (1 - ((b - x) / (b - a))) * (d - c);
+      //Log.d(TAG, "notaTransformada: " + "1 - ((" + b + "-" + x + ")/(" + b + "-" + a + "))) * (" + d + " - " + c + ") = " + t);
+      return t;
+    } catch (e) {
+      return null;
+    }
   }
 }

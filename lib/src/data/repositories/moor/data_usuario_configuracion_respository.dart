@@ -20,10 +20,10 @@ import 'package:padre_mentor/src/domain/repositories/usuario_configuarion_reposi
 import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:padre_mentor/src/domain/tools/domain_tipos.dart';
 import 'package:padre_mentor/src/domain/tools/domain_youtube_tools.dart';
 
 class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
-  static const int TIPO_VIDEO = 379, TIPO_VINCULO = 380, TIPO_DOCUMENTO = 397, TIPO_IMAGEN = 398, TIPO_AUDIO = 399, TIPO_HOJA_CALCULO = 400, TIPO_DIAPOSITIVA = 401, TIPO_PDF = 402,  TIPO_YOUTUBE = 581,TIPO_ENCUESTA = 630;
   static const TAG = 'DataUsuarioAndRepository';
   // sigleton
   static final DataUsuarioAndRepository _instance = DataUsuarioAndRepository._internal();
@@ -34,7 +34,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
   @override
   Future<UsuarioUi> getSessionUsuario() async{
-    print("getSessionUsuario" );
+    //print("getSessionUsuario" );
     AppDataBase SQL = AppDataBase();
     int usuarioId = await getSessionUsuarioId();
 
@@ -70,7 +70,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       fechaNacimientoPadre = "${AppTools.calcularEdad(fecPad)} años (${AppTools.f_fecha_anio_mes_letras(fecPad)})";
 
     }
-    print("getSessionUsuario 1" );
+    //print("getSessionUsuario 1" );
     List<FamiliaUi> familiaUiList = [];
 
     var queryFamiliare =  await SQL.select(SQL.persona).join([
@@ -95,7 +95,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
       familiaUiList.add(FamiliaUi(personaId: personaData.personaId, nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}', foto: personaData.foto==null?'':'${AppTools.capitalize(personaData.foto??"")}',documento: personaData.numDoc, celular: personaData.celular??personaData.telefono??'', correo: personaData.correo, fechaNacimiento: fechaNacimientoHijo, relacion: "Familiar", fechaNacimiento2: personaData.fechaNac));
     }
-    print("getSessionUsuario 2" );
+    //print("getSessionUsuario 2" );
     UsuarioUi usuarioUi = UsuarioUi(personaId: personaData == null ? 0 : personaData.personaId ,
         nombre: personaData == null ? '' : '${AppTools.capitalize(personaData.nombres??"")} ${AppTools.capitalize(personaData.apellidoPaterno??"")} ${AppTools.capitalize(personaData.apellidoMaterno??"")}',
         foto: personaData?.foto==null?'':'${AppTools.capitalize(personaData?.foto??"")}',
@@ -127,7 +127,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
     var rowPrograma = await queryPrograma.get();
 
-    print("getSessionUsuario 3" );
+    //print("getSessionUsuario 3" );
     rowPrograma.sort((a, b) => AppTools.convertDateTimePtBR(b.readTable(SQL.anioAcademicoAlumno).fechaInicio, null).compareTo(AppTools.convertDateTimePtBR(a.readTable(SQL.anioAcademicoAlumno).fechaInicio, null)));
     List<ProgramaEducativoUi> programaEducativoUiList = [];
     for(var programa in rowPrograma){
@@ -151,7 +151,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       ));
 
     }
-    print("getSessionUsuario 4" );
+    //print("getSessionUsuario 4" );
     usuarioUi.programaEducativoUiList = programaEducativoUiList;
 
     SessionUserData? sessionUserData = await (SQL.selectSingle(SQL.sessionUser)).getSingleOrNull();
@@ -163,7 +163,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         await SQL.update(SQL.sessionUser).replace(sessionUserData!.copyWith(hijoIdSelect: hijoIdSelected));
       }
     }
-    print("getSessionUsuario 5" );
+    //print("getSessionUsuario 5" );
     if(hijoIdSelected!=null && hijoIdSelected > 0){
       if((usuarioUi.hijos??[]).isNotEmpty){
 
@@ -176,17 +176,17 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         SessionUserHijoProgramaData? sessionUserHijoData = await rowSessionUsuarioPrograma.getSingleOrNull();
         int programaIdSelected = sessionUserHijoData != null?sessionUserHijoData.prograAcademicoId : 0;
         int anioAcademicoIdSelected = sessionUserHijoData != null?sessionUserHijoData.anioAcademicoId : 0;
-        print(TAG+ " programaEduSelectedId:" + programaIdSelected.toString() + ", hijoSelectedId:" + hijoIdSelected.toString() +", anioAcademicoId: "+anioAcademicoIdSelected.toString());
+        //print(TAG+ " programaEduSelectedId:" + programaIdSelected.toString() + ", hijoSelectedId:" + hijoIdSelected.toString() +", anioAcademicoId: "+anioAcademicoIdSelected.toString());
         usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) =>
         element.programaId == programaIdSelected && element.anioAcademicoId == anioAcademicoIdSelected && element.hijoId == hijoIdSelected);
         if(usuarioUi.programaEducativoUiSelected==null){
           usuarioUi.programaEducativoUiSelected = usuarioUi.programaEducativoUiList?.firstWhereOrNull((element) => element.hijoId==hijoIdSelected);
         }
-        print(TAG+ "programaEducativoUiSelected " +(usuarioUi.programaEducativoUiSelected!=null?"true":"false"));
+        //print(TAG+ "programaEducativoUiSelected " +(usuarioUi.programaEducativoUiSelected!=null?"true":"false"));
 
       }
     }
-    print("getSessionUsuario 6" );
+    //print("getSessionUsuario 6" );
 
     return usuarioUi;
     //var resultRow = rows.single;
@@ -200,7 +200,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
        // functions in a batch don't have to be awaited - just
        // await the whole batch afterwards.
 
-       print("saveDatosGlobales");
+       //print("saveDatosGlobales");
        if(datosInicioPadre?.containsKey("usuariosrelacionados")??false){
          batch.deleteWhere(SQL.usuario, (row) => const Constant(true));
          batch.insertAll(SQL.usuario, SerializableConvert.converListSerializeUsuario(datosInicioPadre!["usuariosrelacionados"]), mode: InsertMode.insertOrReplace );
@@ -320,7 +320,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
   @override
   Future<HijosUi> getHijo(int alumnoId) async {
-    print("getHijo" );
+    //print("getHijo" );
     AppDataBase SQL = AppDataBase();
     try{
 
@@ -339,7 +339,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     try{
       DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
       String string = dateFormat.format(DateTime.now());
-      print("saveEventoAgenda tipoEventoId : "+tipoEventoId.toString());
+      //print("saveEventoAgenda tipoEventoId : "+tipoEventoId.toString());
       await SQL.transaction(() async {
 
         List<CalendarioData> calendarioDataList = [];
@@ -354,7 +354,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
         //queryCalendario.groupBy([SQL.calendario.calendarioId]);
         var rows = await queryCalendario.get();
-        /*print("saveEventoAgenda cantidad : "+rows.length.toString());*/
+        /*//print("saveEventoAgenda cantidad : "+rows.length.toString());*/
         for (var row in rows) {
           CalendarioData calendarioData = row.readTable(SQL.calendario);
           EventoData eventoData = row.readTable(SQL.evento);
@@ -390,7 +390,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       await SQL.batch((batch) async {
 
         //
-        print("saveEventoAgenda tipoEventoId : "+tipoEventoId.toString());
+        //print("saveEventoAgenda tipoEventoId : "+tipoEventoId.toString());
 
         if(eventoAgenda.containsKey("calendarios")){
           //personaSerelizable.addAll(datosInicioPadre["usuariosrelacionados"]);
@@ -483,7 +483,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         innerJoin(SQL.calendario, SQL.evento.calendarioId.equalsExp(SQL.calendario.calendarioId)),
       ]);
       query.where(SQL.evento.usuarioReceptorId.equals(padreId));
-      print("getEventosAgenda tipoEventoId : "+tipoEventoId.toString());
+      //print("getEventosAgenda tipoEventoId : "+tipoEventoId.toString());
       if(tipoEventoId>0){
         query.where(SQL.evento.tipoEventoId.equals(tipoEventoId));
       }
@@ -639,34 +639,34 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
       eventoAdjuntoUi.tipoId = eventoAdjuntoData.tipoId;
       eventoAdjuntoUi.titulo = eventoAdjuntoData.titulo;
       switch (eventoAdjuntoUi.tipoId){
-        case TIPO_VIDEO:
+        case DomainTipos.TIPO_RECURSO_VIDEO:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VIDEO;
           break;
-        case TIPO_VINCULO:
+        case DomainTipos.TIPO_RECURSO_VINCULO:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO;
           break;
-        case TIPO_DOCUMENTO:
+        case DomainTipos.TIPO_RECURSO_DOCUMENTO:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_DOCUMENTO;
           break;
-        case TIPO_IMAGEN:
+        case DomainTipos.TIPO_RECURSO_IMAGEN:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_IMAGEN;
           break;
-        case TIPO_AUDIO:
+        case DomainTipos.TIPO_RECURSO_AUDIO:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_AUDIO;
           break;
-        case TIPO_HOJA_CALCULO:
+        case DomainTipos.TIPO_RECURSO_HOJA_CALCULO:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_HOJA_CALCULO;
           break;
-        case TIPO_DIAPOSITIVA:
+        case DomainTipos.TIPO_RECURSO_DIAPOSITIVA:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_DIAPOSITIVA;
           break;
-        case TIPO_PDF:
+        case DomainTipos.TIPO_RECURSO_PDF:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_PDF;
           break;
-        case TIPO_YOUTUBE:
+        case DomainTipos.TIPO_RECURSO_YOUTUBE:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
           break;
-        case TIPO_ENCUESTA:
+        case DomainTipos.TIPO_RECURSO_ENCUESTA:
           eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_ENCUESTA;
           break;
         default:
@@ -685,10 +685,10 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
         }
       }else if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_VINCULO_YOUTUBE){
         String? idYoutube = YouTubeUrlParser.getYoutubeVideoId(eventoAdjuntoUi.titulo);
-        print("idYoutube: ${idYoutube}");
+        //print("idYoutube: ${idYoutube}");
         eventoAdjuntoUi.tipoRecursosUi = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
         eventoAdjuntoUi.imagePreview = YouTubeThumbnail.getUrlFromVideoId(idYoutube,Quality.MEDIUM);
-        print("idYoutube: ${eventoAdjuntoUi.imagePreview}");
+        //print("idYoutube: ${eventoAdjuntoUi.imagePreview}");
         eventoAdjuntoUi.yotubeId = idYoutube;
       }else if(eventoAdjuntoUi.tipoRecursosUi == TipoRecursosUi.TIPO_IMAGEN){
         eventoAdjuntoUi.imagePreview = "https://drive.google.com/uc?id=${eventoAdjuntoUi.driveId}";
@@ -747,7 +747,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
   @override
   Future<void> updateSessionProgramaEduSelected(int programaEduSelectedId, int hijoSelectedId, int anioAcademicoId) async {
-    print("updateSessionProgramaEduSelected 1 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
+    //print("updateSessionProgramaEduSelected 1 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
     AppDataBase SQL = AppDataBase();
     try{
       List<SessionUserHijoProgramaData> sessionUserDataList = await(SQL.select(SQL.sessionUserHijoPrograma)..where((tbl) => tbl.hijoId.equals(hijoSelectedId))).get();
@@ -759,7 +759,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
           if(programaEduSelectedId == entity.prograAcademicoId && anioAcademicoId== entity.anioAcademicoId && hijoSelectedId == entity.hijoId){
             sessionUserHijoData = entity;
-            print("updateSessionProgramaEduSelected 2 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
+            //print("updateSessionProgramaEduSelected 2 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
           }
 
           await SQL.update(SQL.sessionUserHijoPrograma).replace(entity.copyWith(selected: false));
@@ -767,7 +767,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
 
         if(sessionUserHijoData == null){
           sessionUserHijoData = SessionUserHijoProgramaData(prograAcademicoId: programaEduSelectedId, anioAcademicoId: anioAcademicoId,hijoId: hijoSelectedId, selected: true);
-          print("updateSessionProgramaEduSelected 3 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
+          //print("updateSessionProgramaEduSelected 3 programaEduSelectedId:" + programaEduSelectedId.toString() + ", hijoSelectedId:" + hijoSelectedId.toString() +", anioAcademicoId: "+anioAcademicoId.toString());
           await SQL.into(SQL.sessionUserHijoPrograma).insert(sessionUserHijoData, mode: InsertMode.insertOrIgnore);
         }else{
           await SQL.update(SQL.sessionUserHijoPrograma).replace(sessionUserHijoData.copyWith(selected: true));
@@ -944,7 +944,7 @@ class DataUsuarioAndRepository extends UsuarioAndConfiguracionRepository{
     AppDataBase SQL = AppDataBase();
     try{
     SessionUserData? sessionUserData =  await SQL.selectSingle(SQL.sessionUser).getSingleOrNull();
-    print("getSessionUsuarioId: ${sessionUserData?.userId}");
+    //print("getSessionUsuarioId: ${sessionUserData?.userId}");
     return sessionUserData?.userId??0;
     }catch(e){
       throw Exception(e);

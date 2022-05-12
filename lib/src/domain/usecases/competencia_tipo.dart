@@ -1,0 +1,1 @@
+enum CompetenciaTipo{BASE, TRANSVERSAL, ENFOQUE}

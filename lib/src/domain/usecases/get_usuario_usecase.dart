@@ -21,10 +21,8 @@ class GetSessionUsuarioCase extends UseCase<GetSessionUsuarioCaseResponse, GetSe
       // Adding it triggers the .onNext() in the `Observer`
       // It is usually better to wrap the reponse inside a respose object.
       controller.add(GetSessionUsuarioCaseResponse(usuarioUi));
-      logger.finest('GetUserUseCase successful.');
       controller.close();
     } catch (e) {
-      logger.severe('GetUserUseCase unsuccessful: ' + e.toString());
       // Trigger .onError
       controller.addError(e);
     }

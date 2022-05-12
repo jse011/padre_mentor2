@@ -23,8 +23,9 @@ class EvaluacionController extends Controller{
   List<dynamic> get rubroEvaluacionList => _rubroEvaluacionList;
   bool _isLoading = false;
   get isLoading => _isLoading;
-  String? _msgConexion = null;
-  String? get msgConexion => _msgConexion;
+  bool _conexion = true;
+  bool get conexion => _conexion;
+
   EvaluacionController(this.alumnoId, this.programaAcademicoId, this.anioAcademicoId, this.fotoAlumno, UsuarioAndConfiguracionRepository usuarioConfigRepo, CursoRepository cursoRepo, DeviceHttpDatosRepositorio httpDatosRepo): presenter =
   EvaluacionPresenter(alumnoId, programaAcademicoId, anioAcademicoId, fotoAlumno, cursoRepo, httpDatosRepo, usuarioConfigRepo), super();
 
@@ -45,6 +46,7 @@ class EvaluacionController extends Controller{
 
     presenter.getEvaluacionOnError = (e){
       _rubroEvaluacionList = [];
+      _conexion = false;
       hideProgress();
       refreshUI();
     };
@@ -52,8 +54,13 @@ class EvaluacionController extends Controller{
     presenter.getEvaluacionOnNext = (List<dynamic>? items, bool? errorServidor, bool? offlineServidor){
       _cursoList.addAll(List<CursoEvaluacionUi>.from((items??[]).where((element) => element is CursoEvaluacionUi)));
       _rubroEvaluacionList = items??[];
-      _msgConexion = (errorServidor??false)? "!Oops! Al parecer ocurrió un error involuntario.":null;
-      _msgConexion = (offlineServidor??false)? "No hay Conexión a Internet...":null;
+      if(offlineServidor??false){
+        _conexion = false;
+      }else if(errorServidor??false){
+        _conexion = false;
+      }else{
+        _conexion = true;
+      }
       hideProgress();
       refreshUI();
     };
@@ -87,10 +94,6 @@ class EvaluacionController extends Controller{
 
   void hideProgress(){
     _isLoading = false;
-  }
-
-  void successMsg() {
-    _msgConexion = null;
   }
 
   void onClickCurso(CursoEvaluacionUi cursoUi) {

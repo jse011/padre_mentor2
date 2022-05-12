@@ -329,6 +329,56 @@ class DeviceHttpDatosRepositorio extends HttpDatosRepository{
     }
   }
 
+  @override
+  Future<Map<String, dynamic>?> getRubroInfo(String urlServidorLocal, String? ruboEvaluacionId, int? hijoPersonId) async{
+    Map<String, dynamic> parameters = Map<String, dynamic>();
+    parameters["vstr_rubroEvaluacionId"] = ruboEvaluacionId;
+    parameters["vint_AlumnoId"] = hijoPersonId;
+    final response = await http.post(Uri2.parse(urlServidorLocal), body: getBody("getInfoRubro",parameters));
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      Map<String,dynamic> body = json.decode(response.body);
+      if(body.containsKey("Successful")&&body.containsKey("Value")){
+        return body["Value"];
+      }else{
+        return null;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load evaluaciones 0');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getInfoTarea(String urlServidorLocal, String? tareaId, String? evaluacionId, String? rubroEvaluacionId, int? alumnoId, int? unidadEventoId, int? silaboEventoId) async{
+    Map<String, dynamic> parameters = Map<String, dynamic>();
+    parameters["vstr_TareaId"] = tareaId;
+    parameters["vstr_EvaluacionId"] = evaluacionId;
+    parameters["vstr_rubroEvaluacionId"] = rubroEvaluacionId;
+    parameters["vint_AlumnoId"] = alumnoId;
+    parameters["vint_SilaboEventoId"] = silaboEventoId;
+    parameters["vint_UnidadEventoId"] = unidadEventoId;
+    final response = await http.post(Uri2.parse(urlServidorLocal), body: getBody("getInfoTarea",parameters));
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      Map<String,dynamic> body = json.decode(response.body);
+      if(body.containsKey("Successful")&&body.containsKey("Value")){
+        return body["Value"];
+      }else{
+        return null;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load getInfoTarea 0');
+    }
+  }
+
 
 
 
@@ -341,7 +391,7 @@ class Uri2{
       return Uri.parse(url);
     } else {
       // Will be tree-shaked on release builds.
-      //url = url.replaceAll("CRMMovil", "CRMMovil2");
+      url = url.replaceAll("CRMMovil", "CRMMovil2");
       //url = modificarServidorLocalCata(url);
       //print("modificarServidorLocalCata3: ${url}");
       return Uri.parse(url);
@@ -356,7 +406,7 @@ class Uri2{
       // Will be tree-shaked on release builds.
       // jessica.galvis	jessicacolombia1
       //ray.tejada tejada1234567
-      //url = url.replaceAll("CRMMovil", "CRMMovil2");
+      url = url.replaceAll("CRMMovil", "CRMMovil2");
       //url = modificarServidorLocalCata(url);
       //print("modificarServidorLocalCata4: ${url}");
       return url;

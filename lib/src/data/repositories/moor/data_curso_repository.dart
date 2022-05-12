@@ -3,6 +3,8 @@ import 'package:moor_flutter/moor_flutter.dart';
 import 'package:padre_mentor/src/data/helpers/serelizable/rest_api_response.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/cursos.dart';
 import 'package:padre_mentor/src/data/repositories/moor/model/parametros_disenio.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/rubro_informacion/rubro_valor_tipo_nota_info.dart';
+import 'package:padre_mentor/src/data/repositories/moor/model/tarea_informacion/tarea_alumno.dart';
 import 'package:padre_mentor/src/data/repositories/moor/tools/serializable_convert.dart';
 import 'package:padre_mentor/src/domain/entities/asistencia_tipo_ui.dart';
 import 'package:padre_mentor/src/domain/entities/asistencia_ui.dart';
@@ -11,19 +13,29 @@ import 'package:padre_mentor/src/domain/entities/contacto_ui.dart';
 import 'package:padre_mentor/src/domain/entities/contrato_ui_ui.dart';
 import 'package:padre_mentor/src/domain/entities/curso_boleta_ui.dart';
 import 'package:padre_mentor/src/domain/entities/curso_ui.dart';
+import 'package:padre_mentor/src/domain/entities/rubro_archivo_ui.dart';
+import 'package:padre_mentor/src/domain/entities/rubro_comentario_ui.dart';
 import 'package:padre_mentor/src/domain/entities/rubro_evaluacion_ui.dart';
+import 'package:padre_mentor/src/domain/entities/tarea_alumno_archivo_ui.dart';
+import 'package:padre_mentor/src/domain/entities/tarea_archivo_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tarea_eval_curso_ui.dart';
 import 'package:padre_mentor/src/domain/entities/tipo_nota_enum_ui.dart';
+import 'package:padre_mentor/src/domain/entities/tipo_recursos_ui.dart';
+import 'package:padre_mentor/src/domain/entities/valor_tipo_nota_ui.dart';
 import 'package:padre_mentor/src/domain/repositories/curso_repository.dart';
 import 'package:padre_mentor/src/domain/tools/app_tools.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:padre_mentor/src/domain/tools/domain_drive_tools.dart';
+import 'package:padre_mentor/src/domain/tools/domain_tipos.dart';
+import 'package:padre_mentor/src/domain/tools/domain_youtube_tools.dart';
+import 'package:padre_mentor/src/domain/usecases/competencia_tipo.dart';
 import 'database/app_database.dart';
 
 class DataCursoRepository extends CursoRepository{
   @override
   Future<List<CalendarioPeriodoUI>> getCalendarioPerios(int programaEducativoId, int alumnoId, int anioAcademicoId) async{
-    print("getCalendarioPerios" );
+    //print("getCalendarioPerios" );
     AppDataBase SQL = AppDataBase();
     try{
 
@@ -80,7 +92,7 @@ class DataCursoRepository extends CursoRepository{
         calendarioPeriodoUI?.selected = true;
         //#endregion
       }
-      print("getCalendarioPerios count:" + calendarioPeriodoList.length.toString() );
+      //print("getCalendarioPerios count:" + calendarioPeriodoList.length.toString() );
       return calendarioPeriodoList;
     }catch(e){
       throw Exception(e);
@@ -119,7 +131,7 @@ class DataCursoRepository extends CursoRepository{
         query.where((tbl) => tbl.anioAcademicoId.equals(anioAcademicoId));
         query.where((tbl) => tbl.programaEducativoId.equals(programaEducativoId));
         var areaBoletarows = await query.get();
-        print("saveEvaluaciones cantidad : "+rows.length.toString());
+        //print("saveEvaluaciones cantidad : "+rows.length.toString());
         for (AreasBoletaData row in areaBoletarows) {
           await (SQL.delete(SQL.areasBoleta).delete(row));
         }
@@ -148,7 +160,7 @@ class DataCursoRepository extends CursoRepository{
 
   @override
   Future<List<CursoBoletaUi>> getBoletaNotas(int alumnoId, int anioAcademicoId, int calendarioPeridoId, int programaEducativoId, int periodoId, int seccionId) async {
-    //print("getBoletaNotas alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaEducativoId.toString() +" periodoId: "+periodoId.toString()+" seccionId: "+seccionId.toString() );
+    ////print("getBoletaNotas alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaEducativoId.toString() +" periodoId: "+periodoId.toString()+" seccionId: "+seccionId.toString() );
     AppDataBase SQL = AppDataBase();
     try{
 
@@ -216,7 +228,7 @@ class DataCursoRepository extends CursoRepository{
                 }
                 cursoBoletaUi.nota = notaformat.toString();
               }catch(e){
-                print(e.toString());
+                //print(e.toString());
               }
 
             }
@@ -311,13 +323,13 @@ class DataCursoRepository extends CursoRepository{
     }else if (tipoNotaId == 474){
       tipoNotaEnumUi = TipoNotaEnumUi.VALOR_ASISTENCIA;
     }
-    print("getTipoNotaEnumUi " + tipoNotaEnumUi.toString());
+    //print("getTipoNotaEnumUi " + tipoNotaEnumUi.toString());
     return tipoNotaEnumUi;
   }
 
   @override
   Future<ContratoUi> getContratoUi(int anioAcademicoId, int alumnoId) async{
-    print("getBoletaNotas" );
+    //print("getBoletaNotas" );
     AppDataBase SQL = AppDataBase();
     try{
       var queryContrato =  await SQL.selectSingle(SQL.contrato)..where((tbl) => tbl.personaId.equals(alumnoId));
@@ -347,7 +359,7 @@ class DataCursoRepository extends CursoRepository{
         query.where((tbl) => tbl.alumnoId.equals(alumnoId));
 
         var rows = await query.get();
-        print("saveEvaluaciones cantidad : "+rows.length.toString());
+        //print("saveEvaluaciones cantidad : "+rows.length.toString());
         for (RubroEvalDesempenioData row in rows) {
           await (SQL.delete(SQL.rubroEvalDesempenio).delete(row));
         }
@@ -366,7 +378,7 @@ class DataCursoRepository extends CursoRepository{
 
   @override
   Future<List<RubroEvaluacionUi>> getEvaluacionesPorCurso(int anioAcademicoId, int programaId, int calendarioPeridoId, int alumnoId) async{
-    print("getEvaluacionesPorCurso alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaId.toString());
+    //print("getEvaluacionesPorCurso alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaId.toString());
     AppDataBase SQL = AppDataBase();
     WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
     String urlExpresiones =  webConfig?.content??"";
@@ -382,13 +394,16 @@ class DataCursoRepository extends CursoRepository{
     query.where(SQL.rubroEvalDesempenio.programaAcadId.equals(programaId));
     query.where(SQL.rubroEvalDesempenio.calendarioPeriodoId.equals(calendarioPeridoId));
     query.where(SQL.rubroEvalDesempenio.alumnoId.equals(alumnoId));
-    query.orderBy([OrderingTerm(expression: SQL.rubroEvalDesempenio.silaboEventoId)]);
+    query.orderBy([
+      OrderingTerm(expression: SQL.rubroEvalDesempenio.silaboEventoId),
+      OrderingTerm.desc(SQL.rubroEvalDesempenio.fechaEvaluacion)
+    ]);
     //query.where(SQL.evaluacionDesempenio.secRubroEvalProcesoId.equals(""));
     var rows = await query.get();
 
     ParametrosDisenioData? defaultParametrosDisenioData = await (SQL.selectSingle(SQL.parametrosDisenio)..where((tbl) => tbl.nombre.equals("default"))).getSingleOrNull();
 
-    print("getEvaluacionesPorCurso 1");
+    //print("getEvaluacionesPorCurso 1");
     for(var item in rows){
       RubroEvalDesempenioData rubroEvalDesempenioData = item.readTable(SQL.rubroEvalDesempenio);
       ParametrosDisenioData? parametrosDisenioData = item.readTableOrNull(SQL.parametrosDisenio);
@@ -398,7 +413,7 @@ class DataCursoRepository extends CursoRepository{
       rubroEvaluacionUi.tipo = rubroEvalDesempenioData.formaEvaluacion;
       rubroEvaluacionUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
       rubroEvaluacionUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalDesempenioData.tipoIdNivelLogro);
-      rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion != null ? rubroEvalDesempenioData.notaEvalaucion?.toStringAsFixed(1): "";
+      rubroEvaluacionUi.nota = rubroEvalDesempenioData.notaEvalaucion;
       rubroEvaluacionUi.iconoNota = rubroEvalDesempenioData.iconoNivelLogro != null && (rubroEvalDesempenioData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (rubroEvalDesempenioData.iconoNivelLogro??""): null;
       rubroEvaluacionUi.descNota = rubroEvalDesempenioData.descripcionNivelLogro;
       rubroEvaluacionUi.tituloNota = rubroEvalDesempenioData.tituloNivelLogro;
@@ -419,7 +434,7 @@ class DataCursoRepository extends CursoRepository{
       }
       rubroEvaluacionList.add(rubroEvaluacionUi);
     }
-    print("getEvaluacionesPorCurso 2");
+    //print("getEvaluacionesPorCurso 2");
     return rubroEvaluacionList;
   }
 
@@ -435,7 +450,7 @@ class DataCursoRepository extends CursoRepository{
         query.where((tbl) => tbl.alumnoId.equals(alumnoId));
 
         var rows = await query.get();
-        print("saveTareaEvaluaciones cantidad : "+rows.length.toString());
+        //print("saveTareaEvaluaciones cantidad : "+rows.length.toString());
         for (TareaCursoData row in rows) {
           await (SQL.delete(SQL.tareaCurso).delete(row));
         }
@@ -455,7 +470,7 @@ class DataCursoRepository extends CursoRepository{
 
   @override
   Future<List<TareaEvaluacionCursoUi>> getTareaEvaluacionPorCurso(int anioAcademicoId, int programaId, int calendarioPeridoId, int alumnoId) async{
-    print("getTareaEvaluacionPorCurso alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaId.toString());
+    //print("getTareaEvaluacionPorCurso alumnoId: "+alumnoId.toString() + "anioAcademicoId: " + anioAcademicoId.toString() +" calendarioPeridoId: "+calendarioPeridoId.toString()+" programaEducativoId: "+programaId.toString());
     AppDataBase SQL = AppDataBase();
     try{
 
@@ -486,15 +501,19 @@ class DataCursoRepository extends CursoRepository{
         TareaEvaluacionCursoUi tareaEvaluacionCursoUi = TareaEvaluacionCursoUi();
         tareaEvaluacionCursoUi.tareaId = tareaCursoData.tareaId;
         tareaEvaluacionCursoUi.tituloTarea = tareaCursoData.tareaTitulo;
+        tareaEvaluacionCursoUi.tareaDescripcion = tareaCursoData.tareaInstrucciones;
         tareaEvaluacionCursoUi.nombreDocente = AppTools.capitalize(tareaCursoData.docenteNombre??"") + " " + AppTools.capitalize(tareaCursoData.docenteApellPat??"") + " " + AppTools.capitalize(tareaCursoData.docenteApellMat??"");
         tareaEvaluacionCursoUi.fechaInicio = tareaCursoData.tareafechaCreacion;
+        print("tareaCursoData.tareaHoraEntrega ${tareaCursoData.tareaHoraEntrega}");
         tareaEvaluacionCursoUi.fechaEntrega =  tareaCursoData.tareaFechaEntrega!=null?AppTools.convertDateTimePtBR(tareaCursoData.tareaFechaEntrega, tareaCursoData.tareaHoraEntrega):null; //tareaCursoData.tareaFechaEntrega;
         //tareaEvaluacionCursoUi.rubroEvalId = rubroEvalDesempenioData.rubroEvalProcesoId;
         //tareaEvaluacionCursoUi.titulo = rubroEvalDesempenioData.tituloEvaluacion;
-
+        tareaEvaluacionCursoUi.unidadAprendizajeId = tareaCursoData.unidadAprendizajeId;
+        tareaEvaluacionCursoUi.sesionAprendizajeId = tareaCursoData.sesionAprendizajeId;
         //tareaEvaluacionCursoUi.fecha = AppTools.f_fecha_letras(rubroEvalDesempenioData.fechaEvaluacion);
+        tareaEvaluacionCursoUi.evaluacionProcesoId = tareaCursoData.evaluacionProcesoId;
         tareaEvaluacionCursoUi.tipoNotaEnum = getTipoNotaEnumUi(tareaCursoData.tipoIdNivelLogro);
-        tareaEvaluacionCursoUi.nota = tareaCursoData.notaEvalaucion != null ? tareaCursoData.notaEvalaucion?.toStringAsFixed(1): "";
+        tareaEvaluacionCursoUi.nota = tareaCursoData.notaEvalaucion;
         tareaEvaluacionCursoUi.iconoNota = tareaCursoData.iconoNivelLogro != null && (tareaCursoData.iconoNivelLogro?.length??0) > 0 ? urlExpresiones + (tareaCursoData.iconoNivelLogro??""): null;
         tareaEvaluacionCursoUi.descNota = tareaCursoData.descripcionNivelLogro;
         tareaEvaluacionCursoUi.tituloNota = tareaCursoData.tituloNivelLogro;
@@ -579,7 +598,7 @@ class DataCursoRepository extends CursoRepository{
 
       }
 
-      print("getContactos: "+contactoUiList.length.toString());
+      //print("getContactos: "+contactoUiList.length.toString());
       return contactoUiList;
 
     }catch(e){
@@ -694,7 +713,7 @@ class DataCursoRepository extends CursoRepository{
         query.where(SQL.asistenciaAlumnos.alumnoId.equals(alumnoId));
 
         var rows = await query.get();
-        print("saveEvaluaciones cantidad : "+rows.length.toString());
+        //print("saveEvaluaciones cantidad : "+rows.length.toString());
         for (var row in rows) {
           AsistenciaAlumno asistenciaAlumno = row.readTable(SQL.asistenciaAlumnos);
           await (SQL.delete(SQL.asistenciaAlumnos).delete(asistenciaAlumno));
@@ -988,7 +1007,7 @@ class DataCursoRepository extends CursoRepository{
         query.where((tbl) => tbl.calendarioPeriodoId.equals(calendarioPeridoId));
 
         var rows = await query.get();
-        print("saveEvaluaciones cantidad : "+rows.length.toString());
+        //print("saveEvaluaciones cantidad : "+rows.length.toString());
         for (AsistenciaGeneralData row in rows) {
           await (SQL.delete(SQL.asistenciaGeneral).delete(row));
         }
@@ -1178,6 +1197,398 @@ class DataCursoRepository extends CursoRepository{
     }catch(e){
       throw Exception(e);
     }
+  }
+
+  @override
+  Future<RubroEvaluacionUi> getRubroInfo(String? ruboEvaluacionId, int? hijoPersonId) async{
+    AppDataBase SQL = AppDataBase();
+    WebConfig? webConfig = await (SQL.selectSingle(SQL.webConfigs)..where((tbl) => tbl.nombre.equals("wstr_UrlExpresiones"))).getSingleOrNull();
+    String wstr_UrlExpresiones = webConfig?.content??"";
+    var query = SQL.select(SQL.rubroEvaluacionInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+    query.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    RubroEvaluacionInfoData? rubroEvaluacionInfo = await query.getSingleOrNull();
+
+
+    var queryValorTipoNota = SQL.select(SQL.rubroValorTipoNotaInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+    queryValorTipoNota.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    List<RubroValorTipoNotaInfoData> rubroValorTipoNotaInfoList = await queryValorTipoNota.get();
+
+    var queryRubricas = SQL.select(SQL.rubroEvaluacionInfo)..where((tbl) => tbl.parentId.equals(ruboEvaluacionId));
+    queryRubricas.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    List<RubroEvaluacionInfoData> rubroEvaluacionInfoList = await queryRubricas.get();
+
+    var queryValorTipoNotas = SQL.select(SQL.rubroValorTipoNotaInfo)..where((tbl) => tbl.rubroEvalProParentId.equals(ruboEvaluacionId));
+    queryValorTipoNotas.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    List<RubroValorTipoNotaInfoData> rubroValorTipoNotaDetalleList = await queryValorTipoNotas.get();
+    RubroEvaluacionUi rubroEvaluacionUi = new RubroEvaluacionUi();
+    if(rubroEvaluacionInfo!=null){
+      rubroEvaluacionUi.titulo = rubroEvaluacionInfo.titulo;
+      rubroEvaluacionUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvaluacionInfo.tipoId);
+      rubroEvaluacionUi.nota = rubroEvaluacionInfo.nota;
+      rubroEvaluacionUi.intervalo = (rubroEvaluacionInfo.intervalo??0)>0;
+      rubroEvaluacionUi.valorMaximo = rubroEvaluacionInfo.valorMaximo;
+      rubroEvaluacionUi.valorMinimo = rubroEvaluacionInfo.valorMinimo;
+      RubroValorTipoNotaInfoData? rubroValorTipoNotaInfo = null;
+      for (RubroValorTipoNotaInfoData item in rubroValorTipoNotaInfoList){
+        if(item.valorTipoNotaId == rubroEvaluacionInfo.valorTipoNotaId){
+          rubroValorTipoNotaInfo = item;
+          break;
+        }
+      }
+
+      if(rubroValorTipoNotaInfo!=null){
+        rubroEvaluacionUi.iconoNota = '${wstr_UrlExpresiones}${rubroValorTipoNotaInfo.iconoNivelLogro}';
+        rubroEvaluacionUi.descNota = rubroValorTipoNotaInfo.aliasNivelLogro;
+        rubroEvaluacionUi.tituloNota = rubroValorTipoNotaInfo.tituloNivelLogro;
+      }
+
+      List<RubroEvaluacionUi> rubroEvaluacionUiList = [];
+
+      if(rubroEvaluacionInfoList.isEmpty){
+        rubroEvaluacionInfoList.add(rubroEvaluacionInfo);
+        rubroValorTipoNotaDetalleList = rubroValorTipoNotaInfoList;
+      }
+      int puntosTotales = 0;
+      for (RubroEvaluacionInfoData rubroEvalInfoDetalle in rubroEvaluacionInfoList){
+        RubroEvaluacionUi rubroEvalDetalleUi = RubroEvaluacionUi();
+        rubroEvalDetalleUi.titulo = rubroEvalInfoDetalle.titulo;
+        rubroEvalDetalleUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalInfoDetalle.tipoId);
+        rubroEvalDetalleUi.nota = rubroEvalInfoDetalle.nota;
+        rubroEvaluacionUi.intervalo = (rubroEvalInfoDetalle.intervalo??0)>0;
+        switch (rubroEvalInfoDetalle.tipoCompetenciaId){
+          case 347:
+            rubroEvalDetalleUi.tipoCompetencia = CompetenciaTipo.BASE;
+            break;
+          case 348:
+            rubroEvalDetalleUi.tipoCompetencia = CompetenciaTipo.TRANSVERSAL;
+            break;
+          case  349:
+            rubroEvalDetalleUi.tipoCompetencia = CompetenciaTipo.ENFOQUE;
+            break;
+        }
+
+        puntosTotales += rubroEvalInfoDetalle.valorMaximo??0;
+        rubroEvaluacionUiList.add(rubroEvalDetalleUi);
+        List<ValorTipoNotaUi> list = [];
+        for (RubroValorTipoNotaInfoData item in rubroValorTipoNotaDetalleList){
+          if(item.evaluacionProcesoId == rubroEvalInfoDetalle.evaluacionProcesoId){
+            ValorTipoNotaUi valorTipoUi = new ValorTipoNotaUi();
+            valorTipoUi.valorTipoNotaId = item.valorTipoNotaId;
+            valorTipoUi.icono = "${wstr_UrlExpresiones}${item.iconoNivelLogro}";
+            valorTipoUi.descripcion = item.aliasNivelLogro;
+            valorTipoUi.titulo = item.tituloNivelLogro;
+            valorTipoUi.toggle = item.valorTipoNotaId == rubroEvalInfoDetalle.valorTipoNotaId;
+            valorTipoUi.tipoNotaEnum = getTipoNotaEnumUi(rubroEvalInfoDetalle.tipoId);
+            valorTipoUi.valorNumerico = item.valorNumericoNivelLogro;
+            valorTipoUi.rubroEvalDetalleUi = rubroEvalDetalleUi;
+            list.add(valorTipoUi);
+          }
+        }
+        list.sort((a, b) => (b.valorNumerico??0).compareTo(a.valorNumerico??0),);
+        rubroEvalDetalleUi.valorTipoNotas = list;
+      }
+
+      int? puntos = AppTools.transformacionInvariante((rubroEvaluacionUi.valorMinimo?.toDouble()??0), rubroEvaluacionUi.valorMaximo?.toDouble()??0, rubroEvaluacionUi.nota, 0, puntosTotales.toDouble())?.toInt();
+      int? desempenio =  AppTools.transformacionInvariante(rubroEvaluacionUi.valorMinimo?.toDouble()??0, rubroEvaluacionUi.valorMaximo?.toDouble()??0, rubroEvaluacionUi.nota, 0, 100)?.toInt();
+
+      rubroEvaluacionUi.puntos = "${puntos}/${puntosTotales}";
+      rubroEvaluacionUi.desempenio = "${desempenio}%";
+      rubroEvaluacionUi.rubroEvaluacionUiList = rubroEvaluacionUiList;
+
+      var queryComen = SQL.select(SQL.rubroComentarioInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      queryComen.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      List<RubroComentarioInfoData> rubroComentarioInfoList = await queryComen.get();
+
+      List<RubroComentarioUi> comentarioUiList = [];
+      for (RubroComentarioInfoData rubroComentarioInfo in rubroComentarioInfoList){
+        RubroComentarioUi comentarioUi = RubroComentarioUi();
+        comentarioUi.descripcion = rubroComentarioInfo.descripcion;
+        comentarioUi.fechaCreacion = rubroComentarioInfo.fechaCreacion;
+        comentarioUi.usuarioCreadorId = rubroComentarioInfo.usuarioCreadorId;
+        comentarioUi.nombres = AppTools.capitalize(rubroComentarioInfo.nombres);
+        comentarioUi.foto = rubroComentarioInfo.foto;
+        comentarioUiList.add(comentarioUi);
+      }
+      var queryArchivo = SQL.select(SQL.rubroArchivoInfo2)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      queryArchivo.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      List<RubroArchivoInfo2Data> rubroArchivoInfoList =  await queryArchivo.get();
+
+      List<RubroArchivoUi> rubroArchivoUiList = [];
+      for (RubroArchivoInfo2Data rubroArchivoInfo in rubroArchivoInfoList){
+        RubroArchivoUi rubroArchivoUi = RubroArchivoUi();
+        rubroArchivoUi.titulo = rubroArchivoInfo.url?.split("/").last;
+        rubroArchivoUi.url = rubroArchivoInfo.url;
+        rubroArchivoUi.fechaCreacion = rubroArchivoInfo.fechaCreacion;
+        rubroArchivoUi.tipoRecurso = getTipoArchivo(rubroArchivoInfo.tipoArchivoId??0);
+        rubroArchivoUiList.add(rubroArchivoUi);
+      }
+      rubroEvaluacionUi.comentarioList = comentarioUiList;
+      rubroEvaluacionUi.archivoList = rubroArchivoUiList;
+    }
+    return rubroEvaluacionUi;
+  }
+
+  TipoRecursosUi getTipoArchivo(int tipoArchivoId){
+    switch(tipoArchivoId) {
+      case DomainTipos.TIPO_RECURSO_AUDIO:
+        return TipoRecursosUi.TIPO_AUDIO;
+      case DomainTipos.TIPO_RECURSO_DIAPOSITIVA:
+        return TipoRecursosUi.TIPO_DIAPOSITIVA;
+      case DomainTipos.TIPO_RECURSO_DOCUMENTO:
+        return TipoRecursosUi.TIPO_DOCUMENTO;
+      case DomainTipos.TIPO_RECURSO_HOJA_CALCULO:
+        return TipoRecursosUi.TIPO_HOJA_CALCULO;
+      case DomainTipos.TIPO_RECURSO_IMAGEN:
+        return TipoRecursosUi.TIPO_IMAGEN;
+      case DomainTipos.TIPO_RECURSO_PDF:
+        return TipoRecursosUi.TIPO_PDF;
+      case DomainTipos.TIPO_RECURSO_VIDEO:
+      case DomainTipos.TIPO_RECURSO_VINCULO:
+        return TipoRecursosUi.TIPO_VINCULO;
+      case DomainTipos.TIPO_RECURSO_YOUTUBE:
+        return TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+      case DomainTipos.TIPO_RECURSO_MATERIALES:
+        return TipoRecursosUi.TIPO_RECURSO;
+      default:
+        return TipoRecursosUi.TIPO_VINCULO;
+    }
+  }
+
+  @override
+  void saveRubroInfo(Map<String, dynamic> mapRubro, String? ruboEvaluacionId, int? hijoPersonId) async{
+    AppDataBase SQL = AppDataBase();
+    await SQL.transaction(() async {
+
+      var query = SQL.delete(SQL.rubroEvaluacionInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      query.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await query.go();
+
+      var queryComen = SQL.delete(SQL.rubroComentarioInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      queryComen.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await queryComen.go();
+
+      var queryArchivo = SQL.delete(SQL.rubroArchivoInfo2)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      queryArchivo.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await queryArchivo.go();
+
+      var queryValorTipoNota = SQL.delete(SQL.rubroValorTipoNotaInfo)..where((tbl) => tbl.rubroEvalProcesoId.equals(ruboEvaluacionId));
+      queryValorTipoNota.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await queryValorTipoNota.go();
+
+
+      await SQL.batch((batch) async {
+        if(mapRubro.containsKey("RubroEvalProcesoList")){
+          List rubroEvalProcesoList = mapRubro["RubroEvalProcesoList"];
+          List<RubroEvaluacionInfoData> rubroEvaluacionInfoList = [];
+          for(var item in rubroEvalProcesoList ){
+            //print("RubroEvalProcesoList: ${item.toString()}");
+            rubroEvaluacionInfoList.add(RubroEvaluacionInfoData.fromJson(item));
+          }
+          batch.insertAll(SQL.rubroEvaluacionInfo, rubroEvaluacionInfoList, mode: InsertMode.insertOrReplace );
+        }
+
+        if(mapRubro.containsKey("CometarioList")){
+          List cometarioList = mapRubro["CometarioList"];
+          List<RubroComentarioInfoData> rubroComentarioInfoList = [];
+          for(var item in cometarioList ){
+            rubroComentarioInfoList.add(RubroComentarioInfoData.fromJson(item));
+          }
+          batch.insertAll(SQL.rubroComentarioInfo, rubroComentarioInfoList, mode: InsertMode.insertOrReplace );
+        }
+
+        if(mapRubro.containsKey("ArchivoList")){
+          List archivoList = mapRubro["ArchivoList"];
+          List<RubroArchivoInfo2Data> rubroArchivoInfoList = [];
+          for(var item in archivoList ){
+            rubroArchivoInfoList.add(RubroArchivoInfo2Data.fromJson(item));
+          }
+          batch.insertAll(SQL.rubroArchivoInfo2, rubroArchivoInfoList, mode: InsertMode.insertOrReplace );
+        }
+
+        if(mapRubro.containsKey("ValorTipoNotaList")){
+          List valorTipoNotaList = mapRubro["ValorTipoNotaList"];
+          List<RubroValorTipoNotaInfoData> rubroValorTipoNotaInfoList = [];
+          for(var item in valorTipoNotaList ){
+            rubroValorTipoNotaInfoList.add(RubroValorTipoNotaInfoData.fromJson(item));
+          }
+          batch.insertAll(SQL.rubroValorTipoNotaInfo, rubroValorTipoNotaInfoList, mode: InsertMode.insertOrReplace );
+        }
+
+      });
+
+    });
+  }
+
+  @override
+  void saveInfoTarea(Map<String, dynamic> mapTarea, String? tareaId, String? evaluacionId, String? rubroEvaluacionId, int? hijoPersonId)async {
+    AppDataBase SQL = AppDataBase();
+    await SQL.transaction(() async {
+
+      var query = SQL.delete(SQL.tareaCursoRecurso)..where((tbl) => tbl.tareaId.equals(tareaId));
+      await query.go();
+
+      var queryComen = SQL.delete(SQL.tareaAlumno)..where((tbl) => tbl.tareaId.equals(tareaId));
+      queryComen.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await queryComen.go();
+
+      var queryArchivo = SQL.delete(SQL.tareaAlumnoArchivo)..where((tbl) => tbl.tareaId.equals(tareaId));
+      queryArchivo.where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+      await queryArchivo.go();
+
+      await SQL.batch((batch) async {
+        if(mapTarea.containsKey("bETareaAlumno")){
+          batch.insert(SQL.tareaAlumno, TareaAlumnoData.fromJson(mapTarea["bETareaAlumno"]), mode: InsertMode.insertOrReplace );
+          List archivos = mapTarea["archivos"];
+          List<TareaAlumnoArchivoData> rubroEvaluacionInfoList = [];
+          for(var item in archivos ){
+            //print("RubroEvalProcesoList: ${item.toString()}");
+            rubroEvaluacionInfoList.add(TareaAlumnoArchivoData.fromJson(item));
+          }
+          batch.insertAll(SQL.tareaAlumnoArchivo, rubroEvaluacionInfoList, mode: InsertMode.insertOrReplace );
+        }
+
+        if(mapTarea.containsKey("BETareaCurso")){
+          List tareaCursoList = mapTarea["BETareaCurso"]["recursoDidacticoList"];
+          List<TareaCursoRecursoData> tareaCursoRecursoDataList = [];
+          for(var item in tareaCursoList ){
+            tareaCursoRecursoDataList.add(TareaCursoRecursoData.fromJson(item));
+          }
+          batch.insertAll(SQL.tareaCursoRecurso, tareaCursoRecursoDataList, mode: InsertMode.insertOrReplace );
+        }
+
+      });
+
+    });
+  }
+
+  @override
+  Future<TareaEvaluacionCursoUi> getInfoTarea(String? tareaId, int? hijoPersonId) async{
+    AppDataBase SQL = AppDataBase();
+    var query = SQL.select(SQL.tareaAlumno)..where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    query.where((tbl) => tbl.tareaId.equals(tareaId));
+    TareaAlumnoData? tareaAlumnoData = await query.getSingleOrNull();
+    var queryTareaAlumnoArchivo = SQL.select(SQL.tareaAlumnoArchivo)..where((tbl) => tbl.alumnoId.equals(hijoPersonId));
+    queryTareaAlumnoArchivo.where((tbl) => tbl.tareaId.equals(tareaId));
+    List<TareaAlumnoArchivoData> tareaAlumnoArchivoList = await queryTareaAlumnoArchivo.get();
+
+
+    TareaEvaluacionCursoUi tareaEvaluacionUi;
+    if(tareaAlumnoData == null){
+      tareaEvaluacionUi = getTareaEvaluacionUi(tareaAlumnoData, tareaAlumnoArchivoList);
+    }else{
+      tareaEvaluacionUi = TareaEvaluacionCursoUi();
+      tareaEvaluacionUi.estadoEntregado = TareaEstadoEntregado.SIN_ENTREGAR;
+      tareaEvaluacionUi.alumnoArchivoUiList = [];
+    }
+
+    var queryTareaRecurso = SQL.select(SQL.tareaCursoRecurso)..where((tbl) => tbl.tareaId.equals(tareaId));
+    List<TareaCursoRecursoData> tareaCursoRecursoList = await queryTareaRecurso.get();
+    List<TareaArchivoUi> tareaArchivoUiList = [];
+    for (TareaCursoRecursoData tareaCursoRecurso in tareaCursoRecursoList){
+      TareaArchivoUi tareaArchivoUi = TareaArchivoUi();
+
+      tareaArchivoUi.alumnoId = hijoPersonId;
+      String? url = (tareaCursoRecurso.url??"").isEmpty?
+      tareaCursoRecurso.descripcion:  tareaCursoRecurso.url;
+
+      switch (tareaCursoRecurso.tipoId){
+        case DomainTipos.TIPO_RECURSO_AUDIO:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_AUDIO;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_DIAPOSITIVA:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_DIAPOSITIVA;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_DOCUMENTO:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_DOCUMENTO;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_HOJA_CALCULO:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_HOJA_CALCULO;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_IMAGEN:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_IMAGEN;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_PDF:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_PDF;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_VIDEO:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VIDEO;
+          tareaArchivoUi.drive = true;
+          break;
+        case DomainTipos.TIPO_RECURSO_VINCULO:
+          String? idYoutube = YouTubeUrlParser.getYoutubeVideoId(tareaArchivoUi.url);
+          String? idDrive = DriveUrlParser.getDocumentId(tareaArchivoUi.url);
+          if((idYoutube??"").isNotEmpty){
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+          }else if((idDrive??"").isNotEmpty){
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO_DRIVE;
+          }else {
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO;
+          }
+          tareaArchivoUi.drive = false;
+          break;
+        case DomainTipos.TIPO_RECURSO_YOUTUBE:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+          tareaArchivoUi.drive = false;
+          break;
+        default:
+          tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO;
+          tareaArchivoUi.drive = false;
+          break;
+      }
+
+      tareaArchivoUi.driveId =  tareaCursoRecurso.driveId;
+      tareaArchivoUi.nombre = tareaCursoRecurso.titulo;
+      tareaArchivoUi.url = url;
+      tareaArchivoUiList.add(tareaArchivoUi);
+    }
+    tareaEvaluacionUi.recursoArchivoUiList = tareaArchivoUiList;
+    return tareaEvaluacionUi;
+  }
+
+  TareaEvaluacionCursoUi getTareaEvaluacionUi(TareaAlumnoData? tareaAlumno, List<TareaAlumnoArchivoData> tareaAlumnoArchivoList) {
+    TareaEvaluacionCursoUi tareaEvaluacionUi = new TareaEvaluacionCursoUi();
+    tareaEvaluacionUi.estadoEntregado  = ((tareaAlumno?.entregado??false)? TareaEstadoEntregado.ENTREGADO: TareaEstadoEntregado.SIN_ENTREGAR);
+    tareaEvaluacionUi.tareaId = tareaAlumno?.tareaId;
+    tareaEvaluacionUi.fechaServidor = tareaAlumno?.fechaServidor;
+    tareaEvaluacionUi.fechaEntregaAlumno = tareaAlumno?.fechaEntrega;
+    List<TareaAlumnoArchivoUi> tareaArchivoUiList = [];
+    for (TareaAlumnoArchivoData tareaAlumnoArchivo in tareaAlumnoArchivoList){
+      if(tareaAlumnoArchivo.tareaId == tareaAlumno?.tareaId){
+        TareaAlumnoArchivoUi tareaArchivoUi = TareaAlumnoArchivoUi();
+        tareaArchivoUi.id = tareaAlumnoArchivo.id;
+        tareaArchivoUi.alumnoId = tareaAlumnoArchivo.alumnoId;
+        tareaArchivoUi.tareaId = tareaAlumnoArchivo.tareaId;
+        tareaArchivoUi.silaboEventoId = tareaAlumnoArchivo.silaboEventoId;
+        //tareaArchivoUi.setUnidadAprendizajeId(tareaAlumnoArchivo.getUnidadAprendizajeId());
+        tareaArchivoUi.nombre = tareaAlumnoArchivo.nombre;
+        tareaArchivoUi.descripcion = tareaAlumnoArchivo.nombre;
+        tareaArchivoUi.url = tareaAlumnoArchivo.path;
+        tareaArchivoUi.firebase = tareaAlumnoArchivo.repositorio;
+        if(!(tareaArchivoUi.firebase??false)){
+          String? idYoutube = YouTubeUrlParser.getYoutubeVideoId(tareaAlumnoArchivo.path);
+          String? idDrive = DriveUrlParser.getDocumentId(tareaAlumnoArchivo.path);
+          if((idYoutube??"").isNotEmpty){
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO_YOUTUBE;
+          }else if((idDrive??"").isNotEmpty){
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO_DRIVE;
+          }else {
+            //tareaArchivoUi.setTipoArchivo(TipoArchivo.LINK);
+            tareaArchivoUi.tipoArchivo = TipoRecursosUi.TIPO_VINCULO;
+          }
+          //tareaArchivoUi.descripcion = tareaArchivoUi.tipoArchivo.getNombre();
+        }
+
+        tareaArchivoUiList.add(tareaArchivoUi);
+      }
+    }
+    tareaEvaluacionUi.alumnoArchivoUiList = tareaArchivoUiList;
+    return tareaEvaluacionUi;
   }
 
 

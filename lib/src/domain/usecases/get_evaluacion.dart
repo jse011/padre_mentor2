@@ -45,16 +45,32 @@ class GetEvaluacion extends UseCase<GetEvaluacionCaseResponse, GetEvaluacionCase
         if(search == null){
           search = CursoEvaluacionUi(cursoUi: cursoUi, evaluacionUiList: []);
           lista.add(search);
-        }else{
-          search.evaluacionUiList?.add(rubroEvalItem);
         }
+        search.evaluacionUiList?.add(rubroEvalItem);
         lista.add(rubroEvalItem);
+
       }
+
+      for(var item in lista){
+        if(item is CursoEvaluacionUi){
+          int index = 0;
+          for(RubroEvaluacionUi rubroEvaluacionUi in item.evaluacionUiList??[]){
+            print("index: ${index}");
+            rubroEvaluacionUi.evaluacionIncial = (index == 0);
+            print("evaluacionIncial: ${ rubroEvaluacionUi.evaluacionIncial}");
+            print("titulo: ${ rubroEvaluacionUi.titulo}");
+            rubroEvaluacionUi.evaluacionFinal = (index == ((item.evaluacionUiList?.length??0) - 1));
+            print("evaluacionFinal: ${ rubroEvaluacionUi.evaluacionFinal}");
+            index++;
+          }
+        }
+      }
+
       controller.add(GetEvaluacionCaseResponse(lista, offlineServidor, errorServidor));
-    logger.finest('GetEvaluacion successful.');
+
     controller.close();
     } catch (e) {
-    logger.severe('GetEvaluacion unsuccessful: '+e.toString());
+
     // Trigger .onError
     controller.addError(e);
 

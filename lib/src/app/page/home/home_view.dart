@@ -278,8 +278,14 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
           builder: (context, position, animationController) {
             switch(position){
               case 2:
+                setState(() {
+                  _menuScreenView = Container();
+                });
                 return ContactosView(animationController: animationController!,);
               case 1:
+                setState(() {
+                  _menuScreenView = Container();
+                });
                 return PortalAlumnoView(animationController: animationController!);
               case 0:
                 return EventoAgendaView(animationController: animationController!,closeMenu: _closeMenu, menuBuilder: (menuView) {
@@ -290,6 +296,9 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
                     _onChangeConnected = onChangeConnected;
                   },);
               default:
+                setState(() {
+                  _menuScreenView = Container();
+                });
                 return FamiliaView(animationController: animationController!);
             }
           },
@@ -297,19 +306,16 @@ class _HomePageState extends ViewState<HomePage, HomeController> {
         break;
       case VistaIndex.EditarUsuario:
         _menuScreenView = EditarUsuarioView();
-        _menuScreenView = Container();
         break;
       case VistaIndex.Sugerencia:
         _menuScreenView = Container(
           color: Colors.red,
         );
-        _menuScreenView = Container();
         break;
       case VistaIndex.SobreNosotros:
         _menuScreenView = Container(
           color: Colors.red,
         );
-        _menuScreenView = Container();
         break;
     }
   }
