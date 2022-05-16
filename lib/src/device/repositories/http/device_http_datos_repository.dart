@@ -177,7 +177,7 @@ class DeviceHttpDatosRepositorio extends HttpDatosRepository{
 
   @override
   Future<Map<String, dynamic>?> getUsuarioExterno(int opcion, String usuario, String password, String correo, String dni) async{
-    String urlServidor = "http://admin.consultoraestrategia.com/ServiceAdmin/Service/ServiceAdmin.ashx";
+    String urlServidor = "http://admin.icrmedu.com/ServiceAdmin/Service/ServiceAdmin.ashx";
 
     Map<String, dynamic> obj_usuario = Map<String, dynamic>();
     obj_usuario["Opcion"] = opcion;
@@ -391,7 +391,7 @@ class Uri2{
       return Uri.parse(url);
     } else {
       // Will be tree-shaked on release builds.
-      url = url.replaceAll("CRMMovil", "CRMMovil2");
+      //url = url.replaceAll("CRMMovil", "CRMMovil2");
       //url = modificarServidorLocalCata(url);
       //print("modificarServidorLocalCata3: ${url}");
       return Uri.parse(url);
@@ -406,7 +406,7 @@ class Uri2{
       // Will be tree-shaked on release builds.
       // jessica.galvis	jessicacolombia1
       //ray.tejada tejada1234567
-      url = url.replaceAll("CRMMovil", "CRMMovil2");
+      //url = url.replaceAll("CRMMovil", "CRMMovil2");
       //url = modificarServidorLocalCata(url);
       //print("modificarServidorLocalCata4: ${url}");
       return url;
